@@ -1,0 +1,129 @@
+<?php
+namespace VisioCrudModeler\DataSource\Descriptor;
+
+/**
+ * descriptor for database sources
+ *
+ * @author bweres01
+ *        
+ * @method \VisioCrudModeler\DataSource\DbDataSource getDataSource
+ */
+class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
+{
+
+    protected $tableTypes = array(
+        'BASE TABLE' => 'table',
+        'VIEW' => 'view'
+    );
+
+    protected $tablesDescriptionStatement = 'SELECT * FROM information_schema.TABLES it WHERE it.TABLE_SCHEMA = :database';
+
+    protected $viewsDescriptionStatement = 'SELECT * FROM information_schema.VIEWS iv WHERE iv.TABLE_SCHEMA = :database';
+
+    protected $columnsDescriptionStatement = 'SELECT * FROM information_schema.COLUMNS ic WHERE ic.TABLE_SCHEMA = :database';
+    /*
+     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\AbstractDataSourceDescriptor::describe()
+     */
+    protected function describe()
+    {
+        // TODO Auto-generated method stub
+        if (! $this->definitionResolved) {
+            $this->describeTables();
+            $this->describeViews();
+            $this->describeColumns();
+            $this->definitionResolved = true;
+        }
+        return $this;
+    }
+
+    /**
+     * describes tables in database
+     */
+    protected function describeTables()
+    {
+        $result = $this->getDataSource()
+            ->getAdapter()
+            ->createStatement($this->tablesDescriptionStatement)
+            ->execute(array(
+            'database' => $this->getName()
+        ));
+        if ($result->isQueryResult()) {
+            foreach ($result as $row) {
+                $tableDefinition = $this->createTableDefinition($row);
+                $this->definition[$tableDefinition['name']] = $tableDefinition;
+            }
+        }
+    }
+
+    /**
+     * creates tables definition
+     *
+     * @param array $informationSchemaRow            
+     * @return array
+     */
+    protected function createTableDefinition(array $informationSchemaRow)
+    {
+        return array(
+            'type' => $this->tableTypes[$informationSchemaRow['TABLE_TYPE']],
+            'name' => $informationSchemaRow['TABLE_NAME'],
+            'updateable' => true,
+            'fields' => array()
+        );
+    }
+
+    /**
+     * describes views in database
+     */
+    protected function describeViews()
+    {
+        $result = $this->getDataSource()
+            ->getAdapter()
+            ->createStatement($this->viewsDescriptionStatement)
+            ->execute(array(
+            'database' => $this->getName()
+        ));
+        if ($result->isQueryResult()) {
+            foreach ($result as $row) {
+                if ($row['IS_UPDATEABLE'] == 'NO') {
+                    $this->definition[$row['TABLE_NAME']]['updateable'] = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * describes columns in database
+     */
+    protected function describeColumns()
+    {
+        $result = $this->getDataSource()
+            ->getAdapter()
+            ->createStatement($this->columnsDescriptionStatement)
+            ->execute(array(
+            'database' => $this->getName()
+        ));
+        if ($result->isQueryResult()) {
+            foreach ($result as $row) {
+                $fieldDescription = array(
+                    'name' => $row['COLUMN_NAME'],
+                    'type' => $row['DATA_TYPE'],
+                    'character_maximum_length' => $row['CHARACTER_MAXIMUM_LENGTH'],
+                    'numeric_precision' => $row['NUMERIC_PRECISION'],
+                    'numeric_scale' => $row['NUMERIC_SCALE'],
+                    'null' => ($row['IS_NULLABLE'] == 'YES') ? true : false,
+                    'default' => $row['COLUMN_DEFAULT'],
+                    'key' => $row['COLUMN_KEY']
+                );
+                $this->definition[$row['TABLE_NAME']]['fields'][$row['COLUMN_NAME']] = $fieldDescription;
+            }
+        }
+    }
+    
+    /*
+     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\DataSourceDescriptorInterface::getDataSetDescriptor()
+     */
+    public function getDataSetDescriptor($dataSetName)
+    {
+        // TODO Auto-generated method stub
+    }
+}
