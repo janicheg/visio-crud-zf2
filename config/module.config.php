@@ -29,7 +29,7 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route'    => '/[:controller[/:action]][/:id]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -63,7 +63,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'VisioCrudModeler\Controller\Index' => 'VisioCrudModeler\Controller\IndexController'
+            'VisioCrudModeler\Controller\Index' => 'VisioCrudModeler\Controller\IndexController',
+            'VisioCrudModeler\Controller\Customer' => 'VisioCrudModeler\Controller\CustomerController'
         ),
     ),
     'view_manager' => array(
