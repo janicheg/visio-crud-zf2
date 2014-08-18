@@ -21,6 +21,8 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
     protected $viewsDescriptionStatement = 'SELECT * FROM information_schema.VIEWS iv WHERE iv.TABLE_SCHEMA = :database';
 
     protected $columnsDescriptionStatement = 'SELECT * FROM information_schema.COLUMNS ic WHERE ic.TABLE_SCHEMA = :database';
+
+    protected $referenceDescriptionStatement = 'SELECT * FROM information_schema.KEY_COLUMN_USAGE kcu WHERE kcu.TABLE_SCHEMA = :database and kcu.REFERENCED_COLUMN_NAME IS NOT NULL';
     /*
      * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\AbstractDataSourceDescriptor::describe()
      */
@@ -31,6 +33,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
             $this->describeTables();
             $this->describeViews();
             $this->describeColumns();
+            $this->describeReferences();
             $this->definitionResolved = true;
         }
         return $this;
@@ -112,9 +115,32 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
                     'numeric_scale' => $row['NUMERIC_SCALE'],
                     'null' => ($row['IS_NULLABLE'] == 'YES') ? true : false,
                     'default' => $row['COLUMN_DEFAULT'],
-                    'key' => $row['COLUMN_KEY']
+                    'key' => $row['COLUMN_KEY'],
+                    'reference' => false
                 );
                 $this->definition[$row['TABLE_NAME']]['fields'][$row['COLUMN_NAME']] = $fieldDescription;
+            }
+        }
+    }
+
+    /**
+     * describes columns in database
+     */
+    protected function describeReferences()
+    {
+        $result = $this->getDataSource()
+            ->getAdapter()
+            ->createStatement($this->referenceDescriptionStatement)
+            ->execute(array(
+            'database' => $this->getName()
+        ));
+        if ($result->isQueryResult()) {
+            foreach ($result as $row) {
+                $referenceDescription = array(
+                    'dataset' => $row['REFERENCED_TABLE_NAME'],
+                    'field' => $row['REFERENCED_COLUMN_NAME']
+                );
+                $this->definition[$row['TABLE_NAME']]['fields'][$row['COLUMN_NAME']]['reference'] = $referenceDescription;
             }
         }
     }
