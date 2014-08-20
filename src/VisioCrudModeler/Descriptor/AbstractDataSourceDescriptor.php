@@ -1,15 +1,18 @@
 <?php
-namespace VisioCrudModeler\DataSource\Descriptor;
+namespace VisioCrudModeler\Descriptor;
 
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use VisioCrudModeler\DataSource\DataSourceInterface;
-use VisioCrudModeler\DataSource\DataSourceAwareInterface;
-use Zend\EventManager\EventManager;
 
-abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInterface, EventManagerAwareInterface, ServiceLocatorAwareInterface, DataSourceAwareInterface
+/**
+ * abstract DataSource Descriptor
+ *
+ * @author bweres01
+ *        
+ */
+abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInterface, EventManagerAwareInterface, ServiceLocatorAwareInterface
 {
 
     /**
@@ -41,11 +44,11 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
     protected $definitionResolved = false;
 
     /**
-     * holds used data source
+     * holds used adapter
      *
-     * @var DataSourceInterface
+     * @var mixed
      */
-    protected $dataSource = null;
+    protected $adapter = null;
 
     /**
      * holds name of data source
@@ -59,12 +62,12 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
      *
      * @see \VisioCrudModeler\DataSource\Descriptor\DataSourceDescriptorInterface::setName()
      */
-    public function setName($dataSourceName)
+    public function setName($name)
     {
-        if ($dataSourceName != $this->name) {
+        if ($name != $this->name) {
             $this->resetDescribedData();
         }
-        $this->name = $dataSourceName;
+        $this->name = $name;
         return $this;
     }
 
@@ -76,6 +79,28 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * sets adapter
+     *
+     * @param mixed $adapter            
+     * @return AbstractDataSourceDescriptor
+     */
+    public function setAdapter($adapter)
+    {
+        $this->adapter = $adapter;
+        return $this;
+    }
+
+    /**
+     * gets adapter
+     *
+     * @return mixed
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
     }
 
     /**
@@ -94,8 +119,7 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
     /**
      * resolves data set definitions
      */
-    abstract protected function describe()
-    {}
+    abstract protected function describe();
 
     /**
      * resets resolved DataSource description data
@@ -126,9 +150,6 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
      */
     public function getEventManager()
     {
-        if (! $this->eventManager instanceof EventManagerInterface) {
-            $this->eventManager = new EventManager(__CLASS__);
-        }
         return $this->eventManager;
     }
 
@@ -150,28 +171,5 @@ abstract class AbstractDataSourceDescriptor implements DataSourceDescriptorInter
     public function getServiceLocator()
     {
         return $this->serviceLocator;
-    }
-
-    /**
-     * sets DataSource instance
-     *
-     * @param DataSourceInterface $dataSource            
-     */
-    public function setDataSource(DataSourceInterface $dataSource)
-    {
-        if ($dataSource != $this->dataSource) {
-            $this->resetDescribedData();
-        }
-        $this->dataSource = $dataSource;
-    }
-
-    /**
-     * returns DataSource instance
-     *
-     * @return DataSourceInterface
-     */
-    public function getDataSource()
-    {
-        return $this->dataSource;
     }
 }

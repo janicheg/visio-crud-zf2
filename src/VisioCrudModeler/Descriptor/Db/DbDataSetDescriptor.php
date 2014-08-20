@@ -1,8 +1,30 @@
 <?php
-namespace VisioCrudModeler\DataSource\Descriptor;
+namespace VisioCrudModeler\Descriptor\Db;
 
+use VisioCrudModeler\DataSource\DbDataSource;
+use VisioCrudModeler\Descriptor\AbstractDataSetDescriptor;
+use Zend\Db\Adapter\Adapter;
+
+/**
+ * database DataSet descriptor
+ *
+ * @author bweres01
+ *        
+ */
 class DbDataSetDescriptor extends AbstractDataSetDescriptor
 {
+
+    /**
+     * constructor, accepts datasource and dataset definition
+     *
+     * @param DbDataSource $dataSource            
+     * @param array $definition            
+     */
+    public function __construct(Adapter $adapter, array $definition)
+    {
+        $this->adapter = $adapter;
+        $this->setDefinition($definition);
+    }
 
     /**
      * sets definition for data set
@@ -25,7 +47,6 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor
     {
         return $this->definition;
     }
-
     
     /*
      * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\AbstractDataSetDescriptor::getFieldDescriptor()

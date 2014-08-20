@@ -1,5 +1,5 @@
 <?php
-namespace VisioCrudModeler\DataSource\Descriptor;
+namespace VisioCrudModeler\Descriptor\Db;
 
 class DbFieldDescriptor implements FieldDescriptorInterface,ReferenceFieldInterface
 {

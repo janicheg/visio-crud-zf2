@@ -1,5 +1,9 @@
 <?php
-namespace VisioCrudModeler\DataSource\Descriptor;
+namespace VisioCrudModeler\Descriptor\Db;
+
+use VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor;
+use Zend\Db\Adapter\Adapter;
+use VisioCrudModeler\Exception\DataSetNotFound;
 
 /**
  * descriptor for database sources
@@ -23,6 +27,26 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
     protected $columnsDescriptionStatement = 'SELECT * FROM information_schema.COLUMNS ic WHERE ic.TABLE_SCHEMA = :database';
 
     protected $referenceDescriptionStatement = 'SELECT * FROM information_schema.KEY_COLUMN_USAGE kcu WHERE kcu.TABLE_SCHEMA = :database and kcu.REFERENCED_COLUMN_NAME IS NOT NULL';
+
+    /**
+     * holds dataset descriptors object instances
+     *
+     * @var \ArrayObject
+     */
+    protected $dataSetDescriptors = null;
+
+    /**
+     * constructor accepting DbDataSource instance
+     *
+     * @param DbDataSource $dataSource            
+     */
+    public function __construct(Adapter $adapter, $name)
+    {
+        $this->adapter = $adapter;
+        $this->setName($name);
+        $this->dataSetDescriptors = new \ArrayObject(array());
+    }
+    
     /*
      * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\AbstractDataSourceDescriptor::describe()
      */
@@ -44,8 +68,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
      */
     protected function describeTables()
     {
-        $result = $this->getDataSource()
-            ->getAdapter()
+        $result = $this->getAdapter()
             ->createStatement($this->tablesDescriptionStatement)
             ->execute(array(
             'database' => $this->getName()
@@ -79,8 +102,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
      */
     protected function describeViews()
     {
-        $result = $this->getDataSource()
-            ->getAdapter()
+        $result = $this->getAdapter()
             ->createStatement($this->viewsDescriptionStatement)
             ->execute(array(
             'database' => $this->getName()
@@ -99,8 +121,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
      */
     protected function describeColumns()
     {
-        $result = $this->getDataSource()
-            ->getAdapter()
+        $result = $this->getAdapter()
             ->createStatement($this->columnsDescriptionStatement)
             ->execute(array(
             'database' => $this->getName()
@@ -128,8 +149,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
      */
     protected function describeReferences()
     {
-        $result = $this->getDataSource()
-            ->getAdapter()
+        $result = $this->getAdapter()
             ->createStatement($this->referenceDescriptionStatement)
             ->execute(array(
             'database' => $this->getName()
@@ -144,12 +164,21 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
             }
         }
     }
-    
-    /*
-     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\DataSourceDescriptorInterface::getDataSetDescriptor()
+
+    /**
+     * returns DataSet descriptor
+     *
+     * @return \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor
      */
     public function getDataSetDescriptor($dataSetName)
     {
-        // TODO Auto-generated method stub
+        $this->describe();
+        if (! array_key_exists($dataSetName, $this->definition)) {
+            throw new DataSetNotFound("dataSet '" . $dataSetName . "' don't exists in '" . $this->name . "'");
+        }
+        if (! $this->dataSetDescriptors->offsetExists($dataSetName)) {
+            $this->dataSetDescriptors->offsetSet($dataSetName, new DbDataSetDescriptor($this->adapter, $this->definition[$dataSetName]));
+        }
+        return $this->dataSetDescriptors->offsetGet($dataSetName);
     }
 }

@@ -13,6 +13,9 @@ use Zend\View\Model\ViewModel;
 use Zend\Debug\Debug;
 use Zend\Db\Adapter\ParameterContainer;
 use Zend\Db\Sql\Select;
+use Zend\Di\Di;
+use VisioCrudModeler\DataSource\DbDataSource;
+use VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor;
 
 class IndexController extends AbstractActionController
 {
@@ -23,12 +26,14 @@ class IndexController extends AbstractActionController
         // Debug::dump($db);
         // $query=$db->query('SELECT * FROM information_schema.TABLES');
         
-        $stmt = $db->createStatement('SELECT * FROM information_schema.TABLES it WHERE it.TABLE_SCHEMA = :database')->execute([
-            'database' => 'K08_www_biedronka_pl'
-        ]);
+        $dataSourceDescriptor=new DbDataSourceDescriptor($db, 'K08_www_biedronka_pl');
+        $dataSets=$dataSourceDescriptor->listDataSets();
+        Debug::dump($dataSets);
+        $dataSetDescriptor=$dataSourceDescriptor->getDataSetDescriptor($dataSets[0]);
+        Debug::dump($dataSetDescriptor);
+        Debug::dump($this->getServiceLocator()->get('Config'));
+        
         //Debug::dump($stmt);
-        return new ViewModel(array(
-            'stmt' => $stmt
-        ));
+        return new ViewModel();
     }
 }
