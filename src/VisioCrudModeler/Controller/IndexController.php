@@ -16,6 +16,7 @@ use Zend\Db\Sql\Select;
 use Zend\Di\Di;
 use VisioCrudModeler\DataSource\DbDataSource;
 use VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor;
+use VisioCrudModeler\Descriptor\ListGeneratorInterface;
 
 class IndexController extends AbstractActionController
 {
@@ -27,13 +28,11 @@ class IndexController extends AbstractActionController
         // $query=$db->query('SELECT * FROM information_schema.TABLES');
         
         $dataSourceDescriptor=new DbDataSourceDescriptor($db, 'K08_www_biedronka_pl');
-        $dataSets=$dataSourceDescriptor->listDataSets();
-        Debug::dump($dataSets);
-        $dataSetDescriptor=$dataSourceDescriptor->getDataSetDescriptor($dataSets[0]);
-        Debug::dump($dataSetDescriptor);
-        Debug::dump($this->getServiceLocator()->get('Config'));
+        
         
         //Debug::dump($stmt);
-        return new ViewModel();
+        return new ViewModel(array(
+        	'descriptor'=>$dataSourceDescriptor
+        ));
     }
 }

@@ -10,82 +10,55 @@ namespace VisioCrudModeler\Descriptor;
 abstract class AbstractDataSetDescriptor implements DataSetDescriptorInterface
 {
 
-    protected $fieldDescriptorName = '';
-
-    protected $fieldDescriptorPrototype = null;
-
     protected $definition = array();
 
-    protected $definitionResolved = false;
-
-    protected $name = null;
-
-    protected $adapter = null;
+    /**
+     * holds DataSource descriptor
+     *
+     * @var DataSourceDescriptorInterface
+     */
+    protected $dataSourceDescriptor = null;
 
     /**
-     * sets adapter
+     * sets DataSource descriptor
      *
-     * @param mixed $adapter            
+     * @param DataSourceDescriptorInterface $descriptor            
      * @return AbstractDataSetDescriptor
      */
-    public function setAdapter($adapter)
+    public function setDataSourceDescriptor($descriptor)
     {
-        $this->adapter = $adapter;
+        $this->dataSourceDescriptor = $descriptor;
         return $this;
     }
 
     /**
-     * gets adapter
+     * gets DataSource descriptor
      *
-     * @return mixed
+     * @return DataSourceDescriptorInterface
      */
-    public function getAdapter()
+    public function getDataSourceDescriptor()
     {
-        return $this->adapter;
+        return $this->dataSourceDescriptor;
     }
     /*
-     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\DataSetDescriptorInterface::getName()
+     * (non-PHPdoc) @see \VisioCrudModeler\DataSetDescriptorInterface::getName()
      */
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    /*
-     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\DataSetDescriptorInterface::listFields()
-     */
-    public function listFields()
-    {
-        return array_keys($this->definition);
-    }
+    abstract public function getName();
 
     /**
-     * sets field descriptor prototype
+     * (non-PHPdoc)
      *
-     * @param FieldDescriptorInterface $prototype            
-     * @return DbDataSetDescriptor
+     * @see \VisioCrudModeler\Descriptor\DataSetDescriptorInterface::getType()
      */
-    public function setFieldDescriptorPrototype($prototype)
-    {
-        $this->fieldDescriptorPrototype = $prototype;
-        return $this;
-    }
-
-    /**
-     * gets field descriptor prototype
-     *
-     * @return FieldDescriptorInterface
-     */
-    public function getFieldDescriptorPrototype()
-    {
-        if (is_null($this->fieldDescriptorPrototype)) {
-            $this->fieldDescriptorPrototype = new DbFieldDescriptor();
-        }
-        return $this->fieldDescriptorPrototype;
-    }
+    abstract public function getType();
     
     /*
-     * (non-PHPdoc) @see \VisioCrudModeler\DataSource\Descriptor\DataSetDescriptorInterface::getFieldDescriptor()
+     * (non-PHPdoc) @see \VisioCrudModeler\Descriptor\DataSetDescriptorInterface::listFields()
+     */
+    abstract public function listFields();
+    
+    /*
+     * (non-PHPdoc) @see \VisioCrudModeler\Descriptor\DataSetDescriptorInterface::getFieldDescriptor()
      */
     abstract public function getFieldDescriptor($fieldName);
 }

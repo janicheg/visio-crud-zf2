@@ -4,6 +4,7 @@ namespace VisioCrudModeler\Descriptor\Db;
 use VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor;
 use Zend\Db\Adapter\Adapter;
 use VisioCrudModeler\Exception\DataSetNotFound;
+use VisioCrudModeler\Descriptor\ListGeneratorInterface;
 
 /**
  * descriptor for database sources
@@ -12,7 +13,7 @@ use VisioCrudModeler\Exception\DataSetNotFound;
  *        
  * @method \VisioCrudModeler\DataSource\DbDataSource getDataSource
  */
-class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
+class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements ListGeneratorInterface
 {
 
     protected $tableTypes = array(
@@ -52,7 +53,6 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
      */
     protected function describe()
     {
-        // TODO Auto-generated method stub
         if (! $this->definitionResolved) {
             $this->describeTables();
             $this->describeViews();
@@ -168,6 +168,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
     /**
      * returns DataSet descriptor
      *
+     * @throws \VisioCrudModeler\Exception\DataSetNotFound
      * @return \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor
      */
     public function getDataSetDescriptor($dataSetName)
@@ -177,8 +178,22 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor
             throw new DataSetNotFound("dataSet '" . $dataSetName . "' don't exists in '" . $this->name . "'");
         }
         if (! $this->dataSetDescriptors->offsetExists($dataSetName)) {
-            $this->dataSetDescriptors->offsetSet($dataSetName, new DbDataSetDescriptor($this->adapter, $this->definition[$dataSetName]));
+            $this->dataSetDescriptors->offsetSet($dataSetName, new DbDataSetDescriptor($this, $this->definition[$dataSetName]));
         }
         return $this->dataSetDescriptors->offsetGet($dataSetName);
+    }
+
+    /**
+     * list generator
+     *
+     * keys are DataSet names, value is DbDataSetDescriptor objects
+     *
+     * @return Generator
+     */
+    public function listGenerator()
+    {
+        foreach ($this->listDataSets() as $dataSetName) {
+            yield $dataSetName => $this->getDataSetDescriptor($dataSetName);
+        }
     }
 }
