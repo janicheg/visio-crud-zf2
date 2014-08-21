@@ -75,7 +75,6 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
      */
     public function getFieldDescriptor($fieldName)
     {
-        // TODO Auto-generated method stub
         if (! array_key_exists($fieldName, $this->definition['fields'])) {
             throw new FieldNotFound("field '" . $fieldName . "' not found in '" . $this->getName() . "'");
         }
