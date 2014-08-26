@@ -59,7 +59,8 @@ class Module implements ConsoleBannerProviderInterface, ConsoleUsageProviderInte
             array('--license=LICENSE','phpdoc license','Name used in PHPDocumentor tag @license where available'),
             array('--modulesDirectory=PATH','relative path','Relative path to ZF2 modules directory, needs to be writable. Generator will write all files to it.'),
             array('--moduleName=NAME','ZF2 module name','Name for generated module. will be used as Namespace root and module directory name'),
-            array('--adapterServiceKey=NAME','service name','Name used to retrieve data adapter, used by descriptors to discover Data Source structure')
+            array('--adapterServiceKey=NAME','service name','Name used to retrieve data adapter, used by descriptors to discover Data Source structure'),
+            array('--descriptor=NAME','descriptor name','Name of descriptor used in generators')
         );
     }
 }

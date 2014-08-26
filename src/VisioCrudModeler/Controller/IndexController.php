@@ -11,6 +11,7 @@ namespace VisioCrudModeler\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor;
+use VisioCrudModeler\Generator\Dependency;
 
 class IndexController extends AbstractActionController
 {
@@ -20,6 +21,11 @@ class IndexController extends AbstractActionController
         $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         
         $dataSourceDescriptor=new DbDataSourceDescriptor($db, 'K08_www_biedronka_pl');
+        
+        $dependencyTree=$this->getServiceLocator()->get('config')['VisioCrudModeler']['dependency'];
+        \Zend\Debug\Debug::dump($dependencyTree);
+        $dependency=new Dependency($dependencyTree);
+        \Zend\Debug\Debug::dump($dependency->dependencyListFor('model'));
         
         return new ViewModel(array(
         	'descriptor'=>$dataSourceDescriptor
