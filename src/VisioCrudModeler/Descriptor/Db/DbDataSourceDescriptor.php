@@ -41,10 +41,12 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
      *
      * @param DbDataSource $dataSource            
      */
-    public function __construct(Adapter $adapter, $name)
+    public function __construct(Adapter $adapter, $name = null)
     {
         $this->adapter = $adapter;
-        $this->setName($name);
+        if (! is_null($name)) {
+            $this->setName($name);
+        }
         $this->dataSetDescriptors = new \ArrayObject(array());
     }
     
@@ -54,6 +56,9 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
     protected function describe()
     {
         if (! $this->definitionResolved) {
+            if (empty($this->name)) {
+                throw new \RuntimeException('Missing database name');
+            }
             $this->describeTables();
             $this->describeViews();
             $this->describeColumns();
@@ -109,7 +114,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
         ));
         if ($result->isQueryResult()) {
             foreach ($result as $row) {
-                if ($row['IS_UPDATEABLE'] == 'NO') {
+                if ($row['IS_UPDATABLE'] == 'NO') {
                     $this->definition[$row['TABLE_NAME']]['updateable'] = false;
                 }
             }
