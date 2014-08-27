@@ -27,20 +27,23 @@ class BaseCustomerFilter extends AbstractFilter
         
         $inputFilter->add($factory->createInput(array(
                     'name' => 'name',
-                    'required' => true,
+                    'required' => false,
                     'filters' => array(
                         array('name' => 'StripTags'),
                         array('name' => 'StringTrim'),
                     ),
                     'validators' => array(
                         array(
-                            'name' => 'StringLength',
+                            'name' => 'Digits',
+                        ),
+                        array(
+                            'name' => 'Between',
                             'options' => array(
-                                'encoding' => 'UTF-8',
-                                'min' => 1,
-                                'max' => 100,
+                                'min' => 5,
+                                'max' => 10,
                             ),
                         ),
+                        
                     ),
         )));
         
@@ -79,7 +82,11 @@ class BaseCustomerFilter extends AbstractFilter
                                 'max' => 100,
                             ),
                         ),
+                        array(
+                            'name' => 'EmailAddress',
+                        ),
                     ),
+                        
         )));
         
         $inputFilter->add($factory->createInput(array(

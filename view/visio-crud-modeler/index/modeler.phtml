@@ -1,0 +1,137 @@
+<div class="row clearfix" style="margin-top: 50px;">
+    <div class="col-md-2 column">			
+        <div class="box box-element">
+            <div class="view">
+                <h3>Data source </h3>
+                <ul>
+                    <li><a href="">Customer</a></li>
+                    <li>Table 1</li>
+                    <li>Table 2</li>
+                    <li>Table 3</li>
+                    <li>Table 4</li>
+                    <li>Table 5</li>
+                    <li>Table 6</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7 column ui-sortable" style="">
+        <div class="box box-element">
+            <div class="view">
+                <h3>Forms</h3>
+                <p>
+                    <?php
+                    
+                        echo $this->partial('partal/form-partial', array(
+                            'form' => $this->form,
+                            'url' =>  $this->url('visio-crud-modeler', array('action' => 'add')))
+                         ); 
+                        
+                    ?>
+                
+                
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 column ui-sortable" style="">
+        <div class="box box-element">
+            <div class="view">
+                <h3>Details </h3>
+                <hr/>
+                
+                
+                <div class="form-group">
+                    <label>Validators<a class="edit" href=""> (Edit) </a></label>
+                    <select class="form-control validators" data-form="customer" data-element="name">
+                        <option value="null">Wybierz</option>
+                        <option value="required">Required</option>
+                        <option value="string-length">StringLength</option>
+                        <option value="digits">Digits</option>
+                        <option value="email">Email</option>
+                        <option value="greater-than">Greater Than</option>
+                        <option value="less-than">Less Than</option>
+                        <option value="between">Between</option>
+                    </select>
+                    <button class="btn-primary form-control add-validator" style="margin-top: 5px;">Add</button>
+                </div>
+                <hr/>
+                
+                <div id="validator-wrap">
+                    <ul class="selected-validators" data-form="customer" data-element="name">
+                    </ul>
+                    
+                    
+                    
+                </div>
+                <button class="btn-primary form-control build-validators" style="margin-top: 5px;">Build</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?
+$this->headScript()->prependFile($this->basePath() . '/js/modeler.js');
+?>
+
+
+
+
+
+<div>
+
+    <ul class="template-v" style="display: none;">
+        <li data-type="digits">
+            <h5>Digits <a href="#" class="delete-v">(Delete)</a></h5>
+        </li>
+
+        <li data-type="required">
+            <h5>Required <a href="#" class="delete-v">(Delete)</a></h5>
+        </li>
+        <li data-type="email">
+            <h5>Email <a href="#" class="delete-v">(Delete)</a></h5>
+        </li>
+        <li data-type="string-length">
+            <h5>String Length <a href="#" class="delete-v">(Delete)</a></h5>
+            <div class="form-group">
+                <label>Min</label>
+                <input name="min" type="text" class="form-control" value="">                    
+            </div>
+            <div class="form-group">
+                <label>Max</label>
+                <input name="max" type="text" class="form-control" value="">                    
+            </div>
+        </li>
+
+        <li data-type="greater-than">
+            <h5>Greather Than <a href="#" class="delete-v">(Delete)</a></h5>
+            <div class="form-group">
+                <label>Value</label>
+                <input name="value" type="text" class="form-control" value="">                    
+            </div>
+        </li>
+
+        <li data-type="less-than">
+            <h5>Less Than <a href="#" class="delete-v">(Delete)</a></h5>
+            <div class="form-group">
+                <label>Value</label>
+                <input name="value" type="text" class="form-control" value="">                    
+            </div>
+        </li>
+
+        <li data-type="between">
+            <h5>Between <a href="#" class="delete-v">(Delete)</a></h5>
+            <div class="form-group">
+                <label>Min</label>
+                <input name="min" type="text" class="form-control" value="">                    
+            </div>
+            <div class="form-group">
+                <label>Max</label>
+                <input name="max" type="text" class="form-control" value="">                    
+            </div>
+        </li>
+
+    </ul>
+
+</div>
+

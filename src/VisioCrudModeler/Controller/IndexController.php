@@ -12,6 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor;
 use VisioCrudModeler\Generator\Dependency;
+use VisioCrudModeler\Filter\CustomerFilter;
 
 class IndexController extends AbstractActionController
 {
@@ -31,4 +32,16 @@ class IndexController extends AbstractActionController
         	'descriptor'=>$dataSourceDescriptor
         ));
     }
+    
+    public function modelerAction()
+    {
+        $form = new \VisioCrudModeler\Form\CustomerForm();
+        $customerFilter = new CustomerFilter();
+        $form->setInputFilter($customerFilter->getInputFilter());
+        
+        return array('form' => $form);
+        
+    }
+    
+    
 }

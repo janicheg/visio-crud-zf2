@@ -86,6 +86,7 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
+            'partal/form-partial' => __DIR__ . '/../view/visio-crud-modeler/partial/form-partial.phtml',
             'visiocrudmodeler/index/index' => __DIR__ . '/../view/visio-crud-modeler/index/index.phtml'
         ),
         'template_path_stack' => array(
