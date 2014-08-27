@@ -47,7 +47,8 @@ return array(
             'Zend\Log\LoggerAbstractServiceFactory'
         ),
         'aliases' => array(
-            'translator' => 'MvcTranslator'
+            'translator' => 'MvcTranslator',
+            'executeGenerator' => '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator'
         ),
         'invokables' => array(
             '\VisioCrudModeler\Generator\Dependency' => '\VisioCrudModeler\Generator\Dependency',
@@ -58,6 +59,7 @@ return array(
             '\VisioCrudModeler\Generator\FormGenerator' => '\VisioCrudModeler\Generator\FormGenerator',
             '\VisioCrudModeler\Generator\InputFilterGenerator' => '\VisioCrudModeler\Generator\InputFilterGenerator',
             '\VisioCrudModeler\Generator\ModelGenerator' => '\VisioCrudModeler\Generator\ModelGenerator',
+            '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator' => '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator',
         )
     ),
     'translator' => array(
@@ -147,6 +149,11 @@ return array(
                 'description' => 'Runs all generators according to specified dependencies'
             )
         ),
+        'descriptors'=>array(
+            'db'=>array(
+                'adapter'=>'\VisioCrudModeler\Descriptor\DbDataSourceDescriptor'
+            )
+        ),
         'dependency' => array(
             'view' => array(
                 'controller'
@@ -175,8 +182,7 @@ return array(
                 'controller',
                 'view'
             )
-        )
-        ,
+        ),
         'params' => array(
             'author' => 'VisioCrudModeler',
             'copyright' => 'HyPHPers',
