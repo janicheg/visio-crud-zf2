@@ -47,19 +47,10 @@ return array(
             'Zend\Log\LoggerAbstractServiceFactory'
         ),
         'aliases' => array(
-            'translator' => 'MvcTranslator',
-            'executeGenerator' => '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator'
+            'translator' => 'MvcTranslator'
         ),
         'invokables' => array(
-            '\VisioCrudModeler\Generator\Dependency' => '\VisioCrudModeler\Generator\Dependency',
-            '\VisioCrudModeler\Generator\ModuleGenerator' => '\VisioCrudModeler\Generator\ModuleGenerator',
-            '\VisioCrudModeler\Generator\ViewGenerator' => '\VisioCrudModeler\Generator\ViewGenerator',
-            '\VisioCrudModeler\Generator\AllGenerator' => '\VisioCrudModeler\Generator\AllGenerator',
-            '\VisioCrudModeler\Generator\ControllerGenerator' => '\VisioCrudModeler\Generator\ControllerGenerator',
-            '\VisioCrudModeler\Generator\FormGenerator' => '\VisioCrudModeler\Generator\FormGenerator',
-            '\VisioCrudModeler\Generator\InputFilterGenerator' => '\VisioCrudModeler\Generator\InputFilterGenerator',
-            '\VisioCrudModeler\Generator\ModelGenerator' => '\VisioCrudModeler\Generator\ModelGenerator',
-            '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator' => '\VisioCrudModeler\Generator\Strategy\ExecuteGenerator',
+            'executeGenerator'=>'\VisioCrudModeler\Generator\Strategy\ExecuteGenerator'
         )
     ),
     'translator' => array(
@@ -109,7 +100,7 @@ return array(
                 ),
                 'crud-generate' => array(
                     'options' => array(
-                        'route' => 'generate [<generator>] [--author=] [--copyright=] [--project=] [--license=] [--modulesDirectory=] [--moduleName=] [--adapterServiceKey=] [--descriptor=]',
+                        'route' => 'generate <generator> [--author=] [--copyright=] [--project=] [--license=] [--modulesDirectory=] [--moduleName=] [--adapterServiceKey=] [--descriptor=]',
                         'defaults' => array(
                             'controller' => '\VisioCrudModeler\Controller\Console',
                             'action' => 'generate'
@@ -122,37 +113,37 @@ return array(
     'VisioCrudModeler' => array(
         'generators' => array(
             'module' => array(
-                'adapter' => '\VisioCrudModeler\Generator\ModuleGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\ModuleGenerator',
                 'description' => 'Generates Module directory structure with necessary config files'
             ),
             'inputFilter' => array(
-                'adapter' => '\VisioCrudModeler\Generator\InputFilterGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\InputFilterGenerator',
                 'description' => 'Generates InputFilter classes for given model/form classes'
             ),
             'model' => array(
-                'adapter' => '\VisioCrudModeler\Generator\ModelGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\ModelGenerator',
                 'description' => 'Generates DataSource model files'
             ),
             'form' => array(
-                'adapter' => '\VisioCrudModeler\Generator\FormGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\FormGenerator',
                 'description' => 'Generates Form classes for DataSets'
             ),
             'controller' => array(
-                'adapter' => '\VisioCrudModeler\Generator\ControllerGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\ControllerGenerator',
                 'description' => 'Generates Controller classes to handle CRUD operations'
             ),
             'view' => array(
-                'adapter' => '\VisioCrudModeler\Generator\ViewGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\ViewGenerator',
                 'description' => 'Generates standrar PhpViewStrategy view template files for CRUD controllers'
             ),
             'all' => array(
-                'adapter' => '\VisioCrudModeler\Generator\AllGenerator',
+                'adapter' => 'VisioCrudModeler\Generator\AllGenerator',
                 'description' => 'Runs all generators according to specified dependencies'
             )
         ),
         'descriptors'=>array(
             'db'=>array(
-                'adapter'=>'\VisioCrudModeler\Descriptor\DbDataSourceDescriptor'
+                'adapter'=>'VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor'
             )
         ),
         'dependency' => array(
@@ -189,10 +180,11 @@ return array(
             'copyright' => 'HyPHPers',
             'project' => 'VisioCrudModeler generated models',
             'license' => 'MIT',
-            'modulesDirectory' => getcwd() . '/modules',
+            'modulesDirectory' => getcwd() . '/module',
             'moduleName' => 'Crud',
             'adapterServiceKey' => '\Zend\Db\Adapter\Adapter',
             'descriptor' => 'db'
         )
+        
     )
 );

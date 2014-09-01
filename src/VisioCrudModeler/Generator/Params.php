@@ -36,6 +36,9 @@ class Params implements ParamsInterface
      */
     public function getParam($name)
     {
+        if (!$this->storage->offsetExists($name)) {
+            return null;
+        }
         return $this->storage->offsetGet($name);
     }
     

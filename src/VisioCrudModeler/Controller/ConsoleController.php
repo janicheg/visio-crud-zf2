@@ -3,8 +3,9 @@ namespace VisioCrudModeler\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use VisioCrudModeler\Generator\Params;
-use VisioCrudModeler\Generator\Strategy\ExecuteGenerator;
 use Zend\Console\ColorInterface;
+use VisioCrudModeler\Generator\Config\Config;
+use VisioCrudModeler\Generator\Strategy\ExecuteGenerator;
 
 /**
  * controller for handling console commands
@@ -40,13 +41,23 @@ class ConsoleController extends AbstractActionController
      */
     public function generateAction()
     {
-        $config = $this->getServiceLocator()->get('config');
         $console = $this->getServiceLocator()->get('console');
         if (! $console instanceof \Zend\Console\Adapter\AdapterInterface) {
             throw new \RuntimeException('Cannot obtain console adapter, this action is only available from console');
         }
-        $params = Params::factory($this->getRequest(), $config['VisioCrudModeler']['params']);
+        $console->writeLine('Launching generators with params:');
+        // creating params object
+        $params = Params::factory($this->getRequest(), $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']);
+        // adding config
+        $params->setParam('config', new Config($this->getServiceLocator()
+            ->get('config')['VisioCrudModeler']));
+        // adding console adapter
+        $params->setParam('console', $console);
+        // fetching strategy through ServiceLocator
+        $console->writeLine('fetching strategy');
         $generatorStrategy = new ExecuteGenerator($params);
-        // TODO finish generators strategy
+        $generatorStrategy->setServiceLocator($this->getServiceLocator());
+        $console->writeLine('strategy initialized, running generators');
+        $generatorStrategy->generate();
     }
 }
