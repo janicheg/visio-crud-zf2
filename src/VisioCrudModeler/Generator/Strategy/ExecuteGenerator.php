@@ -7,6 +7,7 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use VisioCrudModeler\Generator\Dependency;
 use VisioCrudModeler\Descriptor\DataSourceDescriptorInterface;
+use VisioCrudModeler\Generator\Config\Config;
 
 /**
  * strategy class for running generators according to passed params
@@ -134,12 +135,16 @@ class ExecuteGenerator implements ServiceLocatorAwareInterface
         $this->printParams();
         $this->params->setParam('di', $this->getDi());
         $this->params->setParam('descriptor', $this->getDescriptor());
+        $runtimeConfiguration = $this->readRuntimeConfig();
+        $this->params->setParam('runtimeConfiguration', $runtimeConfiguration);
         
         $dependency = $this->dependency();
         foreach ($dependency->dependencyListFor($this->params->getParam('generator')) as $name) {
             $this->console("\n" . 'Running generator: ' . $name);
-            $this->getGenerator($name)->generate($this->params);
+            $result = $this->getGenerator($name)->generate($this->params);
+            $runtimeConfiguration->set($name, (array) $result);
         }
+        $this->writeRuntimeConfig($runtimeConfiguration);
     }
 
     /**
@@ -167,6 +172,49 @@ class ExecuteGenerator implements ServiceLocatorAwareInterface
                 $this->console($name . ': ' . $value);
             }
         }
+    }
+
+    /**
+     * reads runtime config
+     *
+     * @return \VisioCrudModeler\Generator\Config\Config
+     */
+    protected function readRuntimeConfig()
+    {
+        if (file_exists($this->runtimeConfigPath())) {
+            $config = new Config(require $this->runtimeConfigPath());
+        } else {
+            $config = new Config();
+        }
+        return $config;
+    }
+
+    /**
+     * writes runtime config
+     *
+     * @param Config $config            
+     */
+    protected function writeRuntimeConfig(Config $config)
+    {
+        ob_start();
+        var_export($config->toArray());
+        $stringCode = ob_get_clean();
+        $this->console('Writing runtime configuration...');
+        file_put_contents($this->runtimeConfigPath(), "<?php\nreturn " . $stringCode . ";");
+        $this->console('configuration written to: ' . $this->runtimeConfigPath());
+    }
+
+    /**
+     * returns runtimeConfig path according to params
+     *
+     * @return string
+     */
+    protected function runtimeConfigPath()
+    {
+        $path = $this->params->getParam('modulesDirectory');
+        $path .= DIRECTORY_SEPARATOR . $this->params->getParam('moduleName');
+        $path .= DIRECTORY_SEPARATOR . 'generatorRuntimeConfig.php';
+        return $path;
     }
 
     /**

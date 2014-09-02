@@ -58,6 +58,9 @@ class ModuleGenerator implements GeneratorInterface
         $this->createDirectories();
         $this->createModuleConfig();
         $this->createModuleClass();
+        return array(
+            'generatedConfigPath' => $this->moduleRoot() . '/config/config.generated.php'
+        );
     }
 
     /**
@@ -190,7 +193,6 @@ class ModuleGenerator implements GeneratorInterface
     protected function codeLibrary()
     {
         return $this->params->getParam('di')->get('VisioCrudModeler\Generator\CodeLibrary');
-        ;
     }
 
     /**
