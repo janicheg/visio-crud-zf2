@@ -3,8 +3,11 @@ namespace VisioCrudModeler\Generator\Strategy;
 
 use VisioCrudModeler\Generator\ParamsInterface;
 use Zend\Di\Di;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use VisioCrudModeler\Generator\Dependency;
+use VisioCrudModeler\Descriptor\DataSourceDescriptorInterface;
+use VisioCrudModeler\Generator\Config\Config;
 
 /**
  * strategy class for running generators according to passed params
@@ -12,15 +15,15 @@ use Zend\ServiceManager\ServiceManager;
  * @author bweres01
  *        
  */
-class ExecuteGenerator implements ServiceManagerAwareInterface
+class ExecuteGenerator implements ServiceLocatorAwareInterface
 {
 
     /**
-     * holds Service Manager instance
+     * holds service locator instance
      *
-     * @var ServiceManager
+     * @var \Zend\ServiceManager\ServiceLocatorInterface
      */
-    protected $serviceManager = null;
+    protected $serviceLocator = null;
 
     /**
      * holds dependency injection container
@@ -41,7 +44,7 @@ class ExecuteGenerator implements ServiceManagerAwareInterface
      *
      * @param ParamsInterface $params            
      */
-    public function __construct(ParamsInterface $params)
+    public function __construct(ParamsInterface $params = null)
     {
         $this->setParams($params);
     }
@@ -53,9 +56,7 @@ class ExecuteGenerator implements ServiceManagerAwareInterface
      */
     public function dependency()
     {
-        return $this->getDi()->get('\VisioCrudModeler\Generator\Dependency', array(
-            'dependency' => $this->params->getParam('config')['dependency']
-        ));
+        return new Dependency($this->params->getParam('config')['dependency']);
     }
 
     /**
@@ -109,10 +110,148 @@ class ExecuteGenerator implements ServiceManagerAwareInterface
     }
     /*
      * (non-PHPdoc)
-     * @see \Zend\ServiceManager\ServiceManagerAwareInterface::setServiceManager()
+     * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
      */
-    public function setServiceManager(\Zend\ServiceManager\ServiceManager $serviceManager)
+    public function setServiceLocator(\Zend\ServiceManager\ServiceLocatorInterface $serviceLocator)
     {
-        // TODO Auto-generated method stub
+        $this->serviceLocator = $serviceLocator;
+    }
+    
+    /*
+     * (non-PHPdoc)
+     * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
+    /**
+     * runs specified generators
+     */
+    public function generate()
+    {
+        // setting up params
+        $this->printParams();
+        $this->params->setParam('di', $this->getDi());
+        $this->params->setParam('descriptor', $this->getDescriptor());
+        $runtimeConfiguration = $this->readRuntimeConfig();
+        $this->params->setParam('runtimeConfiguration', $runtimeConfiguration);
+        
+        $dependency = $this->dependency();
+        foreach ($dependency->dependencyListFor($this->params->getParam('generator')) as $name) {
+            $this->console("\n" . 'Running generator: ' . $name);
+            $result = $this->getGenerator($name)->generate($this->params);
+            $runtimeConfiguration->set($name, (array) $result);
+        }
+        $this->writeRuntimeConfig($runtimeConfiguration);
+    }
+
+    /**
+     * prints startup params
+     */
+    protected function printParams()
+    {
+        $this->console('Launch parameters');
+        $displayKeys = [
+            'author',
+            'copyright',
+            'project',
+            'license',
+            'modulesDirectory',
+            'moduleName',
+            'adapterServiceKey',
+            'descriptor',
+            'generator'
+        ];
+        foreach ($this->params->getParams() as $name => $value) {
+            if (! empty($name) && in_array($name, $displayKeys)) {
+                if (is_object($value)) {
+                    $value = get_class($value);
+                }
+                $this->console($name . ': ' . $value);
+            }
+        }
+    }
+
+    /**
+     * reads runtime config
+     *
+     * @return \VisioCrudModeler\Generator\Config\Config
+     */
+    protected function readRuntimeConfig()
+    {
+        if (file_exists($this->runtimeConfigPath())) {
+            $config = new Config(require $this->runtimeConfigPath());
+        } else {
+            $config = new Config();
+        }
+        return $config;
+    }
+
+    /**
+     * writes runtime config
+     *
+     * @param Config $config            
+     */
+    protected function writeRuntimeConfig(Config $config)
+    {
+        ob_start();
+        var_export($config->toArray());
+        $stringCode = ob_get_clean();
+        $this->console('Writing runtime configuration...');
+        file_put_contents($this->runtimeConfigPath(), "<?php\nreturn " . $stringCode . ";");
+        $this->console('configuration written to: ' . $this->runtimeConfigPath());
+    }
+
+    /**
+     * returns runtimeConfig path according to params
+     *
+     * @return string
+     */
+    protected function runtimeConfigPath()
+    {
+        $path = $this->params->getParam('modulesDirectory');
+        $path .= DIRECTORY_SEPARATOR . $this->params->getParam('moduleName');
+        $path .= DIRECTORY_SEPARATOR . 'generatorRuntimeConfig.php';
+        return $path;
+    }
+
+    /**
+     * proxy method for writing to console
+     *
+     * @param string $message            
+     */
+    protected function console($message)
+    {
+        if ($this->params->getParam('console') instanceof \Zend\Console\Adapter\AdapterInterface) {
+            $this->params->getParam('console')->writeLine($message);
+        }
+    }
+
+    /**
+     * returns generator instance
+     *
+     * @param string $generatorName            
+     * @return \VisioCrudModeler\Generator\GeneratorInterface
+     */
+    public function getGenerator($generatorName)
+    {
+        $generators = $this->params->getParam('config')->get('generators');
+        return $this->getDi()->get($generators[$generatorName]['adapter']);
+    }
+
+    /**
+     * returns descriptor instance
+     *
+     * @return \VisioCrudModeler\Descriptor\DataSourceDescriptorInterface
+     */
+    public function getDescriptor()
+    {
+        $adapter = $this->getServiceLocator()->get($this->params->getParam('adapterServiceKey'));
+        $descriptors = $this->params->getParam('config')->get('descriptors');
+        return $this->getDi()->get($descriptors[$this->params->getParam('descriptor')]['adapter'], array(
+            'adapter' => $adapter
+        ));
     }
 }
