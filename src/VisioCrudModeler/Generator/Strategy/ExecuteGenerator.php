@@ -250,7 +250,8 @@ class ExecuteGenerator implements ServiceLocatorAwareInterface
     {
         $adapter = $this->getServiceLocator()->get($this->params->getParam('adapterServiceKey'));
         $descriptors = $this->params->getParam('config')->get('descriptors');
-        return $this->getDi()->get($descriptors[$this->params->getParam('descriptor')]['adapter'], array(
+        $descriptor = $descriptors[$this->params->getParam('descriptor')]['adapter'];
+        return $this->getDi()->get($descriptor, array(
             'adapter' => $adapter
         ));
     }

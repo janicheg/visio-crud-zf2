@@ -30,6 +30,13 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
     protected $referenceDescriptionStatement = 'SELECT * FROM information_schema.KEY_COLUMN_USAGE kcu WHERE kcu.TABLE_SCHEMA = :database and kcu.REFERENCED_COLUMN_NAME IS NOT NULL';
 
     /**
+     * holds databse adapter
+     *
+     * @var \Zend\Db\Adapter\Adapter
+     */
+    protected $adapter = null;
+
+    /**
      * holds dataset descriptors object instances
      *
      * @var \ArrayObject
@@ -56,7 +63,7 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
     protected function describe()
     {
         if (! $this->definitionResolved) {
-            if (empty($this->name)) {
+            if (empty($this->getName())) {
                 throw new \RuntimeException('Missing database name');
             }
             $this->describeTables();
@@ -186,6 +193,38 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
             $this->dataSetDescriptors->offsetSet($dataSetName, new DbDataSetDescriptor($this, $this->definition[$dataSetName]));
         }
         return $this->dataSetDescriptors->offsetGet($dataSetName);
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor::getName()
+     */
+    public function getName()
+    {
+        if (is_null($this->name)) {
+            if ($this->adapter->getPlatform() instanceof \Zend\Db\Adapter\Platform\Mysql) {
+                $this->name = $this->currentDatabaseMysql();
+            } else {
+                throw new \RuntimeException('Automatic database name resolving is not supported for platform: ' . get_class($this->adapter->getPlatform()));
+            }
+        }
+        return $this->name;
+    }
+
+    /**
+     * returns currenttly selected mysql database name
+     *
+     * @return string
+     */
+    protected function currentDatabaseMysql()
+    {
+        $result = $this->getAdapter()
+            ->createStatement('SELECT DATABASE()')
+            ->execute();
+        if ($result->isQueryResult()) {
+            return array_shift($result->current());
+        }
     }
 
     /**
