@@ -15,6 +15,20 @@ class ModelGenerator implements GeneratorInterface
      */
     public function generate(\VisioCrudModeler\Generator\ParamsInterface $params)
     {
-        // TODO Auto-generated method stub
+        if ($params->descriptor instanceof \VisioCrudModeler\Descriptor\ListGeneratorInterface) {
+            \Zend\Debug\Debug::dump($params->descriptor);
+            return;
+        }
+        
+        foreach ($this->descriptor->listGenerator() as $name=>$dataSet) {
+            echo $name;
+            if ($dataSet instanceof \VisioCrudModeler\Descriptor\ListGeneratorInterface) {
+                continue;
+            }
+            foreach ($dataSet->listGenerator() as $field=>$description) {
+                
+            }
+        }
+        
     }
 }
