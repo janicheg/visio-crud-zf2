@@ -71,10 +71,49 @@ class ModelGenerator implements GeneratorInterface
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
             $this->generateBaseModel($name, $dataSet);
             $this->generateModel($name);
+            $this->generateTableGateway($name);
             
             $this->console(sprintf('writing generated model for "%s" table', $name));
         }
         
+    }
+    
+    protected function generateTableGateway($name)
+    {
+        $camelName = $this->underscoreToCamelCase->filter($name);
+        $className = $camelName . "Table";
+        
+        $class = new ClassGenerator();
+        $class->setName($className);
+        $class->setExtendedClass("\VisioCrudModeler\Model\TableGateway\AbstractTable");
+        
+        $namespace = $this->params->getParam("moduleName") . "\Model";
+        $class->setNamespaceName($namespace);
+        
+        $tableProperty = new \Zend\Code\Generator\PropertyGenerator();
+        $tableProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)
+            ->setName("table")
+            ->setDefaultValue($name);
+        $class->addPropertyFromGenerator($tableProperty);
+        
+        $arrayObjectPrototypeClassProperty = new \Zend\Code\Generator\PropertyGenerator();
+        $arrayObjectPrototypeClassProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)
+            ->setName("arrayObjectPrototypeClass")
+            ->setDefaultValue("\\" . $namespace . "\\" . $camelName);
+        $class->addPropertyFromGenerator($arrayObjectPrototypeClassProperty);
+        
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('modelTable.generatedConfigDescription'), $name));
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        
+        $file = new FileGenerator();
+        $file->setClass($class)
+            ->setDocBlock($docBlock);
+        
+        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/" . $className . ".php";
+        file_put_contents($modelClassFilePath, $file->generate());
     }
     
     /**
