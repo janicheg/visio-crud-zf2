@@ -70,12 +70,47 @@ class ModelGenerator implements GeneratorInterface
         
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
             $this->generateBaseModel($name, $dataSet);
+            $this->generateModel($name);
+            
+            $this->console(sprintf('writing generated model for "%s" table', $name));
         }
         
     }
     
     /**
-     * generates code for base model and saves in file.
+     * generates file with target model (if not exists yet)
+     * @param string $name
+     */
+    protected function generateModel($name)
+    {
+        $className = $this->underscoreToCamelCase->filter($name);
+        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/" . $className . ".php";
+        if (file_exists($modelClassFilePath)) {
+            return;
+        }
+        
+        $class = new ClassGenerator();
+        $class->setName($className);
+        $namespace = $this->params->getParam("moduleName") . "\Model";
+        $class->setNamespaceName($namespace);
+        $class->setExtendedClass("\\" . $namespace . "\BaseModel\Base" . $className);
+        
+        $file = new FileGenerator();
+        
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('model.standardConfigDescription'), $name));
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+            
+        $file->setClass($class)
+            ->setDocBlock($docBlock);
+        
+        file_put_contents($modelClassFilePath, $file->generate());
+    }
+    
+    /**
+     * generates code for base model and saves in file (overrides file if exists)
      * @param string $name
      * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
      */
@@ -133,13 +168,16 @@ class ModelGenerator implements GeneratorInterface
         $class->addMethodFromGenerator($setMethod);
     }
     
+    /**
+     * generates empty methods for events to be overwriten in model
+     * @param \Zend\Code\Generator\ClassGenerator $class
+     */
     protected function addEventsMethods(ClassGenerator $class)
     {
         foreach ($this->baseModelEventsMethods as $methodName)
         {
             $method = new MethodGenerator();
             $method->setName($methodName);
-            $method->setBody($this->codeLibrary()->get('model.' . $methodName . '.body'));
             
             $parameter = new \Zend\Code\Generator\ParameterGenerator();
             $parameter->setName("eventManager");
