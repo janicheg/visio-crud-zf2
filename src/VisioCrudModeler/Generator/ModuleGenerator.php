@@ -39,7 +39,9 @@ class ModuleGenerator implements GeneratorInterface
         'src/%module%/Model',
         'src/%module%/Model/BaseModel',
         'src/%module%/Table',
-        'src/%module%/Table/BaseTable'
+        'src/%module%/Table/BaseTable',
+        'src/%module%/Grid',
+        'src/%module%/Grid/BaseGrid'
     );
 
     /**

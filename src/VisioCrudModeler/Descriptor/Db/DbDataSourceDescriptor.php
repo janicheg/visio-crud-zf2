@@ -223,7 +223,8 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
             ->createStatement('SELECT DATABASE()')
             ->execute();
         if ($result->isQueryResult()) {
-            return array_shift($result->current());
+            $current = $result->current();
+            return array_shift($current);
         }
     }
 
