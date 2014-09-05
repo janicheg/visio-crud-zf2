@@ -77,8 +77,16 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-            'partal/form-partial' => __DIR__ . '/../view/visio-crud-modeler/partial/form-partial.phtml',
-            'visiocrudmodeler/index/index' => __DIR__ . '/../view/visio-crud-modeler/index/index.phtml'
+            'partial/form-partial' => __DIR__ . '/../view/visio-crud-modeler/partial/form-partial.phtml',
+            'visiocrudmodeler/index/index' => __DIR__ . '/../view/visio-crud-modeler/index/index.phtml',
+            
+            'validator/digits' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/digits.phtml',
+            'validator/required' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/required.phtml',
+            'validator/email' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/email.phtml',
+            'validator/string-length' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/string-length.phtml',
+            'validator/greater-than' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/greater-than.phtml',
+            'validator/less-than' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/less-than.phtml',
+            'validator/between' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/between.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view'
