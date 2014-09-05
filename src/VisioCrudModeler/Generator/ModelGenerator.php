@@ -123,8 +123,8 @@ class ModelGenerator implements GeneratorInterface
         $file->setClass($class)
             ->setDocBlock($docBlock);
         
-        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/BaseTable/" . $className . ".php";
-        file_put_contents($modelClassFilePath, $file->generate());
+        $tableClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/BaseTable/" . $className . ".php";
+        file_put_contents($tableClassFilePath, $file->generate());
     }
     
     /**
@@ -134,8 +134,8 @@ class ModelGenerator implements GeneratorInterface
     protected function generateTableGateway($name)
     {
         $className = $this->underscoreToCamelCase->filter($name) . "Table";
-        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/" . $className . ".php";
-        if (file_exists($modelClassFilePath)) {
+        $tableClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/" . $className . ".php";
+        if (file_exists($tableClassFilePath)) {
             return;
         }
         
@@ -156,7 +156,7 @@ class ModelGenerator implements GeneratorInterface
         $file->setClass($class)
             ->setDocBlock($docBlock);
         
-        file_put_contents($modelClassFilePath, $file->generate());
+        file_put_contents($tableClassFilePath, $file->generate());
     }
     
     /**

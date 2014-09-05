@@ -38,5 +38,45 @@ return array(
     'model.generatedConfigDescription'=>'This file is generated automatically for model "%s". Do not change its contents as it will be overwritten in next pass of generator run. instead use standard model config with array_merge_recursive to overwrite any generated values.',
     'model.standardConfigDescription'=>'This file is generated automatically for model "%s". If you want to overwrite any generated configuration for this model, this file is the place to do it.',
     'table.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
-    'table.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this table, this file is the place to do it.'
+    'table.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this table, this file is the place to do it.',
+    
+    'filter.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
+    'filter.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this filters and validators, this file is the place to do it.',
+    'filter.constructor.body.begin'=>"\$inputFilter = \$this->getInputFilter();\n".
+                                    "\$factory = \$this->getInputFactory();\n\n",
+    'filter.constructor.body.input'=>"\$inputFilter->add(\$factory->createInput(array(\n".
+                                    "       'name' => '%s',\n".
+                                    "       'required' => %s,\n".
+                                    "       'filters' => array(%s),\n".
+                                    "       %s\n".
+                                    ")));\n\n",
+    'filter.constructor.fieldFilterInt'=>"\n".
+                                    "           array('name'=>'Int')\n       ",
+    'filter.constructor.fieldFilterString'=>"\n".
+                                    "           array('name' => 'StripTags'),\n".
+                                    "           array('name' => 'StringTrim')\n       ",
+    'filter.constructor.fieldFilterFloat'=>"\n".
+                                    "           array('name' => 'Float')\n       ",
+    'filter.constructor.validators'=>"'validators' => array(%s\n       )",
+    'filter.constructor.validators.stringLenght'=>"\n".
+                                    "           array(\n".
+                                    "               'name' => 'StringLength',\n".
+                                    "               'options' => array(\n".
+                                    "                   'encoding' => 'UTF-8',\n".
+                                    "                   'min' => '%s',\n".
+                                    "                   'max' => '%s'\n".
+                                    "               )\n".
+                                    "           ),",
+    'filter.constructor.validators.between'=>"\n".
+                                    "           array(\n".
+                                    "               'name' => 'Between',\n".
+                                    "               'options' => array(\n".
+                                    "                   'min' => '%s',\n".
+                                    "                   'max' => '%s'\n".
+                                    "               )\n".
+                                    "           ),",
+    'filter.constructor.validators.digits'=>"\n".
+                                    "           array(\n".
+                                    "               'name' => 'Digits'\n".
+                                    "           ),",
 );
