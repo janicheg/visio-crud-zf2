@@ -79,4 +79,33 @@ return array(
                                     "           array(\n".
                                     "               'name' => 'Digits'\n".
                                     "           ),",
+    
+    'grid.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
+    'grid.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this grid, this file is the place to do it.',
+    'grid.init.body'=>'$this->getHeader("edit")->getCell()->addDecorator("callable", array(
+    "callable" => function($context, $record){
+        return sprintf("<a href=\"/visio-crud-modeler/customer/edit/%s\">Edit</a>", $record["id"]);
+    }
+));
+
+$this->getHeader("delete")->getCell()->addDecorator("callable", array(
+    "callable" => function($context, $record){
+        return sprintf("<a href=\"/visio-crud-modeler/customer/delete/%s\">Delete</a>", $record["id"]);
+    }
+));',
+    'grid.initFilters.body'=>'if ($value = $this->getParamAdapter()->getValueOfFilter(\'name\')) {
+    $query->where("name like \'%".$value."%\' ");
+}
+if ($value = $this->getParamAdapter()->getValueOfFilter(\'surname_test\')) {
+    $query->where("surname_test like \'%".$value."%\' ");
+}
+if ($value = $this->getParamAdapter()->getValueOfFilter(\'street\')) {
+    $query->where("street like \'%".$value."%\' ");
+}
+$value = $this->getParamAdapter()->getValueOfFilter(\'active\');
+if ($value != null) {
+    $query->where("active = \'".$value."\' ");
+
+}',
+    
 );

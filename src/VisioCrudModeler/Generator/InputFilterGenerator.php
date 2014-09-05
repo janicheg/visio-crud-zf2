@@ -22,8 +22,22 @@ class InputFilterGenerator implements GeneratorInterface
      */
     protected $params = null;
     
+    /**
+     * 
+     * @var Zend\Filter\Word\UnderscoreToCamelCase 
+     */
+    protected $underscoreToCamelCase;
+    
+    /**
+     * namespace of abstract filter for all other filters
+     * @var string 
+     */
     protected $baseFilterParent = "\VisioCrudModeler\Filter\AbstractFilter";
     
+    /**
+     *
+     * @var array 
+     */
     protected $baseFilterUses = array();
     
     public function __construct()
@@ -37,9 +51,7 @@ class InputFilterGenerator implements GeneratorInterface
     public function generate(\VisioCrudModeler\Generator\ParamsInterface $params)
     {
         $this->params = $params;
-        
         $descriptor = $this->params->getParam("descriptor");
-        
         if (!($descriptor instanceof \VisioCrudModeler\Descriptor\ListGeneratorInterface)) {
             return;
         }
@@ -53,6 +65,10 @@ class InputFilterGenerator implements GeneratorInterface
         
     }
     
+    /**
+     * generates file with target filter (if not exists yet)
+     * @param string $name
+     */
     protected function generateFilter($name)
     {
         $className = $this->underscoreToCamelCase->filter($name) . "Filter";
