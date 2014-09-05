@@ -8,9 +8,9 @@ use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 
 /**
- * generator class for creating Model classes
+ * generator class for creating Model classes and table gateways
  *
- * @author bweres01
+ * @author Jacek Pawelec jacek.pawelec@isobar.com
  *        
  */
 class ModelGenerator implements GeneratorInterface
