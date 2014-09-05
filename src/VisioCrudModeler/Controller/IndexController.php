@@ -20,13 +20,22 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        
-        $dataSourceDescriptor=new DbDataSourceDescriptor($db, 'K08_www_biedronka_pl');
+        $dataSourceDescriptor=new DbDataSourceDescriptor($db);
         
         $dependencyTree=$this->getServiceLocator()->get('config')['VisioCrudModeler']['dependency'];
         \Zend\Debug\Debug::dump($dependencyTree);
         $dependency=new Dependency($dependencyTree);
         \Zend\Debug\Debug::dump($dependency->dependencyListFor('model'));
+        
+        //dbs($dataSourceDescriptor->listDataSets());
+        
+        //dbs($dataSourceDescriptor->getDataSetDescriptor('customer')->getFieldDescriptor('idcustomer')->getReferencedField());
+        
+        
+        
+        foreach($dataSourceDescriptor->listGenerator() as $tableName=>$dataSetDescriptor){
+            db($dataSetDescriptor);
+        }
         
         return new ViewModel(array(
         	'descriptor'=>$dataSourceDescriptor
@@ -35,11 +44,22 @@ class IndexController extends AbstractActionController
     
     public function modelerAction()
     {
+        $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $dataSourceDescriptor=new DbDataSourceDescriptor($db);
+        
+        
         $form = new \VisioCrudModeler\Form\CustomerForm();
         $customerFilter = new CustomerFilter();
         $form->setInputFilter($customerFilter->getInputFilter());
         
-        return array('form' => $form);
+        return array(
+            'tables' => $dataSourceDescriptor->listDataSets(),
+            'form' => $form , 
+            'dataSourceDescriptor'=> $dataSourceDescriptor,
+            'underscoreToCamelCase' => new \Zend\Filter\Word\UnderscoreToCamelCase(),
+            'config' =>  $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']
+            
+        );
         
     }
     
