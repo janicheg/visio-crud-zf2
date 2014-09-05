@@ -98,8 +98,24 @@
                             <div data-form="<?=$tableName?>" data-element="<?=$field['name']?>" class="element-wrap" style="display: none;">
                                 <h4>Element: <?=$field['name']?></h4>
                                 <hr>
-                                <label>Label</label>
-                                <input type="text" class="form-control" data-type="label" value="<?=$underscoreToCamelCase->filter($field['name'])?>" >
+                                
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <select  class="form-control" data-type="type">
+                                        <option value="text">Text</option>
+                                        <option value="text">Textarea</option>
+                                        <option value="text">Checkbox</option>
+                                        <option value="text">Select</option>
+                                        <option value="text">Radio</option>
+                                    </select>
+
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Label</label>
+                                    <input type="text" class="form-control" data-type="label" value="<?=$underscoreToCamelCase->filter($field['name'])?>" >
+                                </div>
+                                
                                 <h5><strong>Validators</strong></h5>
                                 <ul class="validator-list">
                                     

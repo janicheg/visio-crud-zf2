@@ -98,6 +98,8 @@ $(document).ready(function() {
                var element = {
                  name: elementName,
                  table: tableName,
+                 label: paramsWrap.find('input[data-type="label"]').val(),
+                 type: paramsWrap.find('select[data-type="type"]').val(),
                  validators : validators
                };
                elements.push(element);
