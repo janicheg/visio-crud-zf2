@@ -67,6 +67,16 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
         return array_keys($this->definition['fields']);
     }
 
+     /**
+     * (non-PHPdoc)
+     *
+     * @see \VisioCrudModeler\Descriptor\DataSetDescriptorInterface::getFields()
+     */
+    public function getFields()
+    {
+        return $this->definition['fields'];
+    }
+
     /**
      * returns field descriptor
      *

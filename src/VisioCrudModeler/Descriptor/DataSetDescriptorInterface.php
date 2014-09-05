@@ -35,4 +35,12 @@ interface DataSetDescriptorInterface
      * @param FieldDescriptorInterface $fieldName            
      */
     public function getFieldDescriptor($fieldName);
+    
+    /**
+     * return all fields
+     * 
+     * @return array
+     */
+    public function getFields();
+    
 }
