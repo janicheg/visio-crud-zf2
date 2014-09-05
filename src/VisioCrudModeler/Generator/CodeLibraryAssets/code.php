@@ -37,5 +37,6 @@ return array(
     'model.postDelete.description'=>'Override this method in child class if You need post delete events',
     'model.generatedConfigDescription'=>'This file is generated automatically for model "%s". Do not change its contents as it will be overwritten in next pass of generator run. instead use standard model config with array_merge_recursive to overwrite any generated values.',
     'model.standardConfigDescription'=>'This file is generated automatically for model "%s". If you want to overwrite any generated configuration for this model, this file is the place to do it.',
-    
+    'table.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
+    'table.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this table, this file is the place to do it.'
 );

@@ -35,6 +35,12 @@ class ModelGenerator implements GeneratorInterface
     protected $baseModelParent = "\VisioCrudModeler\Model\TableGateway\Entity\AbstractEntity";
     
     /**
+     * 
+     * @var string 
+     */
+    protected $baseTablegatewayParent = "\VisioCrudModeler\Model\TableGateway\AbstractTable";
+    
+    /**
      * holds list of "use" operator for base model
      * @var array 
      */
@@ -71,6 +77,7 @@ class ModelGenerator implements GeneratorInterface
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
             $this->generateBaseModel($name, $dataSet);
             $this->generateModel($name);
+            $this->generateBaseTableGateway($name);
             $this->generateTableGateway($name);
             
             $this->console(sprintf('writing generated model for "%s" table', $name));
@@ -78,16 +85,20 @@ class ModelGenerator implements GeneratorInterface
         
     }
     
-    protected function generateTableGateway($name)
+    /**
+     * generates code for base table gateway and saves in file (overrides file if exists)
+     * @param string $name
+     */
+    protected function generateBaseTableGateway($name)
     {
         $camelName = $this->underscoreToCamelCase->filter($name);
-        $className = $camelName . "Table";
+        $className = "Base" . $camelName . "Table";
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setExtendedClass("\VisioCrudModeler\Model\TableGateway\AbstractTable");
+        $class->setExtendedClass($this->baseTablegatewayParent);
         
-        $namespace = $this->params->getParam("moduleName") . "\Model";
+        $namespace = $this->params->getParam("moduleName") . "\Table\BaseTable";
         $class->setNamespaceName($namespace);
         
         $tableProperty = new \Zend\Code\Generator\PropertyGenerator();
@@ -99,10 +110,10 @@ class ModelGenerator implements GeneratorInterface
         $arrayObjectPrototypeClassProperty = new \Zend\Code\Generator\PropertyGenerator();
         $arrayObjectPrototypeClassProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)
             ->setName("arrayObjectPrototypeClass")
-            ->setDefaultValue("\\" . $namespace . "\\" . $camelName);
+            ->setDefaultValue($this->params->getParam("moduleName") . "\Model\\" . $camelName);
         $class->addPropertyFromGenerator($arrayObjectPrototypeClassProperty);
         
-        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('modelTable.generatedConfigDescription'), $name));
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('table.generatedConfigDescription'), $name));
         $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
             ->setTag(new GenericTag('project', $this->params->getParam('project')))
             ->setTag(new GenericTag('license', $this->params->getParam('license')))
@@ -112,7 +123,39 @@ class ModelGenerator implements GeneratorInterface
         $file->setClass($class)
             ->setDocBlock($docBlock);
         
-        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/" . $className . ".php";
+        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/BaseTable/" . $className . ".php";
+        file_put_contents($modelClassFilePath, $file->generate());
+    }
+    
+    /**
+     * generates file with target table gateway (if not exists yet)
+     * @param string $name
+     */
+    protected function generateTableGateway($name)
+    {
+        $className = $this->underscoreToCamelCase->filter($name) . "Table";
+        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/" . $className . ".php";
+        if (file_exists($modelClassFilePath)) {
+            return;
+        }
+        
+        $class = new ClassGenerator();
+        $class->setName($className);
+        $namespace = $this->params->getParam("moduleName") . "\Table";
+        $class->setNamespaceName($namespace);
+        $class->setExtendedClass("\\" . $namespace . "\BaseTable\Base" . $className);
+        
+        $file = new FileGenerator();
+        
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('table.standardConfigDescription'), $name));
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+            
+        $file->setClass($class)
+            ->setDocBlock($docBlock);
+        
         file_put_contents($modelClassFilePath, $file->generate());
     }
     
