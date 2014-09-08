@@ -88,8 +88,8 @@ class FormGenerator implements GeneratorInterface
         $this->generateConfigProperty($class);
         $this->generateHeaderProperty($class, $dataSet);
         
-        $this->generateInitMehod($class);
-        $this->generateInitFiltersMehod($class);
+        $this->generateInitMehod($class, $dataSet);
+        $this->generateInitFiltersMehod($class, $dataSet);
         
         $file = new FileGenerator();
         
@@ -109,11 +109,18 @@ class FormGenerator implements GeneratorInterface
     /**
      * generates init method
      * @param \Zend\Code\Generator\ClassGenerator $class
+     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
      */
-    protected function generateInitMehod(ClassGenerator $class)
+    protected function generateInitMehod(ClassGenerator $class, $dataSet)
     {
+        
+        $controller = $this->params->getParam("moduleName") . "/" . $dataSet->getName();
+        $editLink = $controller . "/edit/%s";
+        $deleteLink = $controller . "/delete/%s";;
+        $body = sprintf($this->codeLibrary()->get('grid.init.body'), $editLink, $deleteLink);
+        
         $method = new MethodGenerator("init");
-        $method->setBody($this->codeLibrary()->get('grid.init.body'));
+        $method->setBody($body);
         $method->setFlags(\Zend\Code\Generator\MethodGenerator::FLAG_PUBLIC);
         
         $class->addMethodFromGenerator($method);
@@ -122,11 +129,20 @@ class FormGenerator implements GeneratorInterface
     /**
      * generates config property
      * @param \Zend\Code\Generator\ClassGenerator $class
+     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
      */
-    protected function generateInitFiltersMehod(ClassGenerator $class)
+    protected function generateInitFiltersMehod(ClassGenerator $class, \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet)
     {
+        $body = "";
+        foreach ($dataSet->listGenerator() as $column) {
+            $name = $column->getName();
+            $type = $this->getFieldType($column);
+            $this->console($type);
+            $body .= sprintf($this->codeLibrary()->get('grid.initFilters.' . $type), $name, $name);
+        }
+        
         $method = new MethodGenerator("initFilters");
-        $method->setBody($this->codeLibrary()->get('grid.initFilters.body'));
+        $method->setBody($body);
         $method->setFlags(\Zend\Code\Generator\MethodGenerator::FLAG_PROTECTED);
         
         $parameter = new \Zend\Code\Generator\ParameterGenerator("query");
