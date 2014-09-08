@@ -109,5 +109,6 @@ return array(
                                     'if ($value != null) {'."\n".
                                     '    $query->where("%s = ".$value);'."\n".
                                     '}'."\n\n",
-    
+    'form.constructor.parentCall'=>"parent::__construct('%s');\n".
+                                    '$this->setAttribute(\'method\', \'post\');'."\n\n",
 );

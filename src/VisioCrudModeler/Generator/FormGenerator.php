@@ -36,9 +36,21 @@ class FormGenerator implements GeneratorInterface
     
     /**
      *
+     * @var string 
+     */
+    protected $baseFormParent = "\VisioCrudModeler\Form\AbstractForm";
+    
+    /**
+     *
      * @var array 
      */
     protected $baseGridUses = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    protected $baseFormUses = array();
     
     public function __construct()
     {
@@ -61,10 +73,68 @@ class FormGenerator implements GeneratorInterface
             $this->generateBaseGrid($name, $dataSet);
             $this->generateGrid($name);
             
+            $this->generateBaseForm($name, $dataSet);
+            
             $this->console(sprintf('writing generated forms for "%s" table', $name));
         }
+    }
+    
+     /**
+     * generates code for forms and saves in file (overrides file if exists)
+     * @param string $name
+     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     */
+    protected function generateBaseForm($name, $dataSet)
+    {
+        $className = "Base" . $this->underscoreToCamelCase->filter($name) . "Form";
         
+        $class = new ClassGenerator();
+        $class->setName($className);
+        $class->setNamespaceName($this->params->getParam("moduleName") . "\Form\BaseForm");
+        $class->setExtendedClass($this->baseFormParent);
         
+        foreach ($this->baseFormUses as $use) {
+            $class->addUse($use);
+        }
+        
+        $this->generateFormConstruct($class, $dataSet);
+        
+        $file = new FileGenerator();
+        
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('form.generatedConfigDescription'), $name));
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+            
+        $file->setClass($class)
+                ->setDocBlock($docBlock);
+        
+        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Form/BaseForm/" . $className . ".php";
+        file_put_contents($modelClassFilePath, $file->generate());
+    }
+    
+    /**
+     * generates init method
+     * @param \Zend\Code\Generator\ClassGenerator $class
+     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     */
+    protected function generateFormConstruct(ClassGenerator $class, \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet)
+    {
+        $method = new MethodGenerator("__contruct");
+        $param = new \Zend\Code\Generator\ParameterGenerator("name");
+        $param->setDefaultValue(null);
+        
+        $body = sprintf($this->codeLibrary()->get("form.constructor.parentCall"), $dataSet->getName());
+        
+        foreach ($dataSet->listGenerator() as $column)
+        {
+            
+        }
+        
+        $method->setBody($body);
+        
+        $class->addMethodFromGenerator($method);
     }
     
      /**
@@ -72,13 +142,13 @@ class FormGenerator implements GeneratorInterface
      * @param string $name
      * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
      */
-    public function generateBaseGrid($name, $dataSet)
+    protected function generateBaseGrid($name, $dataSet)
     {
         $className = "Base" . $this->underscoreToCamelCase->filter($name) . "Grid";
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setNamespaceName($this->params->getParam("moduleName") . "\Grid\BaseFilter");
+        $class->setNamespaceName($this->params->getParam("moduleName") . "\Grid\BaseGrid");
         $class->setExtendedClass($this->baseGridParent);
         
         foreach ($this->baseGridUses as $use) {
@@ -113,7 +183,6 @@ class FormGenerator implements GeneratorInterface
      */
     protected function generateInitMehod(ClassGenerator $class, $dataSet)
     {
-        
         $controller = $this->params->getParam("moduleName") . "/" . $dataSet->getName();
         $editLink = $controller . "/edit/%s";
         $deleteLink = $controller . "/delete/%s";;
@@ -137,7 +206,6 @@ class FormGenerator implements GeneratorInterface
         foreach ($dataSet->listGenerator() as $column) {
             $name = $column->getName();
             $type = $this->getFieldType($column);
-            $this->console($type);
             $body .= sprintf($this->codeLibrary()->get('grid.initFilters.' . $type), $name, $name);
         }
         
