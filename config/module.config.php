@@ -87,6 +87,10 @@ return array(
             'validator/greater-than' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/greater-than.phtml',
             'validator/less-than' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/less-than.phtml',
             'validator/between' => __DIR__ . '/../view/visio-crud-modeler/partial/validator/between.phtml',
+            
+            'filter/string-trim' => __DIR__ . '/../view/visio-crud-modeler/partial/filter/string-trim.phtml',
+            'filter/strip-tags' => __DIR__ . '/../view/visio-crud-modeler/partial/filter/strip-tags.phtml',
+            
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view'
