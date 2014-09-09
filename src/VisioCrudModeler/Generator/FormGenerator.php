@@ -74,9 +74,38 @@ class FormGenerator implements GeneratorInterface
             $this->generateGrid($name);
             
             $this->generateBaseForm($name, $dataSet);
+            $this->generateForm($name);
             
             $this->console(sprintf('writing generated forms for "%s" table', $name));
         }
+    }
+    
+    protected function generateForm($name)
+    {
+        $className = $this->underscoreToCamelCase->filter($name) . "Form";
+        $gridClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Form/" . $className . ".php";
+        if (file_exists($gridClassFilePath)) {
+            return;
+        }
+        
+        $class = new ClassGenerator();
+        $class->setName($className);
+        $namespace = $this->params->getParam("moduleName") . "\Form";
+        $class->setNamespaceName($namespace);
+        $class->setExtendedClass("\\" . $namespace . "\BaseForm\Base" . $className);
+        
+        $file = new FileGenerator();
+        
+        $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('form.standardConfigDescription'), $name));
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+            
+        $file->setClass($class)
+            ->setDocBlock($docBlock);
+        
+        file_put_contents($gridClassFilePath, $file->generate());
     }
     
      /**
@@ -129,11 +158,18 @@ class FormGenerator implements GeneratorInterface
         
         foreach ($dataSet->listGenerator() as $column)
         {
-            
+            $name = $column->getName();
+            if($column->info("key") == "PRI") {
+                $body .= sprintf($this->codeLibrary()->get("form.constructor.field.primary"), $name);
+                continue;
+            }
+            $label = ucfirst(preg_replace("/[^a-z0-9]/i", " ", $name));
+            $body .= sprintf($this->codeLibrary()->get("form.constructor.field." . $this->getFieldType($column)), $name, $label);
         }
         
-        $method->setBody($body);
+        $body .= $this->codeLibrary()->get("form.constructor.field.submit");
         
+        $method->setBody($body);
         $class->addMethodFromGenerator($method);
     }
     
