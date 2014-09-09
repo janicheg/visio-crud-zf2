@@ -1,5 +1,33 @@
 $(document).ready(function() {
     
+    var FilterBuilder = {
+        
+        _element: null,
+        
+        getOptions : function(element){
+            _element = element;
+            var type = element.data('type');
+
+            if(type === 'strip-tags'){
+                return FilterBuilder.getStripTags();
+            }else if(type === 'string-trim'){
+                return FilterBuilder.getStringTrim();
+            }
+            
+        },
+        getStripTags: function(){
+            return object = {
+                type: 'strip-tags'
+            };
+        },
+        getStringTrim: function(){
+            return object = {
+                type: 'string-trim'
+            };
+        }
+    };
+    
+    
     var ValidatorBuilder = {
         
         _element: null,
@@ -86,7 +114,8 @@ $(document).ready(function() {
       
             $.each(selectedElements, function(index, element){
 
-               var validators = new Array();
+               var validators = [];
+               var filters = [];
                var elementName = $(element).data('element');
                var tableName = $(element).data('form');
 
@@ -94,14 +123,20 @@ $(document).ready(function() {
                $.each(paramsWrap.find('.validator-list').find('li') , function(index, validator){
                    validators.push(ValidatorBuilder.getOptions($(validator)));
                });
-
+               
+               $.each(paramsWrap.find('.filter-list').find('li') , function(index, filter){
+                   filters.push(FilterBuilder.getOptions($(filter)));
+               });
+               
                var element = {
                  name: elementName,
                  table: tableName,
                  label: paramsWrap.find('input[data-type="label"]').val(),
                  type: paramsWrap.find('select[data-type="type"]').val(),
-                 validators : validators
+                 validators : validators,
+                 filters: filters
                };
+               
                elements.push(element);
             });
             
@@ -134,6 +169,8 @@ $(document).ready(function() {
         
     };
     
+    /***************************** EVENTS *********************************/
+    /**********************************************************************/
     
     $('body').on('click', '.show-fields' , function(e){
         e.preventDefault();
@@ -151,7 +188,7 @@ $(document).ready(function() {
         });
     });
     
-    $('body').on('click', '.delete-v' , function(e){
+    $('body').on('click', '.delete-v , .delete-f' , function(e){
         e.preventDefault();
         $(this).parents('li').remove();
         
@@ -190,6 +227,17 @@ $(document).ready(function() {
     });
     
     
+    $('.add-filter').on('click', function(e){
+       var selectedFilter = $(this).siblings('.filters').val();
+       var li = $('.template-f').find("li[data-type='"+selectedFilter+"']").clone();
+       var elementWrap = $('div[class="element-wrap active"]');
+       
+       if(elementWrap.length === 0){
+           alert("Please select form element");
+           return;
+       }
+       elementWrap.find($('.filter-list')).append(li);
+    });
     
     $('.build-validators').on('click' , function(e){
       

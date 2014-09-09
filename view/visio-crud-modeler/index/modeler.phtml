@@ -73,8 +73,8 @@
                 
                 
                 <div class="form-group">
-                    <label>Validators<a class="edit" href=""> (Edit) </a></label>
-                    <select class="form-control validators" data-form="customer" data-element="name">
+                    <label>Validators</label>
+                    <select class="form-control validators">
                         <option value="null">Wybierz</option>
                         <option value="required">Required</option>
                         <option value="string-length">StringLength</option>
@@ -86,6 +86,17 @@
                     </select>
                     <button class="btn-primary form-control add-validator" style="margin-top: 5px;">Add</button>
                 </div>
+                
+                <div class="form-group">
+                    <label>Filters</label>
+                    <select class="form-control filters">
+                        <option value="null">Wybierz</option>
+                        <option value="string-trim">StringTrim</option>
+                        <option value="strip-tags">StripTags</option>
+                    </select>
+                    <button class="btn-primary form-control add-filter" style="margin-top: 5px;">Add</button>
+                </div>
+                
                 <hr/>
                 
                 <div id="options-wrap">
@@ -103,12 +114,12 @@
                                     <label>Type</label>
                                     <select  class="form-control" data-type="type">
                                         <option value="text">Text</option>
-                                        <option value="text">Textarea</option>
-                                        <option value="text">Checkbox</option>
-                                        <option value="text">Select</option>
-                                        <option value="text">Radio</option>
+                                        <option value="hidden">Hidden</option>
+                                        <option value="textarea">Textarea</option>
+                                        <option value="checkbox">Checkbox</option>
+                                        <option value="select">Select</option>
+                                        <option value="radio">Radio</option>
                                     </select>
-
                                 </div>
                                 
                                 <div class="form-group">
@@ -125,7 +136,10 @@
                                     
                                 </ul>
                                 <h5><strong>Filters</strong></h5>
-                                <ul class="filter-list"></ul>
+                                <ul class="filter-list">
+                                     <?echo $this->partial('filter/string-trim' , array('field' => $field))?>
+                                     <?echo $this->partial('filter/strip-tags', array('field' => $field))?>   
+                                </ul>
                             </div>
                         <?endforeach;?>
                     <?endforeach;?>
@@ -165,7 +179,6 @@ $this->headScript()->prependFile($this->basePath() . '/js/modeler.js');
 
 
 <div>
-
     <ul class="template-v" style="display: none;">
         
         <?echo $this->partial('validator/digits' , array('isTemplate' => true))?>
@@ -176,6 +189,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/modeler.js');
         <?echo $this->partial('validator/between', array('isTemplate' => true))?>
 
     </ul>
-
+    <ul class="template-f" style="display: none;">
+        <?echo $this->partial('filter/string-trim' , array('isTemplate' => true))?>
+        <?echo $this->partial('filter/strip-tags', array('isTemplate' => true))?>
+    </ul>
 </div>
-
