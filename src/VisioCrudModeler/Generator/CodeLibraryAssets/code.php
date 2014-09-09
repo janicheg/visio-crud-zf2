@@ -79,4 +79,95 @@ return array(
                                     "           array(\n".
                                     "               'name' => 'Digits'\n".
                                     "           ),",
+    
+    'grid.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
+    'grid.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this grid, this file is the place to do it.',
+    'grid.init.body'=>'$this->getHeader("edit")->getCell()->addDecorator("callable", array('."\n".
+                                    '    "callable" => function($context, $record){'."\n".
+                                    '        return sprintf("<a href=\"%s\">Edit</a>", $record["id"]);'."\n".
+                                    '    }'."\n".
+                                    '));'."\n\n".
+
+                                    '$this->getHeader("delete")->getCell()->addDecorator("callable", array('."\n".
+                                    '    "callable" => function($context, $record){'."\n".
+                                    '        return sprintf("<a href=\"%s\">Delete</a>", $record["id"]);'."\n".
+                                    '    }'."\n".
+                                    '));',
+    'grid.initFilters.string'=>'$value = $this->getParamAdapter()->getValueOfFilter(\'%s\');'."\n".
+                                    'if ($value != null) {'."\n".
+                                    '    $query->where("%s like \'%%".$value."%%\' ");'."\n".
+                                    '}'."\n\n",
+    'grid.initFilters.int'=>'$value = $this->getParamAdapter()->getValueOfFilter(\'%s\');'."\n".
+                                    'if ($value != null) {'."\n".
+                                    '    $query->where("%s = \'".$value."\' ");'."\n".
+                                    '}'."\n\n",
+    'grid.initFilters.float'=>'$value = $this->getParamAdapter()->getValueOfFilter(\'%s\');'."\n".
+                                    'if ($value != null) {'."\n".
+                                    '    $query->where("%s = \'".$value."\' ");'."\n".
+                                    '}'."\n\n",
+    'grid.initFilters.bool'=>'$value = $this->getParamAdapter()->getValueOfFilter(\'%s\');'."\n".
+                                    'if ($value != null) {'."\n".
+                                    '    $query->where("%s = ".$value);'."\n".
+                                    '}'."\n\n",
+    'form.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
+    'form.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this form, this file is the place to do it.',
+    'form.constructor.parentCall'=>"parent::__construct('%s');\n".
+                                    '$this->setAttribute(\'method\', \'post\');'."\n\n",
+    'form.constructor.field.primary'=>"\$this->add(array(\n".
+                                    "   'name' => '%s',\n".
+                                    "   'attributes' => array(\n".
+                                    "       'type'  => 'hidden',\n".
+                                    "   ),\n".
+                                    "));\n\n",
+    'form.constructor.field.int'=>"\$this->add(array(\n".
+                                    "    'name' => '%s',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => 'text',\n".
+                                    "        'class' => 'form-control'\n".
+                                    "    ),\n".
+                                    "    'options' => array(\n".
+                                    "        'label' => '%s',\n".
+                                    "    ),\n".
+                                    "));\n\n",
+    'form.constructor.field.float'=>"\$this->add(array(\n".
+                                    "    'name' => '%s',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => 'text',\n".
+                                    "        'class' => 'form-control'\n".
+                                    "    ),\n".
+                                    "    'options' => array(\n".
+                                    "        'label' => '%s',\n".
+                                    "    ),\n".
+                                    "));\n\n",
+    'form.constructor.field.string'=>"\$this->add(array(\n".
+                                    "    'name' => '%s',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => 'text',\n".
+                                    "        'class' => 'form-control'\n".
+                                    "    ),\n".
+                                    "    'options' => array(\n".
+                                    "        'label' => '%s',\n".
+                                    "    ),\n".
+                                    "));\n\n",
+    'form.constructor.field.bool'=>"\$this->add(array(\n".
+                                    "    'name' => '%s',\n".
+                                    "    'type' => 'Zend\Form\Element\Checkbox',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => 'checkbox',\n".
+                                    "        'class' => ''\n".
+                                    "    ),\n".
+                                    "    'options' => array(\n".
+                                    "        'label' => '%s',\n".
+                                    "    ),\n".
+                                    "));\n\n",
+    'form.constructor.field.submit'=>"\$this->add(array(\n".
+                                    "    'name' => 'submit',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => 'submit',\n".
+                                    "        'value' => 'Go',\n".
+                                    "        'id' => 'submitbutton',\n".
+                                    "        'class' => 'form-control btn-success',\n".
+                                    "        'style' => 'width: 50%'\n".
+                                    "    ),\n".
+                                    "));\n"
 );
