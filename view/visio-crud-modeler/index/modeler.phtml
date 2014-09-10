@@ -194,3 +194,6 @@ $this->headScript()->prependFile($this->basePath() . '/js/modeler.js');
         <?echo $this->partial('filter/strip-tags', array('isTemplate' => true))?>
     </ul>
 </div>
+  
+  
+<input type="hidden"  id="dbName" value="<?=$dataSourceDescriptor->getName()?>" />

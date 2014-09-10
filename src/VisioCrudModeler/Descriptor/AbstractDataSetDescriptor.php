@@ -18,7 +18,20 @@ abstract class AbstractDataSetDescriptor implements DataSetDescriptorInterface
      * @var DataSourceDescriptorInterface
      */
     protected $dataSourceDescriptor = null;
-
+    
+    /**
+     * constructor, accepts datasource and dataset definition
+     *
+     * @param \VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor $descriptor            
+     * @param array $definition            
+     */
+    public function __construct(AbstractDataSourceDescriptor $descriptor, array $definition)
+    {
+        $this->setDataSourceDescriptor($descriptor);
+        $this->definition = $definition;
+        $this->fieldDescriptors = new \ArrayObject(array());
+    }
+    
     /**
      * sets DataSource descriptor
      *

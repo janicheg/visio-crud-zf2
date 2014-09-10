@@ -23,14 +23,10 @@ class ExecuteGenerator extends AbstractGenerator
         $this->params->setParam('runtimeConfiguration', $runtimeConfiguration);
         
         
-        //dbs($this->params);
         $dependency = $this->dependency();
         foreach ($dependency->dependencyListFor($this->params->getParam('generator')) as $name) {
             
             $this->console("\n" . 'Running generator: ' . $name);
-            
-            //dbs($this->getGenerator($name));
-            
             
             $result = $this->getGenerator($name)->generate($this->params);
             $runtimeConfiguration->set($name, (array) $result);

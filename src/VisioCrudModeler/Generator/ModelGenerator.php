@@ -235,7 +235,7 @@ class ModelGenerator implements GeneratorInterface
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      */
-    protected function generateColumnRelatedElements(ClassGenerator $class, \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function generateColumnRelatedElements(ClassGenerator $class, \VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
         $name = preg_replace("/[^a-z0-9_]/i", "_", $column->getName());
         $name = $this->underscoreToCamelCase->filter($name);
@@ -324,13 +324,13 @@ class ModelGenerator implements GeneratorInterface
      * @param string $name
      * @return \Zend\Code\Generator\PropertyGenerator 
      */
-    protected function createProperty(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column, $name)
+    protected function createProperty(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column, $name)
     {
         $type = $this->getFieldType($column);
         $docblock = new \Zend\Code\Generator\DocblockGenerator('Column: ' . $column->getName());
         $docblock->setTag(array("name" => "var", "description" => $type));
         
-        if ($column->getReferencedField()) {
+        if (method_exists($column, 'getReferencedField') && $column->getReferencedField()) {
             $reference = $column->getReferencedField();
             $docblock->setLongDescription("Reference to " . $column->referencedDataSetName() . "." . $reference->getName());
         }
@@ -348,7 +348,7 @@ class ModelGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

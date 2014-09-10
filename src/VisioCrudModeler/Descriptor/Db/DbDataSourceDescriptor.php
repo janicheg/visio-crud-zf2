@@ -228,17 +228,4 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
         }
     }
 
-    /**
-     * list generator
-     *
-     * keys are DataSet names, value is DbDataSetDescriptor objects
-     *
-     * @return Generator
-     */
-    public function listGenerator()
-    {
-        foreach ($this->listDataSets() as $dataSetName) {
-            yield $dataSetName => $this->getDataSetDescriptor($dataSetName);
-        }
-    }
 }

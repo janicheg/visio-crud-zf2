@@ -44,8 +44,28 @@ class IndexController extends AbstractActionController
     
     public function modelerAction()
     {
+        
+        //dbs($this->getServiceLocator()->get('config'));
+        
+        
+        
+        
         $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataSourceDescriptor=new DbDataSourceDescriptor($db);
+        
+        
+        
+        $config = $this->getServiceLocator()->get('config')['VisioCrudModeler']['params'];
+        $res = json_decode($_COOKIE[$dataSourceDescriptor->getName()], true);
+        
+//        dbs($res);
+        
+        $des = array();
+        
+        foreach($res['elements'] as $r){
+            $des['tables'][$r['table']][$r['name']] = $r;
+        }
+        
         
         
         $form = new \VisioCrudModeler\Form\CustomerForm();

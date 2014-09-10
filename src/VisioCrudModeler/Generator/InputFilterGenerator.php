@@ -137,7 +137,7 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor $dataSet
      */
-    protected function generateConstructor(ClassGenerator $class, \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor $dataSet)
+    protected function generateConstructor(ClassGenerator $class, \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor $dataSet)
     {
         $constructor = new MethodGenerator("__construct");
         $constructor->addFlag(MethodGenerator::FLAG_PUBLIC);
@@ -158,12 +158,12 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string code for columd data
      */
-    protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
         $fieldFilter = $this->codeLibrary()->get("filter.constructor.body.input");
         
         $name = $column->getName();
-        $required = $column->info()['null'] ? 'false' : 'true';
+        $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
         
         $type = $this->getFieldType($column);
         $filters = $this->codeLibrary()->get('filter.constructor.fieldFilter' . ucfirst($type));
@@ -178,26 +178,26 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string Code for validators
      */
-    protected function generateValidators(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function generateValidators(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
-        $columnInfo = $column->info();
-        
-        $validators = "";
-        
-        switch ($this->getFieldType($column)) {
-            case "int":
-                $validators .= $this->codeLibrary()->get("filter.constructor.validators.digits");
-                break;
-            case "float":
-                break;
-            case "string":
-                $validator = $this->codeLibrary()->get("filter.constructor.validators.stringLenght");
-                $validator = sprintf($validator, ($columnInfo["null"] ? 0 : 1), $columnInfo["character_maximum_length"]);
-                $validators .= $validator;
-                break;
-        }
-        
-        return sprintf($this->codeLibrary()->get("filter.constructor.validators"), $validators);
+//        $columnInfo = $column->info();
+//        
+//        $validators = "";
+//        
+//        switch ($this->getFieldType($column)) {
+//            case "int":
+//                $validators .= $this->codeLibrary()->get("filter.constructor.validators.digits");
+//                break;
+//            case "float":
+//                break;
+//            case "string":
+//                $validator = $this->codeLibrary()->get("filter.constructor.validators.stringLenght");
+//                $validator = sprintf($validator, ((isset($columnInfo["null"]) && $columnInfo["null"]) ? 0 : 1), $columnInfo["character_maximum_length"]);
+//                $validators .= $validator;
+//                break;
+//        }
+//        
+//        return sprintf($this->codeLibrary()->get("filter.constructor.validators"), $validators);
     }
     
     /**
@@ -205,7 +205,7 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

@@ -1,10 +1,11 @@
 <?php
-namespace VisioCrudModeler\Descriptor\Db;
+namespace VisioCrudModeler\Descriptor\Web;
 
 use VisioCrudModeler\Descriptor\AbstractDataSetDescriptor;
 use VisioCrudModeler\Exception\FieldNotFound;
 use VisioCrudModeler\Exception\InformationNotFound;
 use VisioCrudModeler\Descriptor\ListGeneratorInterface;
+use VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor;
 
 /**
  * database DataSet descriptor
@@ -12,10 +13,8 @@ use VisioCrudModeler\Descriptor\ListGeneratorInterface;
  * @author bweres01
  *        
  */
-class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGeneratorInterface
+class WebDataSetDescriptor extends AbstractDataSetDescriptor implements ListGeneratorInterface
 {
-
-    const UPDATEABLE = 'updateable';
 
     /**
      * holds intances of dataset field descriptors
@@ -23,7 +22,6 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
      * @var \ArrayObject
      */
     protected $fieldDescriptors = null;
-
 
     /**
      * (non-PHPdoc)
@@ -77,7 +75,7 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
             throw new FieldNotFound("field '" . $fieldName . "' not found in '" . $this->getName() . "'");
         }
         if (! $this->fieldDescriptors->offsetExists($fieldName)) {
-            $this->fieldDescriptors->offsetSet($fieldName, new DbFieldDescriptor($this, $this->definition['fields'][$fieldName]));
+            $this->fieldDescriptors->offsetSet($fieldName, new WebFieldDescriptor($this, $this->definition['fields'][$fieldName]));
         }
         return $this->fieldDescriptors->offsetGet($fieldName);
     }

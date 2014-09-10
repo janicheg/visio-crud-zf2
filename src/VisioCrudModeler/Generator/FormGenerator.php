@@ -158,6 +158,7 @@ class FormGenerator implements GeneratorInterface
         
         foreach ($dataSet->listGenerator() as $column)
         {
+            
             $name = $column->getName();
             if($column->info("key") == "PRI") {
                 $body .= sprintf($this->codeLibrary()->get("form.constructor.field.primary"), $name);
@@ -281,7 +282,7 @@ class FormGenerator implements GeneratorInterface
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor $dataSet
      */
-    protected function generateHeaderProperty(ClassGenerator $class, \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor $dataSet)
+    protected function generateHeaderProperty(ClassGenerator $class, $dataSet)
     {
         $property = new \Zend\Code\Generator\PropertyGenerator("headers");
         $property->setFlags(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED);
@@ -338,7 +339,7 @@ class FormGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

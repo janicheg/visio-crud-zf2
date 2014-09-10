@@ -18,10 +18,4 @@ interface FieldDescriptorInterface
      */
     public function getType();
 
-    /**
-     * return true if field references to another field in another data set
-     *
-     * @return boolean
-     */
-    public function isReference();
 }
