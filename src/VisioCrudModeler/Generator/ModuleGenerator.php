@@ -56,6 +56,7 @@ class ModuleGenerator implements GeneratorInterface
      */
     public function generate(\VisioCrudModeler\Generator\ParamsInterface $params)
     {
+        
         $this->params = $params;
         $this->createDirectories();
         $this->createModuleConfig();

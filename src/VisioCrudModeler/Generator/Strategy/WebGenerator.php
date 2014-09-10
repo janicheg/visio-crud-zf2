@@ -7,36 +7,32 @@ namespace VisioCrudModeler\Generator\Strategy;
  * @author bweres01
  *        
  */
-class ExecuteGenerator extends AbstractGenerator
+class WebGenerator extends AbstractGenerator
 {
-
+    
     /**
      * runs specified generators
      */
     public function generate()
     {
-        // setting up params
         $this->printParams();
         $this->params->setParam('di', $this->getDi());
         $this->params->setParam('descriptor', $this->getDescriptor());
         $runtimeConfiguration = $this->readRuntimeConfig();
         $this->params->setParam('runtimeConfiguration', $runtimeConfiguration);
         
+        $generators = $this->params->getParam('config')->get('generators');
         
-        //dbs($this->params);
-        $dependency = $this->dependency();
-        foreach ($dependency->dependencyListFor($this->params->getParam('generator')) as $name) {
+        foreach(array_keys($generators) as $generatorName){
             
-            $this->console("\n" . 'Running generator: ' . $name);
-            
-            //dbs($this->getGenerator($name));
-            
-            
-            $result = $this->getGenerator($name)->generate($this->params);
-            $runtimeConfiguration->set($name, (array) $result);
+            if($generatorName == 'all'){
+                continue;
+            }
+            $result = $this->getGenerator($generatorName)->generate($this->params);
+            $runtimeConfiguration->set($generatorName, (array) $result);
         }
+        
         $this->writeRuntimeConfig($runtimeConfiguration);
     }
-    
-    
+   
 }

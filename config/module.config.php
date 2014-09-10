@@ -67,7 +67,8 @@ return array(
         'invokables' => array(
             'VisioCrudModeler\Controller\Index' => 'VisioCrudModeler\Controller\IndexController',
             'VisioCrudModeler\Controller\Customer' => 'VisioCrudModeler\Controller\CustomerController',
-            'VisioCrudModeler\Controller\Console' => 'VisioCrudModeler\Controller\ConsoleController'
+            'VisioCrudModeler\Controller\Console' => 'VisioCrudModeler\Controller\ConsoleController',
+            'VisioCrudModeler\Controller\Web' => 'VisioCrudModeler\Controller\WebController'
         )
     ),
     'view_manager' => array(
@@ -156,6 +157,9 @@ return array(
         'descriptors'=>array(
             'db'=>array(
                 'adapter'=>'VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor'
+            ),
+            'web'=>array(
+                'adapter'=>'VisioCrudModeler\Descriptor\Web\WebDataSourceDescriptor'
             )
         ),
         'dependency' => array(
