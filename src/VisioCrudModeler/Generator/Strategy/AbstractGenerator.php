@@ -231,13 +231,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
         $adapter = $this->getServiceLocator()->get($this->params->getParam('adapterServiceKey'));
         $descriptors = $this->params->getParam('config')->get('descriptors');
         
-        dbs($this->params->getParam('descriptor'));
-        
-        dbs($descriptors[$this->params->getParam('descriptor')]);
-        
         $descriptor = $descriptors[$this->params->getParam('descriptor')]['adapter'];
-        
-        dbs($descriptor);
         
         return $this->getDi()->get($descriptor, array(
             'adapter' => $adapter
