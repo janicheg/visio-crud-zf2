@@ -205,6 +205,8 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
         if (is_null($this->name)) {
             if ($this->adapter->getPlatform() instanceof \Zend\Db\Adapter\Platform\Mysql) {
                 $this->name = $this->currentDatabaseMysql();
+            } elseif ($this->adapter->getPlatform() instanceof \Zend\Db\Adapter\Platform\Sqlite) {
+                $this->name = 'sqlite';
             } else {
                 throw new \RuntimeException('Automatic database name resolving is not supported for platform: ' . get_class($this->adapter->getPlatform()));
             }
