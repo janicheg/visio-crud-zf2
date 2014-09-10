@@ -29,7 +29,7 @@ class Http extends Params
     public function __construct(array $params, Request $request)
     {
         $this->request = $request;
-        $this->storage = new \ArrayObject(array_merge($params, $request->getParams()->toArray()));
+        $this->storage = new \ArrayObject(array_merge($params, $request->getPost()->toArray()));
     }
 
     /**
