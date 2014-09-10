@@ -56,17 +56,7 @@ class IndexController extends AbstractActionController
         
         
         $config = $this->getServiceLocator()->get('config')['VisioCrudModeler']['params'];
-        $res = json_decode($_COOKIE[$dataSourceDescriptor->getName()], true);
-        
-//        dbs($res);
-        
-        $des = array();
-        
-        foreach($res['elements'] as $r){
-            $des['tables'][$r['table']][$r['name']] = $r;
-        }
-        
-        
+       
         
         $form = new \VisioCrudModeler\Form\CustomerForm();
         $customerFilter = new CustomerFilter();
