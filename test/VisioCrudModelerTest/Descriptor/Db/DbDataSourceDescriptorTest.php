@@ -22,8 +22,6 @@ class DbDataSourceDescriptorTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         
-        // TODO Auto-generated DbDataSourceDescriptorTest::setUp()
-        
         $this->DbDataSourceDescriptor = new DbDataSourceDescriptorFake();
     }
 
@@ -32,7 +30,6 @@ class DbDataSourceDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-        // TODO Auto-generated DbDataSourceDescriptorTest::tearDown()
         $this->DbDataSourceDescriptor = null;
         
         parent::tearDown();
@@ -43,7 +40,7 @@ class DbDataSourceDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     public function __construct()
     {
-        // TODO Auto-generated constructor
+        
     }
 
     /**
@@ -60,13 +57,15 @@ class DbDataSourceDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDataSetDescriptor()
     {
-        // TODO Auto-generated DbDataSourceDescriptorTest->testGetDataSetDescriptor()
-        // $this->markTestIncomplete("getDataSetDescriptor test not implemented");
         $dataSets = $this->DbDataSourceDescriptor->listDataSets();
         $name = array_shift($dataSets);
         
         $dataSetDescriptor = $this->DbDataSourceDescriptor->getDataSetDescriptor($name);
+        $this->assertInstanceOf('\VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor', $dataSetDescriptor, ' implementation of db dataset descriptor');
         $this->assertInstanceOf('\VisioCrudModeler\Descriptor\DataSetDescriptorInterface', $dataSetDescriptor, ' implementation of dataset descriptor interface');
+        $this->assertInternalType('string', $dataSetDescriptor->getName());
+        $this->assertInternalType('string', $dataSetDescriptor->getType());
+        $this->assertInternalType('array', $dataSetDescriptor->getFields());
     }
 
     /**
@@ -82,10 +81,10 @@ class DbDataSourceDescriptorTest extends \PHPUnit_Framework_TestCase
      */
     public function testListGenerator()
     {
-        // TODO Auto-generated DbDataSourceDescriptorTest->testListGenerator()
-        $this->assertInstanceOf('\Generator', $this->DbDataSourceDescriptor->listGenerator(),'returning generator instance');
+        $this->assertInstanceOf('\Generator', $this->DbDataSourceDescriptor->listGenerator(), 'returning generator instance');
         foreach ($this->DbDataSourceDescriptor->listGenerator() as $key => $value) {
             $this->assertInternalType('string', $key, 'dataset name');
+            $this->assertInstanceOf('\VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor', $value, ' implementation of db dataset descriptor');
             $this->assertInstanceOf('\VisioCrudModeler\Descriptor\DataSetDescriptorInterface', $value, ' implementation of dataset descriptor interface');
         }
     }
