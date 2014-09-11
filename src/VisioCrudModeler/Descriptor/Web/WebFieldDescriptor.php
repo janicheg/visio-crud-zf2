@@ -1,7 +1,7 @@
 <?php
 namespace VisioCrudModeler\Descriptor\Web;
 
-use VisioCrudModeler\Descriptor\AbstractFiledDescriptor;
+use VisioCrudModeler\Descriptor\AbstractFieldDescriptor;
 
 
 /**
@@ -10,7 +10,7 @@ use VisioCrudModeler\Descriptor\AbstractFiledDescriptor;
  * @author bweres01
  *        
  */
-class WebFieldDescriptor extends AbstractFiledDescriptor
+class WebFieldDescriptor extends AbstractFieldDescriptor
 {
     
    

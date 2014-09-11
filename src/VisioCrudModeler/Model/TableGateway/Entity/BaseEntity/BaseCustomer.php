@@ -55,32 +55,32 @@ class BaseCustomer extends \VisioCrudModeler\Model\TableGateway\Entity\AbstractE
     
     public function preInsert(EventManagerInterface $eventManager)
     {
-        db('pre');
+        echo('pre');
     }
     
     public function postInsert(EventManagerInterface $eventManager)
     {
-        db('post');
+        echo('post');
     }
     
     public function preUpdate(EventManagerInterface $eventManager)
     {
-        db('pre update');
+        echo('pre update');
     }
     
     public function postUpdate(EventManagerInterface $eventManager)
     {
-        db('post update');
+        echo('post update');
     }
     
     public function preDelete(EventManagerInterface $eventManager)
     {
-        db('pre delete');
+        echo('pre delete');
     }
     
     public function postDelete(EventManagerInterface $eventManager)
     {
-        db('post delete');
+        echo('post delete');
     }
     
     public function getId()

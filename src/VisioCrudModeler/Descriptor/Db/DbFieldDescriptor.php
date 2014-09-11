@@ -3,7 +3,7 @@ namespace VisioCrudModeler\Descriptor\Db;
 
 
 use VisioCrudModeler\Descriptor\ReferenceFieldInterface;
-use VisioCrudModeler\Descriptor\AbstractFiledDescriptor;
+use VisioCrudModeler\Descriptor\AbstractFieldDescriptor;
 
 /**
  * DataSet Field descriptor
@@ -11,7 +11,7 @@ use VisioCrudModeler\Descriptor\AbstractFiledDescriptor;
  * @author bweres01
  *        
  */
-class DbFieldDescriptor extends AbstractFiledDescriptor implements ReferenceFieldInterface
+class DbFieldDescriptor extends AbstractFieldDescriptor implements ReferenceFieldInterface
 {
 
     /**

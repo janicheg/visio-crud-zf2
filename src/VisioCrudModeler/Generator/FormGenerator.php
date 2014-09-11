@@ -339,7 +339,7 @@ class FormGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":
