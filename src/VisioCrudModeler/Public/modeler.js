@@ -1,5 +1,21 @@
 $(document).ready(function() {
     
+    var StoreCookie = {
+        setCookie: function(key, value) {
+            var expires = new Date();
+            expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+            document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+        },
+        getCookie: function(key) {
+            var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+            return keyValue ? keyValue[2] : null;
+        }
+    };
+    
+    var tt = JSON.parse(StoreCookie.getCookie('test'));
+    console.log(tt);
+    
+    
     var FilterBuilder = {
         
         _element: null,
@@ -248,6 +264,17 @@ $(document).ready(function() {
       };
       
       var json = JSON.stringify(ret);
+      
+      jQuery.ajax({
+            url: '/visio-crud-modeler/web/generate',
+            type: 'POST',
+            data: {data: json},
+            success: function(data) {
+                alert(data.message);
+                
+            },
+            dataType: 'json'
+      });
       console.log(json);
         
     });
