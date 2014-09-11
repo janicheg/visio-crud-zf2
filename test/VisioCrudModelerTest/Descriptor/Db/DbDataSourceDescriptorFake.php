@@ -1697,5 +1697,7 @@ class DbDataSourceDescriptorFake extends DbDataSourceDescriptor
     protected $name = 'mocked_database';
 
     public function __construct()
-    {}
+    {
+        $this->dataSetDescriptors = new \ArrayObject(array());
+    }
 }
