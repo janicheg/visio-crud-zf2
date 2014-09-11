@@ -6,11 +6,11 @@ use VisioCrudModeler\Exception\InformationNotFound;
 use \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor;
 
 /**
- * Description of AbstractFiledDescriptor
+ * Description of AbstractFieldDescriptor
  *
  * @author  HYPERmediaISOBAR 2013, pduda001 Piotr Duda (dudapiotrek@gmail.com)
  */
-class AbstractFiledDescriptor implements FieldDescriptorInterface
+class AbstractFieldDescriptor implements FieldDescriptorInterface
 {
     const NOT_NULL = 'null';
 

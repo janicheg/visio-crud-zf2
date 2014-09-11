@@ -27,36 +27,15 @@ class IndexController extends AbstractActionController
         $dependency=new Dependency($dependencyTree);
         \Zend\Debug\Debug::dump($dependency->dependencyListFor('model'));
         
-        //dbs($dataSourceDescriptor->listDataSets());
-        
-        //dbs($dataSourceDescriptor->getDataSetDescriptor('customer')->getFieldDescriptor('idcustomer')->getReferencedField());
-        
-        
-        
-        foreach($dataSourceDescriptor->listGenerator() as $tableName=>$dataSetDescriptor){
-            db($dataSetDescriptor);
-        }
-        
         return new ViewModel(array(
         	'descriptor'=>$dataSourceDescriptor
         ));
     }
     
+    
     public function modelerAction()
     {
-        
-        //dbs($this->getServiceLocator()->get('config'));
-        
-        
-        
-        
-        $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataSourceDescriptor=new DbDataSourceDescriptor($db);
-        
-        
-        
-        $config = $this->getServiceLocator()->get('config')['VisioCrudModeler']['params'];
-       
         
         $form = new \VisioCrudModeler\Form\CustomerForm();
         $customerFilter = new CustomerFilter();
@@ -68,10 +47,7 @@ class IndexController extends AbstractActionController
             'dataSourceDescriptor'=> $dataSourceDescriptor,
             'underscoreToCamelCase' => new \Zend\Filter\Word\UnderscoreToCamelCase(),
             'config' =>  $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']
-            
         );
-        
     }
-    
     
 }
