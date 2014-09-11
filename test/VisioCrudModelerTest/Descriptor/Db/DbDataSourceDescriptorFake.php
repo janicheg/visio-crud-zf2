@@ -1695,6 +1695,7 @@ class DbDataSourceDescriptorFake extends DbDataSourceDescriptor
      * @var string
      */
     protected $name = 'mocked_database';
-    
-    public function __construct();
+
+    public function __construct()
+    {}
 }
