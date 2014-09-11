@@ -231,6 +231,12 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
         $adapter = $this->getServiceLocator()->get($this->params->getParam('adapterServiceKey'));
         $descriptors = $this->params->getParam('config')->get('descriptors');
         
+        $descriptorAdapterName = $this->params->getParam('descriptor');
+        
+        if(!isset($descriptors[$descriptorAdapterName])){
+            throw new \VisioCrudModeler\Exception\DescriptorAdapterNotFound("Descriptor adapter name " . $descriptorAdapterName . " doesnt exists ");
+        }
+        
         $descriptor = $descriptors[$this->params->getParam('descriptor')]['adapter'];
         
         return $this->getDi()->get($descriptor, array(

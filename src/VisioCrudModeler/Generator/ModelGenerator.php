@@ -235,7 +235,7 @@ class ModelGenerator implements GeneratorInterface
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      */
-    protected function generateColumnRelatedElements(ClassGenerator $class, \VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function generateColumnRelatedElements(ClassGenerator $class, \VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
         $name = preg_replace("/[^a-z0-9_]/i", "_", $column->getName());
         $name = $this->underscoreToCamelCase->filter($name);
@@ -324,7 +324,7 @@ class ModelGenerator implements GeneratorInterface
      * @param string $name
      * @return \Zend\Code\Generator\PropertyGenerator 
      */
-    protected function createProperty(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column, $name)
+    protected function createProperty(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column, $name)
     {
         $type = $this->getFieldType($column);
         $docblock = new \Zend\Code\Generator\DocblockGenerator('Column: ' . $column->getName());
@@ -348,7 +348,7 @@ class ModelGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

@@ -35,6 +35,7 @@ class IndexController extends AbstractActionController
     
     public function modelerAction()
     {
+        $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $dataSourceDescriptor=new DbDataSourceDescriptor($db);
         
         $form = new \VisioCrudModeler\Form\CustomerForm();

@@ -158,7 +158,7 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string code for columd data
      */
-    protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
         $fieldFilter = $this->codeLibrary()->get("filter.constructor.body.input");
         
@@ -178,7 +178,7 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string Code for validators
      */
-    protected function generateValidators(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function generateValidators(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
 //        $columnInfo = $column->info();
 //        
@@ -205,7 +205,7 @@ class InputFilterGenerator implements GeneratorInterface
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFiledDescriptor $column)
+    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
         switch (strtolower($column->getType())) {
             case "int":
