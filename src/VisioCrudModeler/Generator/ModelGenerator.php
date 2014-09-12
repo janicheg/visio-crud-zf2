@@ -108,7 +108,7 @@ class ModelGenerator implements GeneratorInterface
      * generates code for base table gateway and saves in file (overrides file if exists)
      *
      * @param DataSetDescriptorInterface $dataSet
-     * @return string     
+     * @return string name of generated class
      */
     protected function generateBaseTableGateway(DataSetDescriptorInterface $dataSet, $entityPrototype)
     {
@@ -177,8 +177,8 @@ class ModelGenerator implements GeneratorInterface
      * generates file with target table gateway (if not exists yet)
      *
      * @param DataSetDescriptorInterface $dataSet
-     * @param string $name            
-     * @return string
+     * @param string $extends base class for table gateway
+     * @return string name of generated class
      */
     protected function generateTableGateway(DataSetDescriptorInterface $dataSet, $extends)
     {
@@ -216,8 +216,8 @@ class ModelGenerator implements GeneratorInterface
      * generates file with target model (if not exists yet)
      *
      * @param DataSetDescriptorInterface $dataSet
-     * @param string $extends
-     * @return string   
+     * @param string $extends base class for model
+     * @return string name of generated class
      */
     protected function generateModel(DataSetDescriptorInterface $dataSet, $extends)
     {
@@ -255,7 +255,7 @@ class ModelGenerator implements GeneratorInterface
      * generates code for base model and saves in file (overrides file if exists)
      *
      * @param DataSetDescriptorInterface $dataSet            
-     * @return string
+     * @return string name of generated class
      */
     protected function generateBaseModel(DataSetDescriptorInterface $dataSet)
     {

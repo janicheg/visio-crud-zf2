@@ -80,7 +80,8 @@ class InputFilterGenerator implements GeneratorInterface
     /**
      * generates file with target filter (if not exists yet)
      * @param DataSetDescriptorInterface $dataSet
-     * @param string $extends
+     * @param string $extends base class for filter
+     * @return string full name of generated class
      */
     protected function generateFilter(DataSetDescriptorInterface $dataSet, $extends)
     {

@@ -93,6 +93,12 @@ class FormGenerator implements GeneratorInterface
         return $runtime;
     }
     
+    /**
+     * generates target class for form and saves it (if not yet exists)
+     * @param \VisioCrudModeler\Descriptor\DataSetDescriptorInterface $dataSet
+     * @param string $extends base class for form
+     * @return string
+     */
     protected function generateForm(DataSetDescriptorInterface $dataSet, $extends)
     {
         $name = $dataSet->getName();
@@ -128,7 +134,7 @@ class FormGenerator implements GeneratorInterface
     /**
      * generates code for forms and saves in file (overrides file if exists)
      * @param DataSetDescriptorInterface $dataSet
-     * @return string
+     * @return string name of generated class
      */
     protected function generateBaseForm(DataSetDescriptorInterface $dataSet)
     {
@@ -165,7 +171,7 @@ class FormGenerator implements GeneratorInterface
     }
     
     /**
-     * generates init method
+     * generates constructor for form
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param DataSetDescriptorInterface $dataSet
      */
@@ -205,7 +211,7 @@ class FormGenerator implements GeneratorInterface
       * generates code for base grid and saves in file (overrides file if exists)
       * 
       * @param DataSetDescriptorInterface $dataSet 
-      * @return string
+      * @return string full name of generated class
       */
     protected function generateBaseGrid(DataSetDescriptorInterface $dataSet)
     {
@@ -265,7 +271,7 @@ class FormGenerator implements GeneratorInterface
     }
     
     /**
-     * generates config property
+     * generates method initFilters for grid
      * @param \Zend\Code\Generator\ClassGenerator $class
      * @param DataSetDescriptorInterface $dataSet
      */
@@ -338,7 +344,8 @@ class FormGenerator implements GeneratorInterface
      * generates file with target grid (if not exists yet)
      * 
      * @param DataSetDescriptorInterface $dataSet
-     * @param string $extends
+     * @param string $extends base class for grid
+     * @return string full name of generated class
      */
     protected function generateGrid(DataSetDescriptorInterface $dataSet, $extends)
     {
@@ -375,7 +382,7 @@ class FormGenerator implements GeneratorInterface
     /**
      * gets field type for PHP
      * @param FieldDescriptorInterface $column
-     * @return string
+     * @return string 
      */
     protected function getFieldType(FieldDescriptorInterface $column)
     {
