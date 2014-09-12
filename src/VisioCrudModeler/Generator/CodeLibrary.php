@@ -39,4 +39,15 @@ class CodeLibrary
             return $this->library[$identifier];
         }
     }
+    
+    /**
+     * returns contents of file resource from code library
+     * 
+     * @param string $filename
+     * @return string
+     */
+    public function getFile($filename)
+    {
+        return file_get_contents(__DIR__.'/CodeLibraryAssets/'.ltrim($filename,'\\/'));
+    }
 }
