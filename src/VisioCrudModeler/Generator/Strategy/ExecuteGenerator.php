@@ -4,8 +4,13 @@ namespace VisioCrudModeler\Generator\Strategy;
 /**
  * strategy class for running generators according to passed params
  *
- * @author bweres01
- *        
+ * default console strategy to run generators with all their dependendant generators according to passed params
+ *
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class ExecuteGenerator extends AbstractGenerator
 {
@@ -22,7 +27,6 @@ class ExecuteGenerator extends AbstractGenerator
         $runtimeConfiguration = $this->readRuntimeConfig();
         $this->params->setParam('runtimeConfiguration', $runtimeConfiguration);
         
-        
         $dependency = $this->dependency();
         foreach ($dependency->dependencyListFor($this->params->getParam('generator')) as $name) {
             
@@ -33,6 +37,4 @@ class ExecuteGenerator extends AbstractGenerator
         }
         $this->writeRuntimeConfig($runtimeConfiguration);
     }
-    
-    
 }

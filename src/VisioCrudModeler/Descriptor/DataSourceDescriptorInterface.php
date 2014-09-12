@@ -2,9 +2,13 @@
 namespace VisioCrudModeler\Descriptor;
 
 /**
+ * Interface for DataSource descriptor classes
  *
- * @author bweres01
- *        
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 interface DataSourceDescriptorInterface
 {
