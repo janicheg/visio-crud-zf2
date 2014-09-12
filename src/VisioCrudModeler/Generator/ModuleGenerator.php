@@ -32,6 +32,7 @@ class ModuleGenerator implements GeneratorInterface
         'src',
         'src/%module%',
         'src/%module%/Controller',
+        'src/%module%/Controller/Base',
         'src/%module%/Exception',
         'src/%module%/Filter',
         'src/%module%/Filter/BaseFilter',
