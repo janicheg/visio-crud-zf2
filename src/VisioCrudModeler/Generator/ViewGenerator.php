@@ -47,6 +47,7 @@ class ViewGenerator implements GeneratorInterface
          
         $camelCaseToSeparator = new CamelCaseToSeparator('-');
         $moduleName = strtolower($this->params->getParam("moduleName"));
+        
         @mkdir($this->moduleRoot() . "/view/",0777);
         $viewClassFilePath = $this->moduleRoot() . "/view/" . strtolower($camelCaseToSeparator->filter($this->params->getParam("moduleName")));
         @mkdir($viewClassFilePath,0777);
@@ -54,7 +55,7 @@ class ViewGenerator implements GeneratorInterface
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
         	$className = $this->underscoreToCamelCase->filter($name);
         	$viewName = strtolower($camelCaseToSeparator->filter($className));
-        	$viewFilePath = $this->moduleRoot() . "/view/" .$viewName;
+        	$viewFilePath = $this->moduleRoot() . "/view/".$moduleName."/".$viewName;
         	@mkdir($viewFilePath,0777);
         	$this->generateView($viewName, $viewFilePath,$moduleName);
         	$this->console(sprintf('writing generated view for "%s" table', $viewName));
