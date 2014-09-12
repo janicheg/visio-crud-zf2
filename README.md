@@ -35,7 +35,6 @@ Future goals
 
 Installation
 ------------
-
 https://github.com/dudapiotr/ZfTable/wiki/Installation-and-Configuration
 
 
