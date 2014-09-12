@@ -160,17 +160,47 @@ class InputFilterGenerator implements GeneratorInterface
      */
     protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
+        $columnInfo = $column->info();print_r($columnInfo);
+        
         $fieldFilter = $this->codeLibrary()->get("filter.constructor.body.input");
         
         $name = $column->getName();
-        $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
+        if (isset($columnInfo["validators"]) && $columnInfo["validators"] != null)
+        {
+            $required = "false";
+            foreach($columnInfo["validators"] as $validator)
+            {
+                if ($validator["type"] == "required") {
+                    $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
+                    break;
+                }
+            }
+        }
+        else
+        {
+            $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
+        }
         
         $type = $this->getFieldType($column);
-        $filters = $this->codeLibrary()->get('filter.constructor.fieldFilter' . ucfirst($type));
+        if (isset($columnInfo["filters"]) && $columnInfo["filters"] != null) {
+            $filters = "";
+            foreach ($columnInfo["filters"] as $filter)
+            {
+                $filters .= sprintf("\n            array('name' => '%s'),", $this->underscoreToCamelCase->filter(preg_replace("/[^a-z0-9]/i", "_", $filter["type"])));
+            }
+            $filters .= "\n        ";
+        }
+        else
+        {
+            $filters = $this->codeLibrary()->get('filter.constructor.fieldFilter' . ucfirst($type));
+        }
         
         $validators = $this->generateValidators($column);
-        
         return sprintf($fieldFilter, $name, $required, $filters, $validators);
+    }
+    
+    protected function buildFiltersFromInfo($incomeFilters) {
+        print_r($incomeFilters);
     }
     
     /**
@@ -180,24 +210,54 @@ class InputFilterGenerator implements GeneratorInterface
      */
     protected function generateValidators(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
-//        $columnInfo = $column->info();
-//        
-//        $validators = "";
-//        
-//        switch ($this->getFieldType($column)) {
-//            case "int":
-//                $validators .= $this->codeLibrary()->get("filter.constructor.validators.digits");
-//                break;
-//            case "float":
-//                break;
-//            case "string":
-//                $validator = $this->codeLibrary()->get("filter.constructor.validators.stringLenght");
-//                $validator = sprintf($validator, ((isset($columnInfo["null"]) && $columnInfo["null"]) ? 0 : 1), $columnInfo["character_maximum_length"]);
-//                $validators .= $validator;
-//                break;
-//        }
-//        
-//        return sprintf($this->codeLibrary()->get("filter.constructor.validators"), $validators);
+        $columnInfo = $column->info();
+        if (isset($columnInfo["validators"]) && $columnInfo["validators"] != null) {
+            return sprintf($this->codeLibrary()->get("filter.constructor.validators"), $this->buildValidatorsFromInfo($columnInfo["validators"]));
+        }
+        
+        $validators = "";
+        switch ($this->getFieldType($column)) {
+            case "int":
+                $validators .= $this->codeLibrary()->get("filter.constructor.validators.digits");
+                break;
+            case "float":
+                break;
+            case "string":
+                $validator = $this->codeLibrary()->get("filter.constructor.validators.stringLenght");
+                $validator = sprintf($validator, ((isset($columnInfo["null"]) && $columnInfo["null"]) ? 0 : 1), $columnInfo["character_maximum_length"]);
+                $validators .= $validator;
+                break;
+        }
+        
+        return sprintf($this->codeLibrary()->get("filter.constructor.validators"), $validators);
+    }
+    
+    protected function buildValidatorsFromInfo($incomeValidators)
+    {
+        $outcomeValidators = "";
+        foreach ($incomeValidators as $validator) {
+            if ($validator["type"] == "required")
+            {
+                continue;
+            }
+            $outcomeValidators .= "
+            array (
+                'name' => '" . $this->underscoreToCamelCase->filter(preg_replace("/[^a-z0-9]/i", "_", $validator["type"])) . "',";
+            if (isset($validator["options"])) {
+                $outcomeValidators .= "
+                'options' => array(";
+                foreach ($validator["options"] as $key => $value) {
+                    $outcomeValidators .= "
+                    '$key' => '$value',";
+                }
+                $outcomeValidators .= "
+                ),";
+            }
+            $outcomeValidators .= "
+            ),";
+        }
+        
+        return $outcomeValidators;
     }
     
     /**
