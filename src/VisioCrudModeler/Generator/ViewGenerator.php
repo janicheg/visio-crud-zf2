@@ -88,17 +88,9 @@ class ViewGenerator implements GeneratorInterface
     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
     */
     protected function genertateCreateView($moduleName){
-    	$html = "
-		<h1>Create</h1>
-		
-    	<?php
-    	echo \$this->partial('partial/form-partial', array(
-    	'form' =>\$this->form,
-    	'url' =>  \$this->url('".$moduleName."', array('action' => 'update')))
-                 );
-    	?>
-    
-    	";
+    	
+    	//$html = sprintf($this->codeLibrary()->get('form.standardConfigDescription');
+    	$html = sprintf($this->codeLibrary()->getFile('create.phtml'), $moduleName);
     	
     	return $html;
     }
@@ -109,17 +101,8 @@ class ViewGenerator implements GeneratorInterface
     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
     */
     protected function genertateUpdateView($moduleName){
-    	$html = "
-    	<h1>Update</h1>
     	
-    	<?php
-    	echo \$this->partial('partial/form-partial', array(
-    	'form' => \$this->form,
-    	'url' =>  \$this->url('".$moduleName."', array('action' => 'update')))
-                 );
-    	?>
-    
-    	";
+    	$html = sprintf($this->codeLibrary()->getFile('update.phtml'), $moduleName);
     	
     	return $html;
     }
@@ -131,14 +114,8 @@ class ViewGenerator implements GeneratorInterface
     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
     */
     protected function genertateReadView($moduleName,$controllerName){
-    	$html = '
-    		<div id="tableContainer">
-			</div>
-			
-			<script>
-			    $("#tableContainer").zfTable("/'.$moduleName.'/'.$controllerName.'/ajax-read");
-			</script>		
-    	';
+    	$html = sprintf($this->codeLibrary()->getFile('read.phtml'), $moduleName,$controllerName);
+    	
     	return $html;
     }
     
