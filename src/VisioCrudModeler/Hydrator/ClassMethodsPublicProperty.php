@@ -5,9 +5,13 @@ namespace VisioCrudModeler\Hydrator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
- * Description of ClassMethodsPublicProperty
+ * Class methods hydartors. Base On ZF2 ClassMethods, but concerns only public methods.
  *
- * @author  Piotr Duda (dudapiotrek@gmail.com)
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class ClassMethodsPublicProperty extends ClassMethods
 {
@@ -50,7 +54,7 @@ class ClassMethodsPublicProperty extends ClassMethods
             }
 
             $attribute = $method;
-            
+
             if (preg_match('/^get/', $method)) {
                 $attribute = substr($method, 3);
                 if (!property_exists($object, $attribute)) {
@@ -61,9 +65,9 @@ class ClassMethodsPublicProperty extends ClassMethods
             if (!array_key_exists($attribute, $publicParams)) {
                 continue;
             }
-            
+
             $attribute = $this->extractName($attribute, $object);
-            
+
             $attributes[$attribute] = $this->extractValue($attribute, $object->$method(), $object);
         }
 

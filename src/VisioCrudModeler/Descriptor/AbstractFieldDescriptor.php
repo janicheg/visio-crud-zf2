@@ -6,9 +6,12 @@ use VisioCrudModeler\Exception\InformationNotFound;
 use \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor;
 
 /**
- * Description of AbstractFieldDescriptor
- *
- * @author  HYPERmediaISOBAR 2013, pduda001 Piotr Duda (dudapiotrek@gmail.com)
+ * Data Source Descriptor for Web Modeler definition. It craetes defition based on modeleted params.
+ * 
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class AbstractFieldDescriptor implements FieldDescriptorInterface
 {

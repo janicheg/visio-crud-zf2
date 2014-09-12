@@ -15,6 +15,18 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\Db\Sql\Where;
 
+
+/**
+ * Extended implementation of TableGateway pattern which allows you 
+ * to work with You entity model (/VisioCrudModeler/Model/TableGateway/Entity/AbstractEntity).
+ * It allows to simple add, update and delete objects from database
+ *
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
+ */
 class AbstractTable extends AbstractTableGateway implements EventManagerAwareInterface
 {
 
@@ -56,18 +68,33 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     );
 
     /**
-     * Key names of eventActions
+     * Key of preInsert event action
      */
     CONST PRE_INSERT = 'preInsert';
 
+    /**
+     * Key of postInsert event action
+     */
     CONST POST_INSERT = 'postInsert';
 
+    /**
+     * Key of preUpdate event action
+     */
     CONST PRE_UPDATE = 'preUpdate';
 
+    /**
+     * Key of postUpdate event action
+     */
     CONST POST_UPDATE = 'postUpdate';
 
+    /**
+     * Key of preDelete event action
+     */
     CONST PRE_DELETE = 'preDelete';
 
+    /**
+     * Key of postDelete event action
+     */
     CONST POST_DELETE = 'postDelete';
 
     /**
@@ -108,7 +135,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
-     * Get sql object (factory)
+     * Return new sql object
      *
      * @return \Zend\Db\Sql\Sql
      */
@@ -116,7 +143,8 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     {
         return new Sql($this->getAdapter());
     }
-
+    
+    
     /**
      * Shortcut of begin transaction (from connection)
      */
@@ -153,9 +181,9 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get one row for given key
      *
-     * @param
-     *            mixed | string | int $id
-     * @return mixed (Model)
+     * @param mixed | string | int $id
+     * @param null | string $protypeClass
+     * @return mixed Return model object based on prototypeClass 
      */
     public function findRow($id, $prototypeClass = null)
     {
@@ -173,9 +201,10 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
+     * Get one row for given key
      *
-     * @param type $id            
-     * @return type
+     * @param mixed | string | int $id
+     * @return mixed Return model object based on prototypeClass 
      */
     public function getRow($id)
     {
@@ -186,8 +215,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
      * Get one row of table for given $query
      *
      * @param \Zend\Db\Sql\Select $query            
-     * @param
-     *            string | $prototypeClass
+     * @param  string | $prototypeClass
      * @return mixed
      */
     public function fetchRow(\Zend\Db\Sql\Select $query = null, $prototypeClass = null)
@@ -283,7 +311,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
-     *
+     * Array object protype clas
      * @return string
      */
     public function getArrayObjectPrototypeClass()
@@ -339,7 +367,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
 
     /**
      *
-     * @return type
+     * @return \Zend\EventManager\EventManager
      */
     public function getEventManager()
     {
@@ -392,7 +420,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
-     * Update new row to database
+     * Update exists row
      *
      * @param mixed $object            
      * @return int
@@ -445,7 +473,8 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
-     *
+     * Delete object from database
+     *  
      * @param mixed $objectOrWhere            
      */
     public function delete($objectOrWhere)
