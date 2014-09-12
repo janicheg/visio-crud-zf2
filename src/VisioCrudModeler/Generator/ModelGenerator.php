@@ -15,7 +15,10 @@ use VisioCrudModeler\Generator\Config\Config;
 /**
  * generator class for creating Model classes and table gateways
  *
- * @author Jacek Pawelec jacek.pawelec@isobar.com
+ * @author Jacek Pawelec <jacek.pawelec@isobar.com>
+ * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
  *        
  */
 class ModelGenerator implements GeneratorInterface

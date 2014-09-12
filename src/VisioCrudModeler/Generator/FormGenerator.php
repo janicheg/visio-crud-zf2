@@ -13,7 +13,10 @@ use VisioCrudModeler\Generator\Config\Config;
 /**
  * generator class for creating Form and Grid classes
  *
- * @author Jacek Pawelec jacek.pawelec@isobar.com
+ * @author Jacek Pawelec <jacek.pawelec@isobar.com>
+ * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
  *        
  */
 class FormGenerator implements GeneratorInterface
