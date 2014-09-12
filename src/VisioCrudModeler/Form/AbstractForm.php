@@ -8,9 +8,13 @@ use VisioCrudModeler\JQueryValidator\ValidatorManagerAwareInterface;
 
 
 /**
- * Description of AbstractForm
+ * Extends of Default From class allows to manage JQuery Validators
  *
- * @author  pduda001 Piotr Duda (dudapiotrek@gmail.com)
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 abstract class AbstractForm extends Form implements ValidatorManagerAwareInterface
 {
