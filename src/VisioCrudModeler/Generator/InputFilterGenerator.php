@@ -6,6 +6,9 @@ use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Filter\Word\UnderscoreToCamelCase;
+use VisioCrudModeler\Descriptor\DataSetDescriptorInterface;
+use VisioCrudModeler\Descriptor\FieldDescriptorInterface;
+use VisioCrudModeler\Generator\Config\Config;
 
 /**
  * generator class for creating InputFilter classes
@@ -56,32 +59,45 @@ class InputFilterGenerator implements GeneratorInterface
             return;
         }
         
+        $runtime = array();
+        if ($params->getParam('runtimeConfiguration') instanceof Config) {
+            $runtime = (array) $params->getParam('runtimeConfiguration')->get('filter');
+        }
+        
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
-            $this->generateBaseFilter($name, $dataSet);
-            $this->generateFilter($name);
+            if (! array_key_exists($name, $runtime)) {
+                $runtime[$name] = array();
+            }
+            $runtime[$name]['baseFilter'] = $this->generateBaseFilter($dataSet);
+            $runtime[$name]['filter'] = $this->generateFilter($dataSet, $runtime[$name]['baseFilter']);
             
             $this->console(sprintf('writing generated filter for "%s" table', $name));
         }
         
+        return $runtime;
     }
     
     /**
      * generates file with target filter (if not exists yet)
-     * @param string $name
+     * @param DataSetDescriptorInterface $dataSet
+     * @param string $extends
      */
-    protected function generateFilter($name)
+    protected function generateFilter(DataSetDescriptorInterface $dataSet, $extends)
     {
+        $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . "Filter";
+        $namespace = $this->params->getParam("moduleName") . "\Filter";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
+        
         $filterClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Filter/" . $className . ".php";
         if (file_exists($filterClassFilePath)) {
-            return;
+            return $fullClassName;
         }
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $namespace = $this->params->getParam("moduleName") . "\Filter";
         $class->setNamespaceName($namespace);
-        $class->setExtendedClass("\\" . $namespace . "\BaseFilter\Base" . $className);
+        $class->setExtendedClass($extends);
         
         $file = new FileGenerator();
         
@@ -95,20 +111,23 @@ class InputFilterGenerator implements GeneratorInterface
             ->setDocBlock($docBlock);
         
         file_put_contents($filterClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
     /**
      * generates code for base filter and saves in file (overrides file if exists)
-     * @param string $name
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     * @param DataSetDescriptorInterface $dataSet
      */
-    protected function generateBaseFilter($name, $dataSet)
+    protected function generateBaseFilter(DataSetDescriptorInterface $dataSet)
     {
+        $name = $dataSet->getName();
         $className = "Base" . $this->underscoreToCamelCase->filter($name) . "Filter";
+        $namespace = $this->params->getParam("moduleName") . "\Filter\BaseFilter";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setNamespaceName($this->params->getParam("moduleName") . "\Filter\BaseFilter");
+        $class->setNamespaceName($namespace);
         $class->setExtendedClass($this->baseFilterParent);
         
         foreach ($this->baseFilterUses as $use) {
@@ -130,6 +149,7 @@ class InputFilterGenerator implements GeneratorInterface
         
         $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Filter/BaseFilter/" . $className . ".php";
         file_put_contents($modelClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
     /**
@@ -155,43 +175,38 @@ class InputFilterGenerator implements GeneratorInterface
     
     /**
      * generates filters and validators for column
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
+     * @param FieldDescriptorInterface $column
      * @return string code for columd data
      */
-    protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function generateFilterForColumn(FieldDescriptorInterface $column)
     {
         $columnInfo = $column->info();
         
         $fieldFilter = $this->codeLibrary()->get("filter.constructor.body.input");
         
         $name = $column->getName();
-        if (isset($columnInfo["validators"]) && $columnInfo["validators"] != null)
-        {
+        if (isset($columnInfo["validators"]) && $columnInfo["validators"] != null) {
             $required = "false";
-            foreach($columnInfo["validators"] as $validator)
-            {
+            foreach($columnInfo["validators"] as $validator) {
                 if ($validator["type"] == "required") {
                     $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
                     break;
                 }
             }
         }
-        else
-        {
+        else {
             $required = (isset($column->info()['null']) && $column->info()['null']) ? 'false' : 'true';
         }
         
         $type = $this->getFieldType($column);
         if (isset($columnInfo["filters"]) && $columnInfo["filters"] != null) {
             $filters = "";
-            foreach ($columnInfo["filters"] as $filter)
-            {
+            foreach ($columnInfo["filters"] as $filter) {
                 $filters .= sprintf("\n            array('name' => '%s'),", $this->underscoreToCamelCase->filter(preg_replace("/[^a-z0-9]/i", "_", $filter["type"])));
             }
             $filters .= "\n        ";
         }
-        else
-        {
+        else {
             $filters = $this->codeLibrary()->get('filter.constructor.fieldFilter' . ucfirst($type));
         }
         
@@ -201,10 +216,10 @@ class InputFilterGenerator implements GeneratorInterface
     
     /**
      * generates validators array code
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
+     * @param FieldDescriptorInterface $column
      * @return string Code for validators
      */
-    protected function generateValidators(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function generateValidators(FieldDescriptorInterface $column)
     {
         $columnInfo = $column->info();
         if (isset($columnInfo["validators"]) && $columnInfo["validators"] != null) {
@@ -232,8 +247,7 @@ class InputFilterGenerator implements GeneratorInterface
     {
         $outcomeValidators = "";
         foreach ($incomeValidators as $validator) {
-            if ($validator["type"] == "required")
-            {
+            if ($validator["type"] == "required") {
                 continue;
             }
             $outcomeValidators .= "
@@ -258,10 +272,10 @@ class InputFilterGenerator implements GeneratorInterface
     
     /**
      * gets field type for PHP
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
+     * @param FieldDescriptorInterface $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function getFieldType(FieldDescriptorInterface $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

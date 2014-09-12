@@ -6,6 +6,9 @@ use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Filter\Word\UnderscoreToCamelCase;
+use VisioCrudModeler\Descriptor\DataSetDescriptorInterface;
+use VisioCrudModeler\Descriptor\FieldDescriptorInterface;
+use VisioCrudModeler\Generator\Config\Config;
 
 /**
  * generator class for creating Form and Grid classes
@@ -69,30 +72,43 @@ class FormGenerator implements GeneratorInterface
             return;
         }
         
+        $runtime = array();
+        if ($params->getParam('runtimeConfiguration') instanceof Config) {
+            $runtime = (array) $params->getParam('runtimeConfiguration')->get('form');
+        }
+        
         foreach ($descriptor->listGenerator() as $name=>$dataSet) {
-            $this->generateBaseGrid($name, $dataSet);
-            $this->generateGrid($name);
+            if (! array_key_exists($name, $runtime)) {
+                $runtime[$name] = array();
+            }
+            $runtime[$name]['baseGrid'] = $this->generateBaseGrid($dataSet);
+            $runtime[$name]['grid'] = $this->generateGrid($dataSet, $runtime[$name]['baseGrid']);
             
-            $this->generateBaseForm($name, $dataSet);
-            $this->generateForm($name);
+            $runtime[$name]['baseForm'] = $this->generateBaseForm($dataSet);
+            $runtime[$name]['form'] = $this->generateForm($dataSet, $runtime[$name]['baseForm']);
             
             $this->console(sprintf('writing generated forms for "%s" table', $name));
         }
+        
+        return $runtime;
     }
     
-    protected function generateForm($name)
+    protected function generateForm(DataSetDescriptorInterface $dataSet, $extends)
     {
+        $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . "Form";
+        $namespace = $this->params->getParam("moduleName") . "\Form";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
+        
         $gridClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Form/" . $className . ".php";
         if (file_exists($gridClassFilePath)) {
-            return;
+            return $fullClassName;
         }
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $namespace = $this->params->getParam("moduleName") . "\Form";
         $class->setNamespaceName($namespace);
-        $class->setExtendedClass("\\" . $namespace . "\BaseForm\Base" . $className);
+        $class->setExtendedClass($extends);
         
         $file = new FileGenerator();
         
@@ -106,20 +122,24 @@ class FormGenerator implements GeneratorInterface
             ->setDocBlock($docBlock);
         
         file_put_contents($gridClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
-     /**
+    /**
      * generates code for forms and saves in file (overrides file if exists)
-     * @param string $name
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     * @param DataSetDescriptorInterface $dataSet
+     * @return string
      */
-    protected function generateBaseForm($name, $dataSet)
+    protected function generateBaseForm(DataSetDescriptorInterface $dataSet)
     {
+        $name = $dataSet->getName();
         $className = "Base" . $this->underscoreToCamelCase->filter($name) . "Form";
+        $namespace = $this->params->getParam("moduleName") . "\Form\BaseForm";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setNamespaceName($this->params->getParam("moduleName") . "\Form\BaseForm");
+        $class->setNamespaceName($namespace);
         $class->setExtendedClass($this->baseFormParent);
         
         foreach ($this->baseFormUses as $use) {
@@ -139,16 +159,17 @@ class FormGenerator implements GeneratorInterface
         $file->setClass($class)
                 ->setDocBlock($docBlock);
         
-        $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Form/BaseForm/" . $className . ".php";
-        file_put_contents($modelClassFilePath, $file->generate());
+        $formClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Form/BaseForm/" . $className . ".php";
+        file_put_contents($formClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
     /**
      * generates init method
      * @param \Zend\Code\Generator\ClassGenerator $class
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     * @param DataSetDescriptorInterface $dataSet
      */
-    protected function generateFormConstruct(ClassGenerator $class, \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet)
+    protected function generateFormConstruct(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
         $method = new MethodGenerator("__contruct");
         $param = new \Zend\Code\Generator\ParameterGenerator("name");
@@ -181,17 +202,21 @@ class FormGenerator implements GeneratorInterface
     }
     
      /**
-     * generates code for base grid and saves in file (overrides file if exists)
-     * @param string $name
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
-     */
-    protected function generateBaseGrid($name, $dataSet)
+      * generates code for base grid and saves in file (overrides file if exists)
+      * 
+      * @param DataSetDescriptorInterface $dataSet 
+      * @return string
+      */
+    protected function generateBaseGrid(DataSetDescriptorInterface $dataSet)
     {
+        $name = $dataSet->getName();
         $className = "Base" . $this->underscoreToCamelCase->filter($name) . "Grid";
+        $namespace = $this->params->getParam("moduleName") . "\Grid\BaseGrid";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setNamespaceName($this->params->getParam("moduleName") . "\Grid\BaseGrid");
+        $class->setNamespaceName($namespace);
         $class->setExtendedClass($this->baseGridParent);
         
         foreach ($this->baseGridUses as $use) {
@@ -217,14 +242,15 @@ class FormGenerator implements GeneratorInterface
         
         $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Grid/BaseGrid/" . $className . ".php";
         file_put_contents($modelClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
     /**
      * generates init method
      * @param \Zend\Code\Generator\ClassGenerator $class
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     * @param DataSetDescriptorInterface $dataSet
      */
-    protected function generateInitMehod(ClassGenerator $class, $dataSet)
+    protected function generateInitMehod(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
         $controller = $this->params->getParam("moduleName") . "/" . $dataSet->getName();
         $editLink = $controller . "/edit/%s";
@@ -241,9 +267,9 @@ class FormGenerator implements GeneratorInterface
     /**
      * generates config property
      * @param \Zend\Code\Generator\ClassGenerator $class
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet
+     * @param DataSetDescriptorInterface $dataSet
      */
-    protected function generateInitFiltersMehod(ClassGenerator $class, \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet)
+    protected function generateInitFiltersMehod(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
         $body = "";
         foreach ($dataSet->listGenerator() as $column) {
@@ -286,9 +312,9 @@ class FormGenerator implements GeneratorInterface
     /**
      * generates headers
      * @param \Zend\Code\Generator\ClassGenerator $class
-     * @param \VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor $dataSet
+     * @param DataSetDescriptorInterface $dataSet
      */
-    protected function generateHeaderProperty(ClassGenerator $class, $dataSet)
+    protected function generateHeaderProperty(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
         $property = new \Zend\Code\Generator\PropertyGenerator("headers");
         $property->setFlags(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED);
@@ -310,21 +336,26 @@ class FormGenerator implements GeneratorInterface
     
     /**
      * generates file with target grid (if not exists yet)
-     * @param string $name
+     * 
+     * @param DataSetDescriptorInterface $dataSet
+     * @param string $extends
      */
-    protected function generateGrid($name)
+    protected function generateGrid(DataSetDescriptorInterface $dataSet, $extends)
     {
+        $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . "Grid";
+        $namespace = $this->params->getParam("moduleName") . "\Grid";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
+        
         $gridClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Grid/" . $className . ".php";
         if (file_exists($gridClassFilePath)) {
-            return;
+            return $fullClassName;
         }
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $namespace = $this->params->getParam("moduleName") . "\Grid";
         $class->setNamespaceName($namespace);
-        $class->setExtendedClass("\\" . $namespace . "\BaseGrid\Base" . $className);
+        $class->setExtendedClass($extends);
         
         $file = new FileGenerator();
         
@@ -338,14 +369,15 @@ class FormGenerator implements GeneratorInterface
             ->setDocBlock($docBlock);
         
         file_put_contents($gridClassFilePath, $file->generate());
+        return $fullClassName;
     }
     
     /**
      * gets field type for PHP
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column
+     * @param FieldDescriptorInterface $column
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function getFieldType(FieldDescriptorInterface $column)
     {
         switch (strtolower($column->getType())) {
             case "int":

@@ -6,7 +6,6 @@ use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Filter\Word\UnderscoreToCamelCase;
-use VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor;
 use VisioCrudModeler\Descriptor\AbstractFieldDescriptor;
 use VisioCrudModeler\Descriptor\DataSetDescriptorInterface;
 use VisioCrudModeler\Descriptor\FieldDescriptorInterface;
@@ -94,15 +93,10 @@ class ModelGenerator implements GeneratorInterface
                 $runtime[$name] = array();
             }
             $runtime[$name]['baseModel'] = $this->generateBaseModel($dataSet);
-            $model = $this->generateModel($dataSet, $runtime[$name]['baseModel']);
-            if (! empty($model)) {
-                $runtime[$name]['model'] = $model;
-            }
+            $runtime[$name]['model'] = $this->generateModel($dataSet, $runtime[$name]['baseModel']);
+            
             $runtime[$name]['baseTable'] = $this->generateBaseTableGateway($dataSet, $runtime[$name]['model']);
-            $table = $this->generateTableGateway($dataSet, $runtime[$name]['baseTable']);
-            if (! empty($table)) {
-                $runtime[$name]['table'] = $table;
-            }
+            $runtime[$name]['table'] = $this->generateTableGateway($dataSet, $runtime[$name]['baseTable']);
             
             $this->console(sprintf('writing generated model for "%s" table', $name));
         }
@@ -113,7 +107,8 @@ class ModelGenerator implements GeneratorInterface
     /**
      * generates code for base table gateway and saves in file (overrides file if exists)
      *
-     * @param string $name            
+     * @param DataSetDescriptorInterface $dataSet
+     * @return string     
      */
     protected function generateBaseTableGateway(DataSetDescriptorInterface $dataSet, $entityPrototype)
     {
@@ -181,7 +176,9 @@ class ModelGenerator implements GeneratorInterface
     /**
      * generates file with target table gateway (if not exists yet)
      *
+     * @param DataSetDescriptorInterface $dataSet
      * @param string $name            
+     * @return string
      */
     protected function generateTableGateway(DataSetDescriptorInterface $dataSet, $extends)
     {
@@ -192,7 +189,7 @@ class ModelGenerator implements GeneratorInterface
         
         $tableClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/" . $className . ".php";
         if (file_exists($tableClassFilePath)) {
-            return;
+            return $fullClassName;
         }
         
         $class = new ClassGenerator();
@@ -218,7 +215,9 @@ class ModelGenerator implements GeneratorInterface
     /**
      * generates file with target model (if not exists yet)
      *
-     * @param DataSetDescriptorInterface $dataSet            
+     * @param DataSetDescriptorInterface $dataSet
+     * @param string $extends
+     * @return string   
      */
     protected function generateModel(DataSetDescriptorInterface $dataSet, $extends)
     {
@@ -229,7 +228,7 @@ class ModelGenerator implements GeneratorInterface
         
         $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/" . $className . ".php";
         if (file_exists($modelClassFilePath)) {
-            return;
+            return $fullClassName;
         }
         
         $class = new ClassGenerator();
@@ -255,7 +254,7 @@ class ModelGenerator implements GeneratorInterface
     /**
      * generates code for base model and saves in file (overrides file if exists)
      *
-     * @param \VisioCrudModeler\Descriptor\DataSetDescriptorInterface $dataSet            
+     * @param DataSetDescriptorInterface $dataSet            
      * @return string
      */
     protected function generateBaseModel(DataSetDescriptorInterface $dataSet)
@@ -301,7 +300,7 @@ class ModelGenerator implements GeneratorInterface
      * generates propertiy, getter, setter and other methods...
      *
      * @param \Zend\Code\Generator\ClassGenerator $class            
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column            
+     * @param FieldDescriptorInterface $column            
      */
     protected function generateColumnRelatedElements(ClassGenerator $class, FieldDescriptorInterface $column)
     {
@@ -349,7 +348,7 @@ class ModelGenerator implements GeneratorInterface
      * generates get function for field
      *
      * @param \VisioCrudModeler\Descriptor\FieldDescriptorInterface $column            
-     * @param string $propertyName            
+     * @param string $name            
      * @return \Zend\Code\Generator\MethodGenerator
      */
     protected function createGetMethod(FieldDescriptorInterface $column, $name)
@@ -401,7 +400,7 @@ class ModelGenerator implements GeneratorInterface
 
     /**
      *
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column            
+     * @param FieldDescriptorInterface $column            
      * @param string $name            
      * @return \Zend\Code\Generator\PropertyGenerator
      */
