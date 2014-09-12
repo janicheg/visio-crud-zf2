@@ -4,7 +4,7 @@ namespace VisioCrudModeler\Exception;
 /**
  * exception class for situations when requested information is not found
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class InformationNotFound extends Exception

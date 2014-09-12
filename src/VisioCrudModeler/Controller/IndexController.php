@@ -25,7 +25,7 @@ class IndexController extends AbstractActionController
         $dependencyTree=$this->getServiceLocator()->get('config')['VisioCrudModeler']['dependency'];
         \Zend\Debug\Debug::dump($dependencyTree);
         $dependency=new Dependency($dependencyTree);
-        \Zend\Debug\Debug::dump($dependency->dependencyListFor('model'));
+        \Zend\Debug\Debug::dump(var_export($dependency->dependencyListFor('all'),true));
         
         return new ViewModel(array(
         	'descriptor'=>$dataSourceDescriptor

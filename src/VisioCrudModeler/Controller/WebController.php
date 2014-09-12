@@ -9,7 +9,7 @@ use VisioCrudModeler\Generator\Strategy\WebGenerator;
 /**
  * controller for handling console commands
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class WebController extends AbstractActionController

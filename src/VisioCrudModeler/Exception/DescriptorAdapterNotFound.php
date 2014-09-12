@@ -4,7 +4,7 @@ namespace VisioCrudModeler\Exception;
 /**
  * exception thrown in event that requested datase is not found
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class DescriptorAdapterNotFound extends Exception

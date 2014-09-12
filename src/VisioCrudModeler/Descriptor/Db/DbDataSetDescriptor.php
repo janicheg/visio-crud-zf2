@@ -9,8 +9,15 @@ use VisioCrudModeler\Descriptor\ListGeneratorInterface;
 /**
  * database DataSet descriptor
  *
- * @author bweres01
- *        
+ * describes DB DataSource DataSet. Maps to a database table.
+ * Is indirectly constructed in DataSource descriptor on demand, whenever
+ * it is requested. Also can create DB Field descriptors capable of resolving references
+ *
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGeneratorInterface
 {
@@ -23,7 +30,6 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
      * @var \ArrayObject
      */
     protected $fieldDescriptors = null;
-
 
     /**
      * (non-PHPdoc)
@@ -55,7 +61,7 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
         return array_keys($this->definition['fields']);
     }
 
-     /**
+    /**
      * (non-PHPdoc)
      *
      * @see \VisioCrudModeler\Descriptor\DataSetDescriptorInterface::getFields()

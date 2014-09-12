@@ -4,9 +4,47 @@ namespace VisioCrudModeler\Generator;
 use VisioCrudModeler\Exception\CircularDependencyException;
 
 /**
- * class for calculating generators dependency
+ * class for calculating generators dependency between generators
+ * 
+ * excpets array with keys mapped to generator names, while values 
+ * holds array list of dependant generators in order from first to last. ie.
+ * 
+ * <code>
+ * array(
+ *          'view' => array(
+ *              'controller'
+ *          ),
+ *          'controller' => array(
+ *              'inputFilter',
+ *              'form',
+ *              'model'
+ *          ),
+ *          'form' => array(
+ *              'module',
+ *              'inputFilter'
+ *          ),
+ *          'model' => array(
+ *              'module',
+ *              'inputFilter'
+ *          ),
+ *          'inputFilter' => array(
+ *              'module'
+ *          ),
+ *          'all' => array(
+ *              'module',
+ *              'inputFilter',
+ *              'model',
+ *              'form',
+ *              'controller',
+ *              'view'
+ *          )
+ *      )
+ * </code>
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
  *        
  */
 class Dependency
@@ -57,6 +95,6 @@ class Dependency
                 }
             }
         }
-        return array_unique(array_reverse(array_values($list), false));
+        return array_values(array_unique(array_reverse(array_values($list), false)));
     }
 }

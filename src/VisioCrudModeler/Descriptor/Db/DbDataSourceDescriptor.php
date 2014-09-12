@@ -9,9 +9,13 @@ use VisioCrudModeler\Descriptor\ListGeneratorInterface;
 /**
  * descriptor for database sources
  *
- * @author bweres01
- *        
- * @method \VisioCrudModeler\DataSource\DbDataSource getDataSource
+ * allows resolving structure for any database implementing information_schema (for example MySQL). 
+ * Also support automatic recognition of current database for MySQL database.
+ *
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
  */
 class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements ListGeneratorInterface
 {
@@ -205,8 +209,6 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
         if (is_null($this->name)) {
             if ($this->adapter->getPlatform() instanceof \Zend\Db\Adapter\Platform\Mysql) {
                 $this->name = $this->currentDatabaseMysql();
-            } elseif ($this->adapter->getPlatform() instanceof \Zend\Db\Adapter\Platform\Sqlite) {
-                $this->name = 'sqlite';
             } else {
                 throw new \RuntimeException('Automatic database name resolving is not supported for platform: ' . get_class($this->adapter->getPlatform()));
             }
@@ -229,5 +231,4 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
             return array_shift($current);
         }
     }
-
 }

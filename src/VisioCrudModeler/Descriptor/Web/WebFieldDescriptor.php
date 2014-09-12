@@ -7,7 +7,7 @@ use VisioCrudModeler\Descriptor\AbstractFieldDescriptor;
 /**
  * DataSet Field descriptor
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class WebFieldDescriptor extends AbstractFieldDescriptor

@@ -11,7 +11,10 @@ use Zend\Filter\Word\UnderscoreToCamelCase;
 /**
  * generator class for creating Controller classes
  *
- * @author bweres01, robertbodych
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>, robertbodych
+ * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
  *        
  */
 class ControllerGenerator implements GeneratorInterface
