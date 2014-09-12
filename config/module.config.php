@@ -7,6 +7,14 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 return array(
+    'asset_manager' => array(
+        'resolver_configs' => array(
+            'paths' => array(
+                __DIR__ . '/../src/VisioCrudModeler/Public',
+            ),
+        ),
+    ),
+
     'router' => array(
         'routes' => array(
             
