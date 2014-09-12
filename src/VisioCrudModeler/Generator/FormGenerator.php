@@ -158,8 +158,14 @@ class FormGenerator implements GeneratorInterface
         
         foreach ($dataSet->listGenerator() as $column)
         {
-            
             $name = $column->getName();
+            $columnInfo = $column->info();
+            if ($columnInfo["label"])
+            {
+                $body .= sprintf($this->codeLibrary()->get("form.constructor.field.fromWeb"), $columnInfo["name"], $columnInfo["type"], $columnInfo["label"]);
+                continue;
+            }
+            
             if($column->info("key") == "PRI") {
                 $body .= sprintf($this->codeLibrary()->get("form.constructor.field.primary"), $name);
                 continue;
