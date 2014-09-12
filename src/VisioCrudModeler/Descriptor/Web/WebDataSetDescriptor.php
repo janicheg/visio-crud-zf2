@@ -10,7 +10,7 @@ use VisioCrudModeler\Descriptor\AbstractDataSourceDescriptor;
 /**
  * database DataSet descriptor
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class WebDataSetDescriptor extends AbstractDataSetDescriptor implements ListGeneratorInterface

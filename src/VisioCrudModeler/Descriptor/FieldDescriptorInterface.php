@@ -1,6 +1,15 @@
 <?php
 namespace VisioCrudModeler\Descriptor;
 
+/**
+ * field descriptor interface
+ *
+ * @author bweres01
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
+ */
 interface FieldDescriptorInterface
 {
 
@@ -17,5 +26,4 @@ interface FieldDescriptorInterface
      * @return string
      */
     public function getType();
-
 }

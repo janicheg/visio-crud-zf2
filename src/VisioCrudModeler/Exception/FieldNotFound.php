@@ -4,7 +4,7 @@ namespace VisioCrudModeler\Exception;
 /**
  * Exception for fields not found in DataSet
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class FieldNotFound extends Exception

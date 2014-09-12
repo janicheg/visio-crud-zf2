@@ -10,10 +10,13 @@ use VisioCrudModeler\Descriptor\DataSourceDescriptorInterface;
 use VisioCrudModeler\Generator\Config\Config;
 
 /**
- * strategy class for running generators according to passed params
+ * abstract strategy class implementing common features required to execute generators
  *
- * @author bweres01
- *        
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 abstract class AbstractGenerator implements ServiceLocatorAwareInterface, GeneratorInterface
 {
@@ -39,7 +42,6 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
      */
     protected $params = null;
 
-    
     /**
      * constructor, takes generator params interface
      *
@@ -233,7 +235,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
         
         $descriptorAdapterName = $this->params->getParam('descriptor');
         
-        if(!isset($descriptors[$descriptorAdapterName])){
+        if (! isset($descriptors[$descriptorAdapterName])) {
             throw new \VisioCrudModeler\Exception\DescriptorAdapterNotFound("Descriptor adapter name " . $descriptorAdapterName . " doesnt exists ");
         }
         
@@ -241,7 +243,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
         
         return $this->getDi()->get($descriptor, array(
             'adapter' => $adapter,
-            'params'  => $this->params,
+            'params' => $this->params
         ));
     }
 }

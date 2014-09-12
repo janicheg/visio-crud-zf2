@@ -4,7 +4,7 @@ namespace VisioCrudModeler\Generator\Strategy;
 /**
  * strategy class for running generators according to passed params
  *
- * @author bweres01
+ * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
  *        
  */
 class WebGenerator extends AbstractGenerator
