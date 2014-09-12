@@ -25,7 +25,7 @@ class IndexController extends AbstractActionController
         $dependencyTree=$this->getServiceLocator()->get('config')['VisioCrudModeler']['dependency'];
         \Zend\Debug\Debug::dump($dependencyTree);
         $dependency=new Dependency($dependencyTree);
-        \Zend\Debug\Debug::dump($dependency->dependencyListFor('model'));
+        \Zend\Debug\Debug::dump(var_export($dependency->dependencyListFor('all'),true));
         
         return new ViewModel(array(
         	'descriptor'=>$dataSourceDescriptor
@@ -35,8 +35,9 @@ class IndexController extends AbstractActionController
     
     public function modelerAction()
     {
-        $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataSourceDescriptor=new DbDataSourceDescriptor($db);
+        $adapter = $this->getDbAdapter();
+        
+        $dataSourceDescriptor=new DbDataSourceDescriptor($adapter);
         
         $form = new \VisioCrudModeler\Form\CustomerForm();
         $customerFilter = new CustomerFilter();
@@ -50,5 +51,16 @@ class IndexController extends AbstractActionController
             'config' =>  $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']
         );
     }
+    
+    
+    /**
+     * 
+     * @return \Zend\Db\Adapter\Adapter
+     */
+    public function getDbAdapter()
+    {
+        return $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+    }
+    
     
 }

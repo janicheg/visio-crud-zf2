@@ -169,5 +169,15 @@ return array(
                                     "        'class' => 'form-control btn-success',\n".
                                     "        'style' => 'width: 50%'\n".
                                     "    ),\n".
-                                    "));\n"
+                                    "));\n",
+    'form.constructor.field.fromWeb'=>"\$this->add(array(\n".
+                                    "    'name' => '%s',\n".
+                                    "    'attributes' => array(\n".
+                                    "        'type'  => '%s',\n".
+                                    "        'class' => 'form-control'\n".
+                                    "    ),\n".
+                                    "    'options' => array(\n".
+                                    "        'label' => '%s',\n".
+                                    "    ),\n".
+                                    "));\n\n",
 );
