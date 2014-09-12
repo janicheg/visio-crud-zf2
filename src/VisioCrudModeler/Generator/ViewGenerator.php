@@ -77,7 +77,7 @@ class ViewGenerator implements GeneratorInterface
     	file_put_contents($updateViewPath, $this->genertateUpdateView($moduleName));
     	
     	
-    	$readViewPath = $viewFilePath.'/read.php';
+    	$readViewPath = $viewFilePath.'/read.phtml';
     	file_put_contents($readViewPath, $this->genertateReadView($moduleName, $viewName));
     
     }
