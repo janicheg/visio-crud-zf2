@@ -17,14 +17,14 @@ interface ReferenceFieldInterface
 {
 
     /**
-     * returns referenced DataSet name
+     * returns referenced DataSet name, null if empty
      *
      * @return string
      */
     public function referencedDataSetName();
 
     /**
-     * returns referenced Field name
+     * returns referenced Field name, null if empty
      *
      * @return string
      */

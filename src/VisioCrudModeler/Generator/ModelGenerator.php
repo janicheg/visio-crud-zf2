@@ -8,6 +8,10 @@ use Zend\Code\Generator\DocBlock\Tag\GenericTag;
 use Zend\Filter\Word\UnderscoreToCamelCase;
 use VisioCrudModeler\Descriptor\Db\DbDataSetDescriptor;
 use VisioCrudModeler\Descriptor\AbstractFieldDescriptor;
+use VisioCrudModeler\Descriptor\DataSetDescriptorInterface;
+use VisioCrudModeler\Descriptor\FieldDescriptorInterface;
+use VisioCrudModeler\Descriptor\ReferenceFieldInterface;
+use VisioCrudModeler\Generator\Config\Config;
 
 /**
  * generator class for creating Model classes and table gateways
@@ -80,14 +84,30 @@ class ModelGenerator implements GeneratorInterface
             return;
         }
         
+        $runtime = array();
+        if ($params->getParam('runtimeConfiguration') instanceof Config) {
+            $runtime = (array) $params->getParam('runtimeConfiguration')->get('model');
+        }
+        
         foreach ($descriptor->listGenerator() as $name => $dataSet) {
-            $this->generateBaseModel($name, $dataSet);
-            $this->generateModel($name);
-            $this->generateBaseTableGateway($name, $dataSet);
-            $this->generateTableGateway($name);
+            if (! array_key_exists($name, $runtime)) {
+                $runtime[$name] = array();
+            }
+            $runtime[$name]['baseModel'] = $this->generateBaseModel($dataSet);
+            $model = $this->generateModel($dataSet, $runtime[$name]['baseModel']);
+            if (! empty($model)) {
+                $runtime[$name]['model'] = $model;
+            }
+            $runtime[$name]['baseTable'] = $this->generateBaseTableGateway($dataSet, $runtime[$name]['model']);
+            $table = $this->generateTableGateway($dataSet, $runtime[$name]['baseTable']);
+            if (! empty($table)) {
+                $runtime[$name]['table'] = $table;
+            }
             
             $this->console(sprintf('writing generated model for "%s" table', $name));
         }
+        
+        return $runtime;
     }
 
     /**
@@ -95,16 +115,18 @@ class ModelGenerator implements GeneratorInterface
      *
      * @param string $name            
      */
-    protected function generateBaseTableGateway($name, DbDataSetDescriptor $dataSet)
+    protected function generateBaseTableGateway(DataSetDescriptorInterface $dataSet, $entityPrototype)
     {
+        $name = $dataSet->getName();
+        
         $camelName = $this->underscoreToCamelCase->filter($name);
         $className = "Base" . $camelName . "Table";
+        $namespace = $this->params->getParam("moduleName") . "\Table\BaseTable";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $class = new ClassGenerator();
         $class->setName($className);
         $class->setExtendedClass($this->baseTablegatewayParent);
-        
-        $namespace = $this->params->getParam("moduleName") . "\Table\BaseTable";
         $class->setNamespaceName($namespace);
         
         $tableProperty = new \Zend\Code\Generator\PropertyGenerator();
@@ -116,7 +138,7 @@ class ModelGenerator implements GeneratorInterface
         $arrayObjectPrototypeClassProperty = new \Zend\Code\Generator\PropertyGenerator();
         $arrayObjectPrototypeClassProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)
             ->setName("arrayObjectPrototypeClass")
-            ->setDefaultValue($this->params->getParam("moduleName") . "\Model\\" . $camelName);
+            ->setDefaultValue($entityPrototype);
         $class->addPropertyFromGenerator($arrayObjectPrototypeClassProperty);
         
         $this->setupPrimaryKey($class, $dataSet);
@@ -126,26 +148,29 @@ class ModelGenerator implements GeneratorInterface
             ->setTag(new GenericTag('project', $this->params->getParam('project')))
             ->setTag(new GenericTag('license', $this->params->getParam('license')))
             ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        $class->setDocBlock($docBlock);
         
         $file = new FileGenerator();
-        $file->setClass($class)->setDocBlock($docBlock);
+        $file->setClass($class);
         
         $tableClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/BaseTable/" . $className . ".php";
         file_put_contents($tableClassFilePath, $file->generate());
+        return $fullClassName;
     }
 
     /**
      * setups primary key for tabel acording to dataset fields descriptor
      *
      * @param ClassGenerator $class            
-     * @param DbDataSetDescriptor $dataSet            
+     * @param DataSetDescriptorInterface $dataSet            
      */
-    public function setupPrimaryKey(ClassGenerator $class, DbDataSetDescriptor $dataSet)
+    protected function setupPrimaryKey(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
-        $keyNameProperty = new \Zend\Code\Generator\PropertyGenerator();
-        $keyNameProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)->setName('keyName');
-        foreach ($dataSet->listGenerator() as $name => $field) {
-            if (strpos($field->info(AbstractFieldDescriptor::KEY), 'PRI') !== false) {
+        foreach ($dataSet->listFields() as $name) {
+            $field = $dataSet->getFieldDescriptor($name);
+            if ($field instanceof AbstractFieldDescriptor && strpos($field->info(AbstractFieldDescriptor::KEY), 'PRI') !== false) {
+                $keyNameProperty = new \Zend\Code\Generator\PropertyGenerator();
+                $keyNameProperty->addFlag(\Zend\Code\Generator\PropertyGenerator::FLAG_PROTECTED)->setName('keyName');
                 $keyNameProperty->setDefaultValue($name);
                 $class->addPropertyFromGenerator($keyNameProperty);
                 break;
@@ -158,9 +183,13 @@ class ModelGenerator implements GeneratorInterface
      *
      * @param string $name            
      */
-    protected function generateTableGateway($name)
+    protected function generateTableGateway(DataSetDescriptorInterface $dataSet, $extends)
     {
+        $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . "Table";
+        $namespace = $this->params->getParam("moduleName") . "\Table";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
+        
         $tableClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Table/" . $className . ".php";
         if (file_exists($tableClassFilePath)) {
             return;
@@ -168,9 +197,8 @@ class ModelGenerator implements GeneratorInterface
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $namespace = $this->params->getParam("moduleName") . "\Table";
         $class->setNamespaceName($namespace);
-        $class->setExtendedClass("\\" . $namespace . "\BaseTable\Base" . $className);
+        $class->setExtendedClass($extends);
         
         $file = new FileGenerator();
         
@@ -179,20 +207,26 @@ class ModelGenerator implements GeneratorInterface
             ->setTag(new GenericTag('project', $this->params->getParam('project')))
             ->setTag(new GenericTag('license', $this->params->getParam('license')))
             ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        $class->setDocBlock($docBlock);
         
-        $file->setClass($class)->setDocBlock($docBlock);
+        $file->setClass($class);
         
         file_put_contents($tableClassFilePath, $file->generate());
+        return $fullClassName;
     }
 
     /**
      * generates file with target model (if not exists yet)
      *
-     * @param string $name            
+     * @param DataSetDescriptorInterface $dataSet            
      */
-    protected function generateModel($name)
+    protected function generateModel(DataSetDescriptorInterface $dataSet, $extends)
     {
+        $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name);
+        $namespace = $this->params->getParam("moduleName") . "\Model";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
+        
         $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/" . $className . ".php";
         if (file_exists($modelClassFilePath)) {
             return;
@@ -200,9 +234,8 @@ class ModelGenerator implements GeneratorInterface
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $namespace = $this->params->getParam("moduleName") . "\Model";
         $class->setNamespaceName($namespace);
-        $class->setExtendedClass("\\" . $namespace . "\BaseModel\Base" . $className);
+        $class->setExtendedClass($extends);
         
         $file = new FileGenerator();
         
@@ -211,25 +244,30 @@ class ModelGenerator implements GeneratorInterface
             ->setTag(new GenericTag('project', $this->params->getParam('project')))
             ->setTag(new GenericTag('license', $this->params->getParam('license')))
             ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        $class->setDocBlock($docBlock);
         
-        $file->setClass($class)->setDocBlock($docBlock);
+        $file->setClass($class);
         
         file_put_contents($modelClassFilePath, $file->generate());
+        return $fullClassName;
     }
 
     /**
      * generates code for base model and saves in file (overrides file if exists)
      *
-     * @param string $name            
-     * @param \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet            
+     * @param \VisioCrudModeler\Descriptor\DataSetDescriptorInterface $dataSet            
+     * @return string
      */
-    protected function generateBaseModel($name, \VisioCrudModeler\Descriptor\ListGeneratorInterface $dataSet)
+    protected function generateBaseModel(DataSetDescriptorInterface $dataSet)
     {
+        $name = $dataSet->getName();
         $className = "Base" . $this->underscoreToCamelCase->filter($name);
+        $namespace = $this->params->getParam("moduleName") . "\Model\BaseModel";
+        $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $class = new ClassGenerator();
         $class->setName($className);
-        $class->setNamespaceName($this->params->getParam("moduleName") . "\Model\BaseModel");
+        $class->setNamespaceName($namespace);
         $class->setExtendedClass($this->baseModelParent);
         
         foreach ($this->baseModelUses as $use) {
@@ -238,7 +276,8 @@ class ModelGenerator implements GeneratorInterface
         
         $this->addEventsMethods($class);
         
-        foreach ($dataSet->listGenerator() as $column) {
+        foreach ($dataSet->listFields() as $name) {
+            $column = $dataSet->getFieldDescriptor($name);
             $this->generateColumnRelatedElements($class, $column);
         }
         
@@ -249,11 +288,13 @@ class ModelGenerator implements GeneratorInterface
             ->setTag(new GenericTag('project', $this->params->getParam('project')))
             ->setTag(new GenericTag('license', $this->params->getParam('license')))
             ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        $class->setDocBlock($docBlock);
         
-        $file->setClass($class)->setDocBlock($docBlock);
+        $file->setClass($class);
         
         $modelClassFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Model/BaseModel/" . $className . ".php";
         file_put_contents($modelClassFilePath, $file->generate());
+        return $fullClassName;
     }
 
     /**
@@ -262,7 +303,7 @@ class ModelGenerator implements GeneratorInterface
      * @param \Zend\Code\Generator\ClassGenerator $class            
      * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column            
      */
-    protected function generateColumnRelatedElements(ClassGenerator $class, \VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function generateColumnRelatedElements(ClassGenerator $class, FieldDescriptorInterface $column)
     {
         $name = preg_replace("/[^a-z0-9_]/i", "_", $column->getName());
         $name = $this->underscoreToCamelCase->filter($name);
@@ -307,11 +348,11 @@ class ModelGenerator implements GeneratorInterface
     /**
      * generates get function for field
      *
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column            
+     * @param \VisioCrudModeler\Descriptor\FieldDescriptorInterface $column            
      * @param string $propertyName            
      * @return \Zend\Code\Generator\MethodGenerator
      */
-    protected function createGetMethod($column, $name)
+    protected function createGetMethod(FieldDescriptorInterface $column, $name)
     {
         $propertyName = lcfirst($name);
         $method = new MethodGenerator();
@@ -332,10 +373,11 @@ class ModelGenerator implements GeneratorInterface
 
     /**
      *
-     * @param string $propertyName            
+     * @param FieldDescriptorInterface $column            
+     * @param string $name            
      * @return \Zend\Code\Generator\MethodGenerator
      */
-    protected function createSetMethod($column, $name)
+    protected function createSetMethod(FieldDescriptorInterface $column, $name)
     {
         $propertyName = lcfirst($name);
         $parameter = new \Zend\Code\Generator\ParameterGenerator();
@@ -363,7 +405,7 @@ class ModelGenerator implements GeneratorInterface
      * @param string $name            
      * @return \Zend\Code\Generator\PropertyGenerator
      */
-    protected function createProperty(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column, $name)
+    protected function createProperty(FieldDescriptorInterface $column, $name)
     {
         $type = $this->getFieldType($column);
         $docblock = new \Zend\Code\Generator\DocblockGenerator('Column: ' . $column->getName());
@@ -372,9 +414,10 @@ class ModelGenerator implements GeneratorInterface
             "description" => $type
         ));
         
-        if (method_exists($column, 'getReferencedField') && $column->getReferencedField()) {
-            $reference = $column->getReferencedField();
-            $docblock->setLongDescription("Reference to " . $column->referencedDataSetName() . "." . $reference->getName());
+        if ($column instanceof ReferenceFieldInterface) {
+            if ($column->referencedFieldName()) {
+                $docblock->setLongDescription("Reference to " . $column->referencedDataSetName() . "." . $column->referencedFieldName());
+            }
         }
         
         $property = new \Zend\Code\Generator\PropertyGenerator();
@@ -388,10 +431,10 @@ class ModelGenerator implements GeneratorInterface
     /**
      * gets field type for PHP
      *
-     * @param \VisioCrudModeler\Descriptor\Db\DbFieldDescriptor $column            
+     * @param \VisioCrudModeler\Descriptor\FieldDescriptorInterface $column            
      * @return string
      */
-    protected function getFieldType(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
+    protected function getFieldType(FieldDescriptorInterface $column)
     {
         switch (strtolower($column->getType())) {
             case "int":
