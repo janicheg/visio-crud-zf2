@@ -64,7 +64,7 @@ class ControllerGenerator implements GeneratorInterface
         
         $runtime = array();
         if ($params->getParam('runtimeConfiguration') instanceof Config) {
-            $runtime = (array) $params->getParam('runtimeConfiguration')->get('model');
+            $runtime = (array) $params->getParam('runtimeConfiguration')->get('controller');
         }
         
         foreach ($descriptor->listDataSets() as $name) {
@@ -90,10 +90,9 @@ class ControllerGenerator implements GeneratorInterface
     protected function updateModuleConfiguration(array $runtime)
     {
         if ($this->params->getParam('runtimeConfiguration') instanceof Config) {
-            $generatedConfigPath = (array) $this->params->getParam('runtimeConfiguration')->get('module')['generatedConfigPath'];
+            $generatedConfigPath = (string) $this->params->getParam('runtimeConfiguration')->get('module')['generatedConfigPath'];
             if (file_exists($generatedConfigPath)) {
                 $config = require $generatedConfigPath;
-                var_dump($config);
                 $routeBase = strtolower(preg_replace('@[^a-z]*@i', '', $this->params->getParam('moduleName')));
                 if (! isset($config['router']['routes'][$routeBase])) {
                     $config['router']['routes'][$routeBase] = array();
@@ -124,7 +123,7 @@ class ControllerGenerator implements GeneratorInterface
                     )
                 ));
                 foreach ($runtime as $name => $controllerClasses) {
-                    $invokableControllerName = preg_replace('@^\\@', '', $controllerClasses['controller']);
+                    $invokableControllerName = preg_replace('@^\\\\@', '', $controllerClasses['controller']);
                     $invokableControllerKey = preg_replace('@Controller$@', '', $invokableControllerName);
                     $config['controllers']['invokables'][$invokableControllerKey] = $invokableControllerName;
                 }
@@ -165,7 +164,7 @@ class ControllerGenerator implements GeneratorInterface
     {
         $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . 'Controller';
-        $namespace = $this->params->getParam("moduleName") . "\Controller\Base";
+        $namespace = $this->params->getParam("moduleName") . "\Controller";
         $fullClassName = '\\' . $namespace . '\\' . $className;
         
         $controllerFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Controller/" . $className . ".php";
