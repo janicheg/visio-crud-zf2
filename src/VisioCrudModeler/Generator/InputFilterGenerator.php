@@ -160,7 +160,7 @@ class InputFilterGenerator implements GeneratorInterface
      */
     protected function generateFilterForColumn(\VisioCrudModeler\Descriptor\AbstractFieldDescriptor $column)
     {
-        $columnInfo = $column->info();print_r($columnInfo);
+        $columnInfo = $column->info();
         
         $fieldFilter = $this->codeLibrary()->get("filter.constructor.body.input");
         
@@ -197,10 +197,6 @@ class InputFilterGenerator implements GeneratorInterface
         
         $validators = $this->generateValidators($column);
         return sprintf($fieldFilter, $name, $required, $filters, $validators);
-    }
-    
-    protected function buildFiltersFromInfo($incomeFilters) {
-        print_r($incomeFilters);
     }
     
     /**

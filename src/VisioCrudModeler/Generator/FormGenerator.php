@@ -160,7 +160,7 @@ class FormGenerator implements GeneratorInterface
         {
             $name = $column->getName();
             $columnInfo = $column->info();
-            if ($columnInfo["label"])
+            if (isset($columnInfo["label"]))
             {
                 $body .= sprintf($this->codeLibrary()->get("form.constructor.field.fromWeb"), $columnInfo["name"], $columnInfo["type"], $columnInfo["label"]);
                 continue;
