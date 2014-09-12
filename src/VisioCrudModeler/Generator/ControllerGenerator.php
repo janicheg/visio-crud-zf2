@@ -77,7 +77,84 @@ class ControllerGenerator implements GeneratorInterface
             $this->console(sprintf('writing generated controllers for "%s" table', $name));
         }
         
+        $this->updateModuleConfiguration($runtime);
+        
         return $runtime;
+    }
+
+    /**
+     * modifies module configuration to enable acces to generated controllers
+     *
+     * @param array $runtime            
+     */
+    protected function updateModuleConfiguration(array $runtime)
+    {
+        if ($this->params->getParam('runtimeConfiguration') instanceof Config) {
+            $generatedConfigPath = (array) $this->params->getParam('runtimeConfiguration')->get('module')['generatedConfigPath'];
+            if (file_exists($generatedConfigPath)) {
+                $config = require $generatedConfigPath;
+                var_dump($config);
+                $routeBase = strtolower(preg_replace('@[^a-z]*@i', '', $this->params->getParam('moduleName')));
+                if (! isset($config['router']['routes'][$routeBase])) {
+                    $config['router']['routes'][$routeBase] = array();
+                }
+                $config['router']['routes'][$routeBase] = array_merge_recursive($config['router']['routes'][$routeBase], array(
+                    'type' => 'Literal',
+                    'options' => array(
+                        'route' => '/' . $routeBase,
+                        'defaults' => array(
+                            '__NAMESPACE__' => $this->params->getParam('moduleName') . '\Controller',
+                            'controller' => 'Index',
+                            'action' => 'index'
+                        )
+                    ),
+                    'may_terminate' => true,
+                    'child_routes' => array(
+                        'default' => array(
+                            'type' => 'Segment',
+                            'options' => array(
+                                'route' => '/[:controller[/:action]][/:id]',
+                                'constraints' => array(
+                                    'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                                ),
+                                'defaults' => array()
+                            )
+                        )
+                    )
+                ));
+                foreach ($runtime as $name => $controllerClasses) {
+                    $invokableControllerName = preg_replace('@^\\@', '', $controllerClasses['controller']);
+                    $invokableControllerKey = preg_replace('@Controller$@', '', $invokableControllerName);
+                    $config['controllers']['invokables'][$invokableControllerKey] = $invokableControllerName;
+                }
+                $this->console('writing controller routes...');
+                $this->writeModuleConfig($config, $generatedConfigPath);
+                $this->console('routes written to: ' . $generatedConfigPath);
+            }
+        }
+    }
+
+    /**
+     * writes module config
+     *
+     * @param array $config            
+     * @param string $path            
+     */
+    protected function writeModuleConfig(array $config, $path)
+    {
+        $moduleName = $this->params->getParam('moduleName');
+        $generatorConfig = new FileGenerator();
+        $docBlock = new DocBlockGenerator();
+        $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')));
+        $docBlock->setTag(new GenericTag('project', $this->params->getParam('project')));
+        $docBlock->setTag(new GenericTag('license', $this->params->getParam('license')));
+        $docBlock->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+        $docBlock->setShortDescription(sprintf($this->codeLibrary()
+            ->get('module.generatedConfigDescription'), $moduleName));
+        $generatorConfig->setDocBlock($docBlock);
+        $generatorConfig->setBody('return ' . var_export($config, true) . ';');
+        file_put_contents($path, $generatorConfig->generate());
     }
     
     /*
@@ -106,9 +183,9 @@ class ControllerGenerator implements GeneratorInterface
         
         $docBlock = new \Zend\Code\Generator\DocblockGenerator(sprintf($this->codeLibrary()->get('controller.standardControllerDescription'), $name));
         $docBlock->setTag(new GenericTag('author', $this->params->getParam('author')))
-        ->setTag(new GenericTag('project', $this->params->getParam('project')))
-        ->setTag(new GenericTag('license', $this->params->getParam('license')))
-        ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
+            ->setTag(new GenericTag('project', $this->params->getParam('project')))
+            ->setTag(new GenericTag('license', $this->params->getParam('license')))
+            ->setTag(new GenericTag('copyright', $this->params->getParam('copyright')));
         $class->setDocBlock($docBlock);
         
         $file->setClass($class);
