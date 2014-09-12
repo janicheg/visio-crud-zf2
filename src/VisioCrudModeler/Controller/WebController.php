@@ -7,16 +7,19 @@ use VisioCrudModeler\Generator\Config\Config;
 use VisioCrudModeler\Generator\Strategy\WebGenerator;
 
 /**
- * controller for handling console commands
- *
- * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
- *        
+ * Controller for handling web calls
+ * 
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class WebController extends AbstractActionController
 {
 
     /**
-     * handles running generators
+     * Ajax action for generating default structure
      */
     public function generateAction()
     {
@@ -48,6 +51,12 @@ class WebController extends AbstractActionController
         }
     }
     
+    /**
+     * Set request as json response
+     * 
+     * @param array $data 
+     * @return Response
+     */
     protected function jsonResponse($data)
     {
         $response = $this->getResponse();

@@ -2,10 +2,13 @@
 namespace VisioCrudModeler\Generator\Strategy;
 
 /**
- * strategy class for running generators according to passed params
+ * Web strategy to run all generators
  *
- * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
- *        
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 class WebGenerator extends AbstractGenerator
 {

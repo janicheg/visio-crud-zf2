@@ -1,10 +1,12 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * Web Filed Descriptor
+ * 
+ * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @license New BSD License
+ *         
  */
 namespace VisioCrudModeler\Controller;
 
