@@ -13,10 +13,10 @@ use Zend\Code\Generator\DocBlock\Tag\ParamTag;
  * generator class for building module structure
  *
  * @author Bartlomiej Wereszczynski <bartlomiej.wereszczynski@isobar.com>
- * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
- * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
+ * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
+ * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *        
+ *
  */
 class ModuleGenerator implements GeneratorInterface
 {
@@ -60,13 +60,12 @@ class ModuleGenerator implements GeneratorInterface
      */
     public function generate(\VisioCrudModeler\Generator\ParamsInterface $params)
     {
-        
         $this->params = $params;
         $this->createDirectories();
-        $this->createModuleConfig();
         $this->createModuleClass();
+        $config = $this->createModuleConfig();
         return array(
-            'generatedConfigPath' => $this->moduleRoot() . '/config/config.generated.php'
+            'generatedConfigPath' => $config
         );
     }
 
@@ -85,7 +84,7 @@ class ModuleGenerator implements GeneratorInterface
     /**
      * creates directory
      *
-     * @param string $dir            
+     * @param string $dir
      * @throws \RuntimeException
      */
     protected function createDir($dir)
@@ -104,25 +103,19 @@ class ModuleGenerator implements GeneratorInterface
      */
     protected function createModuleConfig()
     {
-        $moduleName = $this->params->getParam('moduleName');
-        $generatorConfig = new FileGenerator();
-        $generatorConfig->setDocBlock($this->getFileDocBlock());
-        $generatorConfig->getDocBlock()->setShortDescription(sprintf($this->codeLibrary()
-            ->get('module.generatedConfigDescription'), $moduleName));
-        $generatorConfig->setBody($this->codeLibrary()
-            ->get('standard.returnArray'));
-        $this->console('writing generated config');
-        file_put_contents($this->moduleRoot() . '/config/config.generated.php', $generatorConfig->generate());
-        if (! file_exists($this->moduleRoot() . '/config/module.config.php')) {
-            $moduleConfig = new FileGenerator();
-            $moduleConfig->setDocBlock($this->getFileDocBlock());
-            $moduleConfig->getDocBlock()->setShortDescription(sprintf($this->codeLibrary()
-                ->get('module.standardConfigDescription'), $moduleName));
-            $moduleConfig->setBody($this->codeLibrary()
-                ->get('module.standardConfigBody'));
-            $this->console('writing module config file');
-            file_put_contents($this->moduleRoot() . '/config/module.config.php', $moduleConfig->generate());
+        $config = array();
+        $configPath = $this->moduleRoot() . '/config/module.config.php';
+        if (file_exists($configPath)) {
+            $config = require $configPath;
         }
+        $moduleConfig = new FileGenerator();
+        $moduleConfig->setDocBlock($this->getFileDocBlock());
+        $moduleConfig->getDocBlock()->setShortDescription(sprintf($this->codeLibrary()
+            ->get('module.standardConfigDescription'), $this->params->getParam('moduleName')));
+        $moduleConfig->setBody('return ' . var_export($config, true).';');
+        $this->console('writing module config file');
+        file_put_contents($this->moduleRoot() . '/config/module.config.php', $moduleConfig->generate());
+        return $configPath;
     }
 
     /**
@@ -154,7 +147,7 @@ class ModuleGenerator implements GeneratorInterface
             $onBootstrapMethod->setParameter($eventParam);
             $moduleClass->addMethodFromGenerator($onBootstrapMethod);
             // config
-            $configMethod = new MethodGenerator('config', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.config.body'), new DocBlockGenerator($this->codeLibrary()->get('module.config.shortdescription'), $this->codeLibrary()->get('module.config.longdescription'), array()));
+            $configMethod = new MethodGenerator('getConfig', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.config.body'), new DocBlockGenerator($this->codeLibrary()->get('module.config.shortdescription'), $this->codeLibrary()->get('module.config.longdescription'), array()));
             $moduleClass->addMethodFromGenerator($configMethod);
             // getAutoloaderConfig
             $getAutoloaderConfigMethod = new MethodGenerator('getAutoloaderConfig', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.getAutoloaderConfig.body'), new DocBlockGenerator($this->codeLibrary()->get('module.getAutoloaderConfig.shortdescription'), $this->codeLibrary()->get('module.getAutoloaderConfig.longdescription'), array()));
@@ -205,7 +198,7 @@ class ModuleGenerator implements GeneratorInterface
     /**
      * proxy method for writing to console
      *
-     * @param string $message            
+     * @param string $message
      */
     protected function console($message)
     {
