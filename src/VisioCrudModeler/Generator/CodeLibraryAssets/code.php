@@ -7,7 +7,7 @@ return array(
     'module.onBootstrap.body'=>'$eventManager = $e->getApplication()->getEventManager();'."\n".'$moduleRouteListener = new \Zend\Mvc\ModuleRouteListener();'."\n".'$moduleRouteListener->attach($eventManager);',
     'module.onBootstrap.shortdescription'=>'standard bootstrap method',
     'module.onBootstrap.longdescription'=>'used to configure additional features, not available through module.config.php',
-    'module.config.body'=>'return include __DIR__ . \'/config/module.config.php\';',
+    'module.config.body'=>'$config = require __DIR__ . \'/config/module.config.php\';'."\n".'return $config;',
     'module.config.shortdescription'=>'loads module config',
     'module.config.longdescription'=>'standard method for loading module related configuration',
     'module.getAutoloaderConfig.body' =>'return array('."\n".
@@ -20,7 +20,7 @@ return array(
     'module.getAutoloaderConfig.shortdescription'=>'autoloader configuration',
     'module.getAutoloaderConfig.longdescription'=>'used to load module related class',
     'standard.returnArray'=>'return array();',
-    
+
     'model.getMethod.description'=>'Gets value for %s',
     'model.getMethodInt.body'=>'return intval($this->%s);',
     'model.getMethodFloat.body'=>'return floatval($this->%s);',
@@ -39,7 +39,7 @@ return array(
     'model.standardConfigDescription'=>'This file is generated automatically for model "%s". If you want to overwrite any generated configuration for this model, this file is the place to do it.',
     'table.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
     'table.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this table, this file is the place to do it.',
-    
+
     'filter.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
     'filter.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this filters and validators, this file is the place to do it.',
     'filter.constructor.body.begin'=>"\$inputFilter = \$this->getInputFilter();\n".
@@ -79,7 +79,7 @@ return array(
                                     "           array(\n".
                                     "               'name' => 'Digits'\n".
                                     "           ),",
-    
+
     'grid.generatedConfigDescription'=>'This file is generated automatically for table "%s". Do not change its contents as it will be overwritten in next pass of generator run.',
     'grid.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this grid, this file is the place to do it.',
     'grid.init.body'=>'$this->getHeader("edit")->getCell()->addDecorator("callable", array('."\n".
@@ -187,14 +187,14 @@ return array(
     'controller.readAction.description' => 'handles read operation for single entity',
     'controller.readAction.body' => '$id = (int) $this->params()->fromRoute(\'id\', 0);
 if (!$id) {
-    return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+    return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
 
 }
 $table = $this->getTable();
 $row = $table->findRow($id);
 
 $form = new %form%();
-$form->bind($customer);
+$form->bind($row);
 
 $request = $this->getRequest();
 if ($request->isPost()) {
@@ -202,11 +202,11 @@ if ($request->isPost()) {
     $row->setInputFilter($filter->getInputFilter());
     $form->setInputFilter($filter->getInputFilter());
     $form->setData($request->getPost());
-    
+
     if ($form->isValid()) {
         $row->exchangeArray($form->getData());
         $table->update($row);
-        return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+        return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
     }
 }
 
@@ -217,7 +217,7 @@ return array(
     'controller.updateAction.description' => 'handles updating entity data',
     'controller.updateAction.body' => '$id = (int) $this->params()->fromRoute(\'id\', 0);
 if (!$id) {
-    return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+    return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
 
 }
 $row = $this->getTable()->findRow($id);
@@ -231,11 +231,11 @@ if ($request->isPost()) {
     $row->setInputFilter($filter->getInputFilter());
     $form->setInputFilter($filter->getInputFilter());
     $form->setData($request->getPost());
-    
+
     if ($form->isValid()) {
         $row->exchangeArray($form->getData());
         $this->getTable()->update($row);
-        return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+        return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
     }
 }
 
@@ -246,13 +246,13 @@ return array(
     'controller.deleteAction.description' => 'handles deleting single entity',
     'controller.deleteAction.body' => '$id = (int) $this->params()->fromRoute(\'id\', 0);
 if (!$id) {
-    return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+    return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
 }
 $table = new $this->getTable();
 $row = $table->findRow($id);
 $table->delete($row);
 
-return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');',
+return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');',
     'controller.getTable.description' => 'returns table instance',
     'controller.getTable.body' => '$table = new %table%($this->getAdapter());
 $table->setEventManager($this->getEventManager());
@@ -264,21 +264,21 @@ $request = $this->getRequest();
 if ($request->isPost()) {
     $row = new %model%();
     $filter = new %filter%();
-    
+
     $form->setInputFilter($filter->getInputFilter());
     $form->setData($request->getPost());
 
     if ($form->isValid()) {
         $row->exchangeArray($form->getData());
-        $this->getTable()->insert($customer);
+        $this->getTable()->insert($row);
 
         // Redirect to list of albums
-        return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');
+        return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
     }
 }
 return array(\'form\' => $form);',
     'controller.ajaxListAction.description'=>'handles sending results to ajax table',
-    'controller.ajaxListAction.body'=>'$table = new %grid%;
+    'controller.ajaxListAction.body'=>'$table = new %grid%();
 $table->setAdapter($this->getAdapter())
         ->setSource($this->getTable()->getBaseQuery())
         ->setParamAdapter($this->getRequest()->getPost())
