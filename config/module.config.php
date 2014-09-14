@@ -74,7 +74,6 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'VisioCrudModeler\\Controller\\Index' => 'VisioCrudModeler\\Controller\\IndexController',
-            'VisioCrudModeler\Controller\Customer' => 'VisioCrudModeler\Controller\CustomerController',
             'VisioCrudModeler\Controller\Console' => 'VisioCrudModeler\Controller\ConsoleController',
             'VisioCrudModeler\\Controller\\Web' => 'VisioCrudModeler\\Controller\\WebController'
         )
