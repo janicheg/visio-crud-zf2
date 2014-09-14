@@ -337,7 +337,16 @@ class FormGenerator implements GeneratorInterface
                 'filters' => ($this->getFieldType($field) == 'bool') ? array(null => 'All' , 1 => 'True' , 0 => 'False') : "text",
             );
         }
-        
+        $value['edit'] = array(
+            'title' => 'Edit',
+            'width' => '100',
+        );
+
+        $value['delete'] = array(
+            'title' => 'Delete',
+            'width' => '100',
+        );
+
         $property->setDefaultValue($value);
         
         $class->addPropertyFromGenerator($property);

@@ -184,8 +184,19 @@ return array(
     'controller.standardControllerDescription'=>'automatically generated controller for adding custom actions, beside base handling CRUD operation on DataSet "%s".',
     'controller.getAdapter.description' => 'returns adapter associated with model',
     'controller.getAdapter.body' => 'return $this->getServiceLocator()->get(\'%adapterKey%\');',
+    
+    'controller.htmlResponse.description' => 'Return response as html',
+    'controller.htmlResponse.body' => '$response = $this->getResponse()
+->setStatusCode(200)
+->setContent($html);
+return $response;',
+    
     'controller.readAction.description' => 'handles read operation for single entity',
     'controller.readAction.body' => '$id = (int) $this->params()->fromRoute(\'id\', 0);
+  
+    
+
+
 if (!$id) {
     return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
 

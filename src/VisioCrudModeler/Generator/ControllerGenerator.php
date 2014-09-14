@@ -247,11 +247,17 @@ class ControllerGenerator implements GeneratorInterface
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'createAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'listAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'ajaxListAction'));
-        $class->addMethodFromGenerator($this->generateMethod($dataSet, 'readAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'updateAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'deleteAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'getAdapter'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'getTable'));
+        
+        $htmlResponse = $this->generateMethod($dataSet, 'htmlResponse');
+        $htmlResponse->setParameter('html');
+        
+        $class->addMethodFromGenerator($htmlResponse);
+        
+        
     }
 
     /**
