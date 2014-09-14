@@ -9,5 +9,5 @@ before_script:
   - composer update --prefer-source
 
 script:
-  - ./vendor/bin/phpunit -c test/phpunit.xml.dist
+  - ./vendor/bin/phpunit
 
