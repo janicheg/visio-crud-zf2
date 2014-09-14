@@ -1,15 +1,3 @@
-**Nazwa kodowa**: HyPhers<br/>
-**Pochodzenia (ośrodek PHPers)**: Warszawa<br/>
-**Skład zespołu (wszyscy Warszawa)**: <br/>
-  &nbsp;&nbsp;&nbsp;Przemysław Włodkowski<br/>
-  &nbsp;&nbsp;&nbsp;Bartłomiej Wereszczyński<br/>
-  &nbsp;&nbsp;&nbsp;[Piotr Duda](https://github.com/dudapiotr)<br/>
-  &nbsp;&nbsp;&nbsp;Jacek Pawelec<br/>
-  &nbsp;&nbsp;&nbsp;Robert Bodych  <br/>
-**Nazwa projektu**: Modeler CRUD do ZendF 2.0<br/>
-**Opis**: Wizualny generator CRUD oparty na ZF2 umożliwiający przygotowanie szkieletu aplikacji (Modele, Widoki, Kontrolery, Formularze, Tabele) na podstawie wskazanego źródła danych.<br/>
-
-Repo: https://github.com/HyPhers/hyphers-visio-crud-zf2
 
 Features
 ----------------
@@ -32,7 +20,6 @@ The default configuration is set based on the description of the database.
 
 
 
-
 Contributors
 ------------
 If you want to help develop this module please don't hesitate. 
@@ -47,5 +34,21 @@ Future goals
 Installation
 ------------
 https://github.com/HyPhers/visio-crud-zf2/wiki
+
+
+Additional Info (PHPackaton2014)
+------------
+**Team**: HyPhers<br/>
+**Location**: Warsaw<br/>
+**Team members**: <br/>
+  &nbsp;&nbsp;&nbsp;Przemysław Włodkowski<br/>
+  &nbsp;&nbsp;&nbsp;Bartłomiej Wereszczyński<br/>
+  &nbsp;&nbsp;&nbsp;[Piotr Duda](https://github.com/dudapiotr)<br/>
+  &nbsp;&nbsp;&nbsp;Jacek Pawelec<br/>
+  &nbsp;&nbsp;&nbsp;Robert Bodych  <br/>
+**Project name**: CRUD modeler dedicated to ZF 2.0<br/>
+**Description**: The primary goal is to accelerate implementation of the basic application functions. It allows You to  genearate all needed files like : Models, Table Gateways, Controllers nad views, forms and grid based on defined data source.
+
+Repo: https://github.com/HyPhers/hyphers-visio-crud-zf2
 
 
