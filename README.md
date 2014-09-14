@@ -1,4 +1,4 @@
-
+[![Latest Stable Version](https://poser.pugx.org/hyphers/visio-crud-zf2/v/stable.svg)](https://packagist.org/packages/hyphers/visio-crud-zf2) [![Total Downloads](https://poser.pugx.org/hyphers/visio-crud-zf2/downloads.svg)](https://packagist.org/packages/hyphers/visio-crud-zf2) [![License](https://poser.pugx.org/hyphers/visio-crud-zf2/license.svg)](https://packagist.org/packages/hyphers/visio-crud-zf2)
 Features
 ----------------
 - Generation of the base crud structure based on given datasource (visual modeller, database):
