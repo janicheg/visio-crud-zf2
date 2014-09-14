@@ -29,7 +29,7 @@ return array(
                     'defaults' => array(
                         '__NAMESPACE__' => 'VisioCrudModeler\\Controller',
                         'controller' => 'Index',
-                        'action' => 'index'
+                        'action' => 'modeler'
                     )
                 ),
                 'may_terminate' => true,
