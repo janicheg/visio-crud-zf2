@@ -4,7 +4,6 @@ namespace VisioCrudModelerTest\Controller;
 
 use VisioCrudModelerTest\Bootstrap;
 use Zend\Mvc\Router\Http\TreeRouteStack as HttpRouter;
-use VisioCrudModeler\Controller\CustomerController;
 use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\MvcEvent;
@@ -23,7 +22,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $serviceManager = Bootstrap::getServiceManager();
-        $this->controller = new CustomerController();
+        $this->controller = new \VisioCrudModeler\Controller\IndexController();
         $this->request = new Request();
         $this->routeMatch = new RouteMatch(array('controller' => 'index'));
         $this->event = new MvcEvent();
@@ -40,12 +39,17 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
     public function testIndexActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'index');
-
-        $result = $this->controller->dispatch($this->request);
+        $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
-        
+    }
+    
+    public function testModelerActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'modeler');
+        $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
 }
