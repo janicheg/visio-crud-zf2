@@ -239,7 +239,8 @@ class InputFilterGenerator implements GeneratorInterface
                 break;
             case "string":
                 $validator = $this->codeLibrary()->get("filter.constructor.validators.stringLenght");
-                $validator = sprintf($validator, ((isset($columnInfo["null"]) && $columnInfo["null"]) ? 0 : 1), $columnInfo["character_maximum_length"]);
+                $characterLength = (isset($columnInfo["character_maximum_length"])) ? (isset($columnInfo["character_maximum_length"])) : 256;
+                $validator = sprintf($validator, ((isset($columnInfo["null"]) && $columnInfo["null"]) ? 0 : 1),$characterLength );
                 $validators .= $validator;
                 break;
         }
