@@ -1,17 +1,20 @@
 <?php
-
 namespace VisioCrudModeler\Hydrator;
 
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Stdlib\Hydrator\Filter\FilterProviderInterface;
+use Zend\Stdlib\Hydrator\Filter\FilterComposite;
+use Zend\Stdlib\Hydrator\Filter\MethodMatchFilter;
 
 /**
- * Class methods hydartors. Base On ZF2 ClassMethods, but concerns only public methods.
+ * Class methods hydartors.
+ * Base On ZF2 ClassMethods, but concerns only public methods.
  *
  * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 class ClassMethodsPublicProperty extends ClassMethods
 {
@@ -21,23 +24,23 @@ class ClassMethodsPublicProperty extends ClassMethods
      *
      * Extracts the getter/setter of the given $object.
      *
-     * @param  object                           $object
+     * @param object $object
      * @return array
      * @throws Exception\BadMethodCallException for a non-object $object
      */
     public function extract($object)
     {
-        if (!is_object($object)) {
-            throw new Exception\BadMethodCallException(sprintf(
-                    '%s expects the provided $object to be a PHP object)', __METHOD__
-            ));
+        if (! is_object($object)) {
+            throw new \BadMethodCallException(sprintf('%s expects the provided $object to be a PHP object)', __METHOD__));
         }
 
         $filter = null;
         if ($object instanceof FilterProviderInterface) {
-            $filter = new FilterComposite(
-                    array($object->getFilter()), array(new MethodMatchFilter("getFilter"))
-            );
+            $filter = new FilterComposite(array(
+                $object->getFilter()
+            ), array(
+                new MethodMatchFilter("getFilter")
+            ));
         } else {
             $filter = $this->filterComposite;
         }
@@ -49,7 +52,7 @@ class ClassMethodsPublicProperty extends ClassMethods
 
         foreach ($methods as $method) {
 
-            if (!$filter->filter(get_class($object) . '::' . $method)) {
+            if (! $filter->filter(get_class($object) . '::' . $method)) {
                 continue;
             }
 
@@ -57,12 +60,12 @@ class ClassMethodsPublicProperty extends ClassMethods
 
             if (preg_match('/^get/', $method)) {
                 $attribute = substr($method, 3);
-                if (!property_exists($object, $attribute)) {
+                if (! property_exists($object, $attribute)) {
                     $attribute = lcfirst($attribute);
                 }
             }
 
-            if (!array_key_exists($attribute, $publicParams)) {
+            if (! array_key_exists($attribute, $publicParams)) {
                 continue;
             }
 
@@ -73,5 +76,4 @@ class ClassMethodsPublicProperty extends ClassMethods
 
         return $attributes;
     }
-
 }

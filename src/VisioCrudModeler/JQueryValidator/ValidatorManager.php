@@ -1,5 +1,4 @@
 <?php
-
 namespace VisioCrudModeler\JQueryValidator;
 
 use Zend\InputFilter\InputFilterAwareInterface;
@@ -11,19 +10,20 @@ use Zend\InputFilter\InputFilterAwareInterface;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 class ValidatorManager implements InputFilterAwareInterface
 {
-    
+
     /**
-     * 
-     * @var InputFilter 
+     *
+     * @var InputFilter
      */
     protected $inputFilter;
-    
+
     /**
      * Template for validate plugin
+     *
      * @var string
      */
     protected $template = "
@@ -34,65 +34,60 @@ class ValidatorManager implements InputFilterAwareInterface
                         }
                     }
                 );
-            })(jQuery);"
-    ;
-    
-    
+            })(jQuery);";
+
     /**
      * Ommitet classed for generating jquery validate rules
-     * @var array 
+     *
+     * @var array
      */
     protected $classToOmmit = array(
-     'Zend\Validator\InArray',
-        
+        'Zend\Validator\InArray'
     );
-    
+
     /**
      * Return prepared Jquery Validate Script
-     * 
-     * @param formName
+     *
+     * @param
+     *            formName
      * @return string
      */
     public function getScript($formName)
     {
         $rules = '';
         $validatorsRules = '';
-        
-        foreach($this->getInputFilter()->getInputs() as $inputFilter){
-            
+
+        foreach ($this->getInputFilter()->getInputs() as $inputFilter) {
+
             $name = $inputFilter->getName();
-            
-            if($inputFilter->isRequired()){
+
+            if ($inputFilter->isRequired()) {
                 $validatorsRules = ValidatorFactory::factory('Required', 'true')->getRule();
-                
             }
-            
+
             $validators = $inputFilter->getValidatorChain()->getValidators();
-            if(!empty($validators)){
-                foreach($validators as $validator){
+            if (! empty($validators)) {
+                foreach ($validators as $validator) {
                     $class = get_class($validator['instance']);
-                    if(in_array($class, $this->classToOmmit)){
+                    if (in_array($class, $this->classToOmmit)) {
                         continue;
                     }
                     $validatorsRules .= ValidatorFactory::factory($class, $validator['instance'])->getRule();
                 }
             }
-            $rules .= 
-                    " $name: {
+            $rules .= " $name: {
                         $validatorsRules
-                    },"
-            ;
-            
+                    },";
+
             $validatorsRules = '';
         }
-        
+
         return sprintf($this->template, $formName, $rules);
-        
     }
 
     /**
      * Set InputFilterInterface filter
-     * 
+     *
      * @param \Zend\InputFilter\InputFilterInterface $inputFilter
      */
     public function setInputFilter(\Zend\InputFilter\InputFilterInterface $inputFilter)
@@ -102,11 +97,11 @@ class ValidatorManager implements InputFilterAwareInterface
 
     /**
      * Get InputFilterInterface filter
+     *
      * @return InputFilter
      */
     public function getInputFilter()
     {
         return $this->inputFilter;
     }
-    
 }

@@ -1,60 +1,53 @@
 <?php
 /**
  * Web Filed Descriptor
- * 
+ *
  * @author Piotr Duda <piotr.duda@dentsuaegis.com, dudapiotrek@gmail.com>
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 namespace VisioCrudModeler\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 use VisioCrudModeler\Descriptor\Db\DbDataSourceDescriptor;
-use VisioCrudModeler\Generator\Dependency;
 
 class IndexController extends AbstractActionController
 {
 
+    /**
+     * default action redirecting to modeler interface
+     */
     public function indexAction()
     {
-        $db = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $dataSourceDescriptor=new DbDataSourceDescriptor($db);
-        
-        $dependencyTree=$this->getServiceLocator()->get('config')['VisioCrudModeler']['dependency'];
-        \Zend\Debug\Debug::dump($dependencyTree);
-        $dependency=new Dependency($dependencyTree);
-        \Zend\Debug\Debug::dump(var_export($dependency->dependencyListFor('all'),true));
-        
-        return new ViewModel(array(
-        	'descriptor'=>$dataSourceDescriptor
+        return $this->redirect()->toRoute('visio-crud-modeler', array(
+            'action' => 'modeler'
         ));
     }
-    
-    
+
+    /**
+     * handles modeler interface
+     */
     public function modelerAction()
     {
         $adapter = $this->getDbAdapter();
-        $dataSourceDescriptor=new DbDataSourceDescriptor($adapter);
-        
+        $dataSourceDescriptor = new DbDataSourceDescriptor($adapter);
+
         return array(
             'tables' => $dataSourceDescriptor->listDataSets(),
-            'dataSourceDescriptor'=> $dataSourceDescriptor,
+            'dataSourceDescriptor' => $dataSourceDescriptor,
             'underscoreToCamelCase' => new \Zend\Filter\Word\UnderscoreToCamelCase(),
-            'config' =>  $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']
+            'config' => $this->getServiceLocator()->get('config')['VisioCrudModeler']['params']
         );
     }
-    
+
     /**
-     * 
+     *
      * @return \Zend\Db\Adapter\Adapter
      */
     public function getDbAdapter()
     {
         return $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
     }
-    
-    
 }

@@ -8,7 +8,7 @@ namespace VisioCrudModeler\Descriptor;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 interface DataSetDescriptorInterface
 {
@@ -35,7 +35,8 @@ interface DataSetDescriptorInterface
     /**
      * returns field Descriptor
      *
-     * @param FieldDescriptorInterface $fieldName            
+     * @param string $fieldName
+     * @return \VisioCrudModeler\Descriptor\FieldDescriptorInterface
      */
     public function getFieldDescriptor($fieldName);
 
@@ -45,9 +46,8 @@ interface DataSetDescriptorInterface
      * @return array
      */
     public function getFields();
-    
-    
-     /**
+
+    /**
      * return primary key name
      *
      * @return array
