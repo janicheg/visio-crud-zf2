@@ -124,4 +124,15 @@ class DbDataSetDescriptor extends AbstractDataSetDescriptor implements ListGener
             yield $fieldName => $this->getFieldDescriptor($fieldName);
         }
     }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return (isset($this->definition['primaryKey'])) ? $this->definition['primaryKey'] : 'id';
+    }
+
 }

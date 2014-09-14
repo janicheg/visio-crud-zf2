@@ -42,6 +42,7 @@ class WebDataSourceDescriptor extends AbstractDataSourceDescriptor implements Li
             $this->describeTables();
             $this->describeColumns();
         }
+        
         return $this;
     }
 
@@ -78,11 +79,15 @@ class WebDataSourceDescriptor extends AbstractDataSourceDescriptor implements Li
                 //'null' => ($row['IS_NULLABLE'] == 'YES') ? true : false,
                 //'default' => $row['COLUMN_DEFAULT'],
                 'key' => null,
-                //'reference' => false
+                'reference' => ($element['key'] == 'foreign') ? true : false,
                 'label' => $element['label'],
                 'validators' => $element['validators'],
                 'filters' => $element['filters']
             );
+            
+            if($element['key'] == 'primary'){
+                $this->definition[$element['table']]['primaryKey'] = $element['name'];
+            }
             $this->definition[$element['table']]['fields'][$element['name']] = $fieldDescription;
         }
     }

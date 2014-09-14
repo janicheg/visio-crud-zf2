@@ -3,6 +3,6 @@
 <?php
    	echo $this->partial('partial/form-partial', array(
    	'form' =>$this->form,
-   	'url' =>  $this->url('%s', array('action' => 'create')))
-                );
+   	'url' =>  $this->url('%s/default', array(), array(), true))
+    );
 ?>

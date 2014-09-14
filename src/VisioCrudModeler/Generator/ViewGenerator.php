@@ -115,7 +115,7 @@ class ViewGenerator implements GeneratorInterface
 
     protected function generateListView($moduleName, $controllerName)
     {
-        $html = sprintf($this->codeLibrary()->getFile('list.phtml'), $moduleName, $controllerName);
+        $html = sprintf($this->codeLibrary()->getFile('list.phtml'), $moduleName, $controllerName, $moduleName, $controllerName);
 
         return $html;
     }

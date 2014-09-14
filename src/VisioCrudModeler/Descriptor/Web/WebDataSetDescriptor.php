@@ -48,6 +48,16 @@ class WebDataSetDescriptor extends AbstractDataSetDescriptor implements ListGene
     /**
      * (non-PHPdoc)
      *
+     * @see \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor::getPrimaryKey()
+     */
+    public function getPrimaryKey()
+    {
+        return (isset($this->definition['primaryKey'])) ? $this->definition['primaryKey'] : 'id';
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
      * @see \VisioCrudModeler\Descriptor\AbstractDataSetDescriptor::listFields()
      */
     public function listFields()
@@ -64,7 +74,7 @@ class WebDataSetDescriptor extends AbstractDataSetDescriptor implements ListGene
     {
         return $this->definition['fields'];
     }
-
+    
     /**
      * returns field descriptor
      *

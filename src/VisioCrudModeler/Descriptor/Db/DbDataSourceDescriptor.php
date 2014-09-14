@@ -155,8 +155,12 @@ class DbDataSourceDescriptor extends AbstractDataSourceDescriptor implements Lis
                     'key' => $row['COLUMN_KEY'],
                     'reference' => false
                 );
+                if($row['COLUMN_KEY'] == 'PRI'){
+                    $this->definition[$row['TABLE_NAME']]['primaryKey'] = $row['COLUMN_NAME'];
+                }
                 $this->definition[$row['TABLE_NAME']]['fields'][$row['COLUMN_NAME']] = $fieldDescription;
             }
+            
         }
     }
 

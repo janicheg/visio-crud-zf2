@@ -180,7 +180,7 @@ class FormGenerator implements GeneratorInterface
      */
     protected function generateFormConstruct(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
-        $method = new MethodGenerator("__contruct");
+        $method = new MethodGenerator("__construct");
         $param = new \Zend\Code\Generator\ParameterGenerator("name");
         $param->setDefaultValue(null);
         
@@ -261,10 +261,11 @@ class FormGenerator implements GeneratorInterface
      */
     protected function generateInitMehod(ClassGenerator $class, DataSetDescriptorInterface $dataSet)
     {
-        $controller = $this->params->getParam("moduleName") . "/" . $dataSet->getName();
-        $editLink = $controller . "/edit/%s";
+        $controller = '/' .strtolower($this->params->getParam("moduleName")) . "/" . $dataSet->getName();
+        $editLink = $controller . "/update/%s";
         $deleteLink = $controller . "/delete/%s";;
-        $body = sprintf($this->codeLibrary()->get('grid.init.body'), $editLink, $deleteLink);
+        
+        $body = sprintf($this->codeLibrary()->get('grid.init.body'), $editLink, $dataSet->getPrimaryKey() ,$deleteLink , $dataSet->getPrimaryKey());
         
         $method = new MethodGenerator("init");
         $method->setBody($body);

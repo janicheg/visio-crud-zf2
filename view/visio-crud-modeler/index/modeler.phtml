@@ -103,8 +103,6 @@
                     
                     <?foreach($dataSourceDescriptor->listGenerator() as $tableName=>$dataSetDescriptor):?>
                     
-                        <?//dbs($dataSetDescriptor->getFields())?>
-                    
                         <?foreach($dataSetDescriptor->getFields() as $field):?>
                             <div data-form="<?=$tableName?>" data-element="<?=$field['name']?>" class="element-wrap" style="display: none;">
                                 <h4>Element: <?=$field['name']?></h4>
@@ -125,6 +123,15 @@
                                 <div class="form-group">
                                     <label>Label</label>
                                     <input type="text" class="form-control" data-type="label" value="<?=$underscoreToCamelCase->filter($field['name'])?>" >
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Key</label>
+                                    <select  class="form-control" data-type="key">
+                                        <option value="">--Choose--</option>
+                                        <option value="primary" <?if($field['key'] == 'PRI'):?> selected="selected" <?endif;?> >Primary</option>
+                                        <option value="foreign">Foreign</option>
+                                    </select>
                                 </div>
                                 
                                 <h5><strong>Validators</strong></h5>
@@ -174,7 +181,7 @@
 </div>
   
 <?
-$this->headScript()->prependFile($this->basePath() . '/js/modeler.js');
+$this->headScript()->prependFile($this->basePath() . '/modeler.js');
 ?>
 
 

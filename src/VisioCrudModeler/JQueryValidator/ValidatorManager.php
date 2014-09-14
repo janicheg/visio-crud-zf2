@@ -56,6 +56,7 @@ class ValidatorManager implements InputFilterAwareInterface
     public function getScript($formName)
     {
         $rules = '';
+        $validatorsRules = '';
         
         foreach($this->getInputFilter()->getInputs() as $inputFilter){
             

@@ -45,4 +45,12 @@ interface DataSetDescriptorInterface
      * @return array
      */
     public function getFields();
+    
+    
+     /**
+     * return primary key name
+     *
+     * @return array
+     */
+    public function getPrimaryKey();
 }

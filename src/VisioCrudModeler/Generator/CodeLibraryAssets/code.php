@@ -84,13 +84,13 @@ return array(
     'grid.standardConfigDescription'=>'This file is generated automatically for table "%s". If you want to overwrite any generated configuration for this grid, this file is the place to do it.',
     'grid.init.body'=>'$this->getHeader("edit")->getCell()->addDecorator("callable", array('."\n".
                                     '    "callable" => function($context, $record){'."\n".
-                                    '        return sprintf("<a href=\"%s\">Edit</a>", $record["id"]);'."\n".
+                                    '        return sprintf("<a href=\"%s\">Edit</a>", $record["%s"]);'."\n".
                                     '    }'."\n".
                                     '));'."\n\n".
 
                                     '$this->getHeader("delete")->getCell()->addDecorator("callable", array('."\n".
                                     '    "callable" => function($context, $record){'."\n".
-                                    '        return sprintf("<a href=\"%s\">Delete</a>", $record["id"]);'."\n".
+                                    '        return sprintf("<a href=\"%s\">Delete</a>", $record["%s"]);'."\n".
                                     '    }'."\n".
                                     '));',
     'grid.initFilters.string'=>'$value = $this->getParamAdapter()->getValueOfFilter(\'%s\');'."\n".
@@ -233,7 +233,7 @@ if (!$id) {
 }
 $row = $this->getTable()->findRow($id);
 
-$form = new \VisioCrudModeler\Form\CustomerForm();
+$form = new %form%();
 $form->bind($row);
 
 $request = $this->getRequest();
@@ -244,7 +244,6 @@ if ($request->isPost()) {
     $form->setData($request->getPost());
 
     if ($form->isValid()) {
-        $row->exchangeArray($form->getData());
         $this->getTable()->update($row);
         return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
     }
@@ -259,7 +258,7 @@ return array(
 if (!$id) {
     return $this->redirect()->toUrl(\'/%filteredModule%/%filteredController%/list\');
 }
-$table = new $this->getTable();
+$table = $this->getTable();
 $row = $table->findRow($id);
 $table->delete($row);
 
@@ -272,11 +271,12 @@ return $table;',
     'controller.createAction.body' => '$form = new %form%();
 $request = $this->getRequest();
 
+$filter = new %filter%();
+$form->setInputFilter($filter->getInputFilter());
+
 if ($request->isPost()) {
     $row = new %model%();
-    $filter = new %filter%();
-
-    $form->setInputFilter($filter->getInputFilter());
+    
     $form->setData($request->getPost());
 
     if ($form->isValid()) {

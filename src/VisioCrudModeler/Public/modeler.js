@@ -135,6 +135,7 @@ $(document).ready(function() {
                     table: tableName,
                     label: paramsWrap.find('input[data-type="label"]').val(),
                     type: paramsWrap.find('select[data-type="type"]').val(),
+                    key: paramsWrap.find('select[data-type="key"]').val(),
                     validators: validators,
                     filters: filters
                 };
