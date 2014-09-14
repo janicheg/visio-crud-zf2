@@ -18,7 +18,7 @@ Features
   * TableGateway
   * Filters and validators
   * jQuery Validators (http://jqueryvalidation.org/)
-  * Grid classed (ZfTable)
+  * Grid classed (https://github.com/dudapiotr/ZfTable)
   * Controllers and views
   * Forms
 - Visual modeller which allow to configure and modify (add/remove) your form (field list, validators, form itp...)
