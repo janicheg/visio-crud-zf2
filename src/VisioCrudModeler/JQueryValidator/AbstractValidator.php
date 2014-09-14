@@ -1,5 +1,4 @@
 <?php
-
 namespace VisioCrudModeler\JQueryValidator;
 
 /**
@@ -9,27 +8,30 @@ namespace VisioCrudModeler\JQueryValidator;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 abstract class AbstractValidator implements ValidatorInterface
 {
 
     /**
      * ZF2 validator object
-     * @var \Zend\Validator\ValidatorInterface 
+     *
+     * @var \Zend\Validator\ValidatorInterface
      */
     protected $zendValidator = null;
 
     /**
-     * Value for special validation eg. requierd
+     * Value for special validation eg.
+     * requierd
+     *
      * @var mixed
      */
     protected $value = null;
 
     /**
-     *  
-     * 
-     * @param mixed $validator 
+     * constructor
+     *
+     * @param mixed $validator
      */
     public function __construct($validator = null)
     {
@@ -42,7 +44,8 @@ abstract class AbstractValidator implements ValidatorInterface
 
     /**
      * Get Zend validator instance
-     * @return \Zend\Validator\ValidatorInterface 
+     *
+     * @return \Zend\Validator\ValidatorInterface
      */
     public function getZendValidator()
     {
@@ -51,6 +54,7 @@ abstract class AbstractValidator implements ValidatorInterface
 
     /**
      * Get value for defined validator (eg true/false for required)
+     *
      * @return type
      */
     public function getValue()
@@ -60,6 +64,7 @@ abstract class AbstractValidator implements ValidatorInterface
 
     /**
      * Set Zend validator instance
+     *
      * @param \Zend\Validator\ValidatorInterface $zendValidator
      */
     public function setZendValidator(\Zend\Validator\ValidatorInterface $zendValidator)
@@ -69,11 +74,12 @@ abstract class AbstractValidator implements ValidatorInterface
 
     /**
      * Set value for defined validator (eg true/false for required)
-     * @param mixed
+     *
+     * @param
+     *            mixed
      */
     public function setValue($value)
     {
         $this->value = $value;
     }
-
 }

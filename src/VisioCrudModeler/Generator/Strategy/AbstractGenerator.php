@@ -4,9 +4,7 @@ namespace VisioCrudModeler\Generator\Strategy;
 use VisioCrudModeler\Generator\ParamsInterface;
 use Zend\Di\Di;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use VisioCrudModeler\Generator\Dependency;
-use VisioCrudModeler\Descriptor\DataSourceDescriptorInterface;
 use VisioCrudModeler\Generator\Config\Config;
 
 /**
@@ -16,7 +14,7 @@ use VisioCrudModeler\Generator\Config\Config;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 abstract class AbstractGenerator implements ServiceLocatorAwareInterface, GeneratorInterface
 {
@@ -45,7 +43,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * constructor, takes generator params interface
      *
-     * @param ParamsInterface $params            
+     * @param ParamsInterface $params
      */
     public function __construct(ParamsInterface $params = null)
     {
@@ -65,7 +63,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * sets Params
      *
-     * @param ParamsInterface $params            
+     * @param ParamsInterface $params
      * @return ExecuteGenerator
      */
     public function setParams(ParamsInterface $params)
@@ -103,7 +101,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * sets Dependency Injection container
      *
-     * @param Di $di            
+     * @param Di $di
      * @return ExecuteGenerator
      */
     public function setDi(Di $di)
@@ -119,7 +117,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     {
         $this->serviceLocator = $serviceLocator;
     }
-    
+
     /*
      * (non-PHPdoc)
      * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::getServiceLocator()
@@ -174,13 +172,11 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * writes runtime config
      *
-     * @param Config $config            
+     * @param Config $config
      */
     protected function writeRuntimeConfig(Config $config)
     {
-        ob_start();
-        var_export($config->toArray());
-        $stringCode = ob_get_clean();
+        $stringCode = var_export($config->toArray(), true);
         $this->console('Writing runtime configuration...');
         file_put_contents($this->runtimeConfigPath(), "<?php\nreturn " . $stringCode . ";");
         $this->console('configuration written to: ' . $this->runtimeConfigPath());
@@ -202,7 +198,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * proxy method for writing to console
      *
-     * @param string $message            
+     * @param string $message
      */
     protected function console($message)
     {
@@ -214,7 +210,7 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     /**
      * returns generator instance
      *
-     * @param string $generatorName            
+     * @param string $generatorName
      * @return \VisioCrudModeler\Generator\GeneratorInterface
      */
     public function getGenerator($generatorName)
@@ -232,15 +228,15 @@ abstract class AbstractGenerator implements ServiceLocatorAwareInterface, Genera
     {
         $adapter = $this->getServiceLocator()->get($this->params->getParam('adapterServiceKey'));
         $descriptors = $this->params->getParam('config')->get('descriptors');
-        
+
         $descriptorAdapterName = $this->params->getParam('descriptor');
-        
+
         if (! isset($descriptors[$descriptorAdapterName])) {
             throw new \VisioCrudModeler\Exception\DescriptorAdapterNotFound("Descriptor adapter name " . $descriptorAdapterName . " doesnt exists ");
         }
-        
+
         $descriptor = $descriptors[$this->params->getParam('descriptor')]['adapter'];
-        
+
         return $this->getDi()->get($descriptor, array(
             'adapter' => $adapter,
             'params' => $this->params

@@ -54,8 +54,10 @@ class ModuleGenerator implements GeneratorInterface
      * @var \VisioCrudModeler\Generator\ParamsInterface
      */
     protected $params = null;
-    /*
+
+    /**
      * (non-PHPdoc)
+     *
      * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
      */
     public function generate(\VisioCrudModeler\Generator\ParamsInterface $params)
@@ -100,6 +102,8 @@ class ModuleGenerator implements GeneratorInterface
 
     /**
      * creates module config files
+     *
+     * @return string returns config path
      */
     protected function createModuleConfig()
     {
@@ -112,7 +116,7 @@ class ModuleGenerator implements GeneratorInterface
         $moduleConfig->setDocBlock($this->getFileDocBlock());
         $moduleConfig->getDocBlock()->setShortDescription(sprintf($this->codeLibrary()
             ->get('module.standardConfigDescription'), $this->params->getParam('moduleName')));
-        $moduleConfig->setBody('return ' . var_export($config, true).';');
+        $moduleConfig->setBody('return ' . var_export($config, true) . ';');
         $this->console('writing module config file');
         file_put_contents($this->moduleRoot() . '/config/module.config.php', $moduleConfig->generate());
         return $configPath;

@@ -1,9 +1,4 @@
 <?php
-/**
- * Description of AbstractTable
- *
- * @author  pduda001 Piotr Duda (dudapiotrek@gmail.com)
- */
 namespace VisioCrudModeler\Model\TableGateway;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -15,9 +10,8 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\Db\Sql\Where;
 
-
 /**
- * Extended implementation of TableGateway pattern which allows you 
+ * Extended implementation of TableGateway pattern which allows you
  * to work with You entity model (/VisioCrudModeler/Model/TableGateway/Entity/AbstractEntity).
  * It allows to simple add, update and delete objects from database
  *
@@ -25,7 +19,7 @@ use Zend\Db\Sql\Where;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 class AbstractTable extends AbstractTableGateway implements EventManagerAwareInterface
 {
@@ -100,7 +94,8 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Construct
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter            
+     * @param \Zend\Db\Adapter\Adapter $adapter
+     * @param string $table
      */
     public function __construct(Adapter $adapter, $table = null)
     {
@@ -114,7 +109,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get sql string of $query
      *
-     * @param Sql $query            
+     * @param Sql $query
      * @return string
      */
     protected function getSqlString($query)
@@ -126,7 +121,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
      * Query Debug.
      * Echo string of query and die;
      *
-     * @param type $query            
+     * @param type $query
      */
     protected function debug($query)
     {
@@ -143,8 +138,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     {
         return new Sql($this->getAdapter());
     }
-    
-    
+
     /**
      * Shortcut of begin transaction (from connection)
      */
@@ -181,21 +175,23 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get one row for given key
      *
-     * @param mixed | string | int $id
-     * @param null | string $protypeClass
-     * @return mixed Return model object based on prototypeClass 
+     * @param
+     *            mixed | string | int $id
+     * @param
+     *            null | string $protypeClass
+     * @return mixed Return model object based on prototypeClass
      */
     public function findRow($id, $prototypeClass = null)
     {
         $id = (int) $id;
-        
+
         $rowset = $this->select(array(
             $this->keyName => $id
         ));
-        
+
         $arrayObjectPrototypeClass = ($prototypeClass) ? $prototypeClass : $this->arrayObjectPrototypeClass;
         $rowset->setArrayObjectPrototype(new $arrayObjectPrototypeClass());
-        
+
         $row = $rowset->current();
         return $row;
     }
@@ -203,8 +199,9 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get one row for given key
      *
-     * @param mixed | string | int $id
-     * @return mixed Return model object based on prototypeClass 
+     * @param
+     *            mixed | string | int $id
+     * @return mixed Return model object based on prototypeClass
      */
     public function getRow($id)
     {
@@ -214,8 +211,9 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get one row of table for given $query
      *
-     * @param \Zend\Db\Sql\Select $query            
-     * @param  string | $prototypeClass
+     * @param \Zend\Db\Sql\Select $query
+     * @param
+     *            string | $prototypeClass
      * @return mixed
      */
     public function fetchRow(\Zend\Db\Sql\Select $query = null, $prototypeClass = null)
@@ -223,24 +221,24 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
         if (! $query) {
             $query = $this->getBaseQuery()->limit(1);
         }
-        
+
         $stmt = $this->getSql()->prepareStatementForSqlObject($query);
         $res = $stmt->execute();
-        
+
         $resultSet = new ResultSet();
         $arrayObjectPrototypeClass = ($prototypeClass) ? $prototypeClass : $this->arrayObjectPrototypeClass;
         $resultSet->setArrayObjectPrototype(new $arrayObjectPrototypeClass());
-        
+
         $resultSet->initialize($res);
-        
+
         return $resultSet->current();
     }
 
     /**
      * fetches first row from this table that meet where statement
      *
-     * @param Where $where            
-     * @param mixed $order            
+     * @param Where $where
+     * @param mixed $order
      * @return mixed
      */
     public function fetchRowWhere(Where $where, $order = null)
@@ -256,7 +254,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Get records for given query
      *
-     * @param \Zend\Db\Sql\Select $query            
+     * @param \Zend\Db\Sql\Select $query
      * @param
      *            string | null $prototypeClass
      * @return \Zend\Db\ResultSet\ResultSet
@@ -266,24 +264,24 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
         if (! $query) {
             $query = $this->getBaseQuery();
         }
-        
+
         $stmt = $this->getSql()->prepareStatementForSqlObject($query);
         $res = $stmt->execute();
-        
+
         $resultSet = new ResultSet();
         $arrayObjectPrototypeClass = (strlen($prototypeClass) > 0) ? $prototypeClass : $this->arrayObjectPrototypeClass;
         $resultSet->setArrayObjectPrototype(new $arrayObjectPrototypeClass());
-        
+
         $resultSet->initialize($res);
-        
+
         return $resultSet;
     }
 
     /**
      * Get records from this table mathcing where conditions
      *
-     * @param Where $where            
-     * @param mixed $order            
+     * @param Where $where
+     * @param mixed $order
      * @return \Zend\Db\ResultSet\ResultSet
      */
     public function fetchAllWhere(Where $where, $order = null)
@@ -297,6 +295,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
+     * get sql select query already setup with this instance adapter and table name
      *
      * @return Zend\Db\Sql\Select
      */
@@ -311,7 +310,8 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
-     * Array object protype clas
+     * Array object protype class
+     *
      * @return string
      */
     public function getArrayObjectPrototypeClass()
@@ -320,8 +320,9 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
+     * set arrayobject prototype
      *
-     * @param string $arrayObjectPrototypeClass            
+     * @param string $arrayObjectPrototypeClass
      */
     public function setArrayObjectPrototypeClass($arrayObjectPrototypeClass)
     {
@@ -351,8 +352,9 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
+     * set eventmanager instance
      *
-     * @param \Zend\EventManager\EventManagerInterface $events            
+     * @param \Zend\EventManager\EventManagerInterface $events
      * @return type
      */
     public function setEventManager(EventManagerInterface $events)
@@ -366,6 +368,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     }
 
     /**
+     * returns eventmanager
      *
      * @return \Zend\EventManager\EventManager
      */
@@ -380,7 +383,7 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
     /**
      * Insert new row to database
      *
-     * @param mixed $object            
+     * @param mixed $object
      * @return int
      * @throws \Exception\BadMethodCallException
      */
@@ -389,47 +392,47 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
         if (is_array($object)) {
             return parent::insert($object);
         }
-        
+
         if (! is_callable(array(
             $object,
             'getArrayCopy'
         ))) {
-            throw new \Exception\BadMethodCallException(sprintf('%s expects the provided object to implement getArrayCopy()', __METHOD__));
+            throw new \BadMethodCallException(sprintf('%s expects the provided object to implement getArrayCopy()', __METHOD__));
         }
-        
+
         $preInsertMethodName = $this->eventActions[self::PRE_INSERT];
         $postInsertMethodName = $this->eventActions[self::POST_INSERT];
-        
+
         if (method_exists($object, $preInsertMethodName)) {
             $object->$preInsertMethodName($this->getEventManager());
         }
-        
+
         $set = $object->getArrayCopy();
-        
+
         if (isset($set[$this->keyName])) {
             unset($set[$this->keyName]);
         }
-        
+
         $res = parent::insert($set);
-        
+
         if (method_exists($object, $postInsertMethodName)) {
             $object->$postInsertMethodName($this->getEventManager());
         }
-        
+
         return $res;
     }
 
     /**
      * Update exists row
      *
-     * @param mixed $object            
+     * @param mixed $object
      * @return int
      * @throws \Exception\BadMethodCallException
      */
     public function update($object, $where = null)
     {
         $issetKey = (is_array($object)) ? isset($object[$this->keyName]) : isset($object->{$this->keyName});
-        
+
         if (! $where && ! $issetKey) {
             throw new \Exception(sprintf('%s expects the provided object has key defined', __METHOD__));
         }
@@ -439,20 +442,20 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
             $where = ($where) ? $where : array(
                 $this->keyName => $id
             );
-            
+
             return parent::update($object, $where);
         }
-        
+
         if (! is_callable(array(
             $object,
             'getArrayCopy'
         ))) {
-            throw new \Exception\BadMethodCallException(sprintf('%s expects the provided object to implement getArrayCopy()', __METHOD__));
+            throw new \BadMethodCallException(sprintf('%s expects the provided object to implement getArrayCopy()', __METHOD__));
         }
-        
+
         $preUpdateMethodName = $this->eventActions[self::PRE_UPDATE];
         $postUpdateMethodName = $this->eventActions[self::POST_UPDATE];
-        
+
         if (method_exists($object, $preUpdateMethodName)) {
             $object->$preUpdateMethodName($this->getEventManager());
         }
@@ -462,25 +465,25 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
         $where = ($where) ? $where : array(
             $this->keyName => $id
         );
-        
+
         $res = parent::update($set, $where);
-        
+
         if (method_exists($object, $postUpdateMethodName)) {
             $object->$postUpdateMethodName($this->getEventManager());
         }
-        
+
         return $res;
     }
 
     /**
      * Delete object from database
-     *  
-     * @param mixed $objectOrWhere            
+     *
+     * @param mixed $objectOrWhere
      */
     public function delete($objectOrWhere)
     {
         $isEntityObjectDelete = $objectOrWhere instanceof \VisioCrudModeler\Model\TableGateway\Entity\AbstractEntity;
-        
+
         if ($isEntityObjectDelete) {
             $object = $objectOrWhere;
             $id = (is_array($object)) ? $object[$this->keyName] : $object->{$this->keyName};
@@ -490,16 +493,16 @@ class AbstractTable extends AbstractTableGateway implements EventManagerAwareInt
         } else {
             $where = $objectOrWhere;
         }
-        
+
         $preDeleteMethodName = $this->eventActions[self::PRE_DELETE];
         $postDeleteMethodName = $this->eventActions[self::POST_DELETE];
-        
+
         if ($isEntityObjectDelete && method_exists($object, $preDeleteMethodName)) {
             $object->$preDeleteMethodName($this->getEventManager());
         }
-        
+
         parent::delete($where);
-        
+
         if ($isEntityObjectDelete && method_exists($object, $postDeleteMethodName)) {
             $object->$postDeleteMethodName($this->getEventManager());
         }

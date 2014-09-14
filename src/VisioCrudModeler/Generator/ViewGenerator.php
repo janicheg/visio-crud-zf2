@@ -58,9 +58,12 @@ class ViewGenerator implements GeneratorInterface
         }
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
+    /**
+     * generates view files for data set
+     *
+     * @param string $viewName
+     * @param string $viewFilePath
+     * @param string $moduleName
      */
     protected function generateView($viewName, $viewFilePath, $moduleName)
     {
@@ -78,48 +81,63 @@ class ViewGenerator implements GeneratorInterface
         file_put_contents($readViewPath, $this->generateAjaxListView($moduleName, $viewName));
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
+    /**
+     * returns prepared html string view for create action
+     *
+     * @param string $moduleName
+     * @return string
      */
     protected function generateCreateView($moduleName)
     {
-
-        // $html = sprintf($this->codeLibrary()->get('form.standardConfigDescription');
         $html = sprintf($this->codeLibrary()->getFile('create.phtml'), $moduleName);
-
         return $html;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
+    /**
+     * returns prepared html string view for update action
+     *
+     * @param string $moduleName
+     * @return string
      */
     protected function generateUpdateView($moduleName)
     {
         $html = sprintf($this->codeLibrary()->getFile('update.phtml'), $moduleName);
-
         return $html;
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
+    /**
+     * returns prepared html string view for read action
+     *
+     * @param string $moduleName
+     * @param string $controllerName
+     * @return string
      */
     protected function generateReadView($moduleName, $controllerName)
     {
         $html = sprintf($this->codeLibrary()->getFile('read.phtml'), $moduleName, $controllerName);
-
         return $html;
     }
 
+    /**
+     * returns prepared html string view for list action
+     *
+     * @param string $moduleName
+     * @param string $controllerName
+     * @return string
+     */
     protected function generateListView($moduleName, $controllerName)
     {
         $html = sprintf($this->codeLibrary()->getFile('list.phtml'), $moduleName, $controllerName, $moduleName, $controllerName);
-
         return $html;
     }
 
+    /**
+     * returns prepared html string view for ajax list action
+     *
+     * @param string $moduleName
+     * @param string $controllerName
+     * @return string
+     */
     protected function generateAjaxListView($moduleName, $controllerName)
     {
         $html = sprintf($this->codeLibrary()->getFile('ajax-list.phtml'), $moduleName, $controllerName);

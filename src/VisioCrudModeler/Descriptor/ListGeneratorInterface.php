@@ -11,7 +11,7 @@ namespace VisioCrudModeler\Descriptor;
  * @link      https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland  (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *        
+ *
  */
 interface ListGeneratorInterface
 {
@@ -19,7 +19,7 @@ interface ListGeneratorInterface
     /**
      * list generator
      *
-     * @return Generator
+     * @return \Generator
      */
     public function listGenerator();
 }

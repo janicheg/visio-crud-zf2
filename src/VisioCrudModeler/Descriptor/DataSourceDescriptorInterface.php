@@ -8,7 +8,7 @@ namespace VisioCrudModeler\Descriptor;
  * @link https://github.com/HyPhers/hyphers-visio-crud-zf2
  * @copyright Copyright (c) 2014 HyPHPers Isobar Poland (Piotr Duda , Przemysław Wlodkowski, Bartlomiej Wereszczynski , Jacek Pawelec , Robert Bodych)
  * @license New BSD License
- *         
+ *
  */
 interface DataSourceDescriptorInterface
 {
@@ -16,7 +16,7 @@ interface DataSourceDescriptorInterface
     /**
      * sets name of DataSource to describe
      *
-     * @param string $name            
+     * @param string $name
      */
     public function setName($name);
 
@@ -37,8 +37,8 @@ interface DataSourceDescriptorInterface
     /**
      * returns given DataSet descriptor
      *
-     * @param string $dataSetName            
-     * @return DataSetDescriptorInterface
+     * @param string $dataSetName
+     * @return \VisioCrudModeler\Descriptor\DataSetDescriptorInterface
      */
     public function getDataSetDescriptor($dataSetName);
 }

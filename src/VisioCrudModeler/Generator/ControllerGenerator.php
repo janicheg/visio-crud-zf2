@@ -36,6 +36,7 @@ class ControllerGenerator implements GeneratorInterface
      * @var \Zend\Filter\Word\UnderscoreToCamelCase
      */
     protected $underscoreToCamelCase;
+
     /**
      *
      * @var \Zend\Filter\Word\CamelCaseToSeparator
@@ -104,7 +105,7 @@ class ControllerGenerator implements GeneratorInterface
                 if (! isset($config['router']['routes'][$routeBase])) {
                     $config['router']['routes'][$routeBase] = array();
                 }
-                $config['router']['routes'][$routeBase] =  array(
+                $config['router']['routes'][$routeBase] = array(
                     'type' => 'Literal',
                     'options' => array(
                         'route' => '/' . $routeBase,
@@ -134,7 +135,9 @@ class ControllerGenerator implements GeneratorInterface
                     $invokableControllerKey = preg_replace('@Controller$@', '', $invokableControllerName);
                     $config['controllers']['invokables'][$invokableControllerKey] = $invokableControllerName;
                 }
-                $config['view_manager']['template_path_stack']=array('/../view');
+                $config['view_manager']['template_path_stack'] = array(
+                    '/../view'
+                );
                 $this->console('writing controller routes...');
                 $this->writeModuleConfig($config, $generatedConfigPath);
                 $this->console('routes written to: ' . $generatedConfigPath);
@@ -160,21 +163,24 @@ class ControllerGenerator implements GeneratorInterface
         $docBlock->setShortDescription(sprintf($this->codeLibrary()
             ->get('module.generatedConfigDescription'), $moduleName));
         $generatorConfig->setDocBlock($docBlock);
-        $configString=var_export($config, true);
-        $configString=str_replace("'/../view'", '__DIR__ . \'/../view\'', $configString);
-        $generatorConfig->setBody('return ' . $configString. ';');
+        $configString = var_export($config, true);
+        $configString = str_replace("'/../view'", '__DIR__ . \'/../view\'', $configString);
+        $generatorConfig->setBody('return ' . $configString . ';');
         file_put_contents($path, $generatorConfig->generate());
     }
 
-    /*
-     * (non-PHPdoc)
-     * @see \VisioCrudModeler\Generator\GeneratorInterface::generateController()
+    /**
+     * handles generating main controller class, if don't exists
+     *
+     * @param DataSetDescriptorInterface $dataSet
+     * @param string $extends
+     * @return string generated controller full class name
      */
     protected function generateController(DataSetDescriptorInterface $dataSet, $extends)
     {
         $name = $dataSet->getName();
         $className = $this->underscoreToCamelCase->filter($name) . 'Controller';
-        $namespace = $this->params->getParam("moduleName") . "\Controller";
+        $namespace = $this->params->getParam("moduleName") . "\\Controller";
         $fullClassName = '\\' . $namespace . '\\' . $className;
 
         $controllerFilePath = $this->moduleRoot() . "/src/" . $this->params->getParam("moduleName") . "/Controller/" . $className . ".php";
@@ -203,6 +209,12 @@ class ControllerGenerator implements GeneratorInterface
         return $fullClassName;
     }
 
+    /**
+     * generates base controller for given dataSet
+     *
+     * @param DataSetDescriptorInterface $dataSet
+     * @return string generated controller full class name
+     */
     protected function generateBaseController(DataSetDescriptorInterface $dataSet)
     {
         $name = $dataSet->getName();
@@ -251,13 +263,11 @@ class ControllerGenerator implements GeneratorInterface
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'deleteAction'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'getAdapter'));
         $class->addMethodFromGenerator($this->generateMethod($dataSet, 'getTable'));
-        
+
         $htmlResponse = $this->generateMethod($dataSet, 'htmlResponse');
         $htmlResponse->setParameter('html');
-        
+
         $class->addMethodFromGenerator($htmlResponse);
-        
-        
     }
 
     /**
@@ -281,10 +291,10 @@ class ControllerGenerator implements GeneratorInterface
     }
 
     /**
-     * returns values map for template
+     * returns values map for template according to given dataSet
      *
      * @param DataSetDescriptorInterface $dataSet
-     * @return multitype:NULL
+     * @return array
      */
     protected function prepareTemplateSubstitutionData(DataSetDescriptorInterface $dataSet)
     {
