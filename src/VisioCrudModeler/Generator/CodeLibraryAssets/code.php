@@ -2,7 +2,7 @@
 return array(
     'module.generatedConfigDescription'=>'This file is generated automatically for module "%s". Do not change its contents as it will be overwritten in next pass of generator run. instead use standard module config with array_merge_recursive to overwrite any generated values.',
     'module.standardConfigDescription'=>'This file is generated automatically for module "%s". If you want to overwrite any generated configuration for this module, this file is the place to do it.',
-    'module.standardConfigBody'=>"return array_merge_recursive(require __DIR__ . '/config.generated.php',array(\n    // place your override here\n));",
+    'module.standardConfigBody'=>"return array_merge_recursive(require __DIR__ . 'config.generated.php',array(\n    // place your override here\n));",
     'module.moduleClassDescription'=>"Standard Module class",
     'module.onBootstrap.body'=>'$eventManager = $e->getApplication()->getEventManager();'."\n".'$moduleRouteListener = new \Zend\Mvc\ModuleRouteListener();'."\n".'$moduleRouteListener->attach($eventManager);',
     'module.onBootstrap.shortdescription'=>'standard bootstrap method',

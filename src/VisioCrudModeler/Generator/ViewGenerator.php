@@ -3,6 +3,7 @@ namespace VisioCrudModeler\Generator;
 
 use Zend\Filter\Word\CamelCaseToSeparator;
 use Zend\Filter\Word\UnderscoreToCamelCase;
+
 /**
  * generator class for creating View templates
  *

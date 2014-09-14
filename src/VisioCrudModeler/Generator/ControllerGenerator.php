@@ -96,7 +96,6 @@ class ControllerGenerator implements GeneratorInterface
      */
     protected function updateModuleConfiguration(array $runtime)
     {
-        
         if ($this->params->getParam('runtimeConfiguration') instanceof Config) {
             $generatedConfigPath = (string) $this->params->getParam('runtimeConfiguration')->get('module')['generatedConfigPath'];
             if (file_exists($generatedConfigPath)) {
@@ -270,7 +269,6 @@ class ControllerGenerator implements GeneratorInterface
         $docBlock = new DocBlockGenerator($this->codeLibrary()->get('controller.' . $methodName . '.description'));
         $method->setDocBlock($docBlock);
         $substitutionData = $this->prepareTemplateSubstitutionData($dataSet);
-        
         $method->setBody(strtr((string) $this->codeLibrary()
             ->get('controller.' . $methodName . '.body'), $substitutionData));
         return $method;
@@ -288,7 +286,6 @@ class ControllerGenerator implements GeneratorInterface
         $data = array();
         if ($this->params->getParam('runtimeConfiguration') instanceof Config) {
             $runtime = (array) $this->params->getParam('runtimeConfiguration')->toArray();
-            $data['%grid%'] = $runtime['form'][$name]['grid'];
             $data['%table%'] = $runtime['model'][$name]['table'];
             $data['%model%'] = $runtime['model'][$name]['model'];
             $data['%form%'] = $runtime['form'][$name]['form'];
