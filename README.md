@@ -11,20 +11,22 @@
 
 Repo: https://github.com/HyPhers/hyphers-visio-crud-zf2
 
+Features
+----------------
+- Generation of the base crud structure based on given datasource (visual modeller, database):
+  * Model
+  * TableGateway
+  * Filters and validators
+  * jQuery Validators (http://jqueryvalidation.org/)
+  * Grid classed (ZfTable)
+  * Controllers and views
+  * Forms
+- Visual modeller which allow to configure and modify (add/remove) your form (field list, validators, form itp...)
+- Console generator
 
 Contributors
 ------------
 If you want to help develop this module please don't hesitate. 
-
-Requirements
-------------
-
-* [Zend Framework 2](https://github.com/zendframework/zf2) 
-
-
-Features
-----------------
-TODO
 
 
 Future goals
@@ -38,6 +40,3 @@ Installation
 https://github.com/HyPhers/visio-crud-zf2/wiki
 
 
-Examples
--------
-TODO
