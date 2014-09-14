@@ -25,7 +25,7 @@
     <div class="col-md-7 column ui-sortable" style="">
         <div class="box box-element">
             
-            <?foreach($dataSourceDescriptor->listGenerator() as $tableName=>$dataSetDescriptor):?>
+            <?php foreach($dataSourceDescriptor->listGenerator() as $tableName=>$dataSetDescriptor):?>
                 <div class="view field-list-wrap" style="display: none" data-form="<?=$tableName?>">
                     <h3>Table: <?=$tableName?></h3>
                     Base class name <input type="text" class="form-control base-class-name" data-form="<?=$tableName?>" value="<?=$underscoreToCamelCase->filter($tableName)?>"/>
@@ -52,14 +52,6 @@
                             </ul>
                         </div>
                     </div>
-                        <?php
-
-    //                        echo $this->partial('partal/form-partial', array(
-    //                            'form' => $this->form,
-    //                            'url' =>  $this->url('visio-crud-modeler', array('action' => 'add')))
-    //                         ); 
-
-                        ?>
                 </div>
             
             <?php endforeach; ?>
