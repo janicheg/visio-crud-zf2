@@ -2,9 +2,9 @@
 return array(
     'module.generatedConfigDescription'=>'This file is generated automatically for module "%s". Do not change its contents as it will be overwritten in next pass of generator run. instead use standard module config with array_merge_recursive to overwrite any generated values.',
     'module.standardConfigDescription'=>'This file is generated automatically for module "%s". If you want to overwrite any generated configuration for this module, this file is the place to do it.',
-    'module.standardConfigBody'=>"return array_merge_recursive(require __DIR__ . 'config.generated.php',array(\n    // place your override here\n));",
+    'module.standardConfigBody'=>"return array_merge_recursive(require __DIR__ . '/config.generated.php',array(\n    // place your override here\n));",
     'module.moduleClassDescription'=>"Standard Module class",
-    'module.onBootstrap.body'=>'$eventManager = $e->getApplication()->getEventManager();'."\n".'$moduleRouteListener = new ModuleRouteListener();'."\n".'$moduleRouteListener->attach($eventManager);',
+    'module.onBootstrap.body'=>'$eventManager = $e->getApplication()->getEventManager();'."\n".'$moduleRouteListener = new \Zend\Mvc\ModuleRouteListener();'."\n".'$moduleRouteListener->attach($eventManager);',
     'module.onBootstrap.shortdescription'=>'standard bootstrap method',
     'module.onBootstrap.longdescription'=>'used to configure additional features, not available through module.config.php',
     'module.config.body'=>'return include __DIR__ . \'/config/module.config.php\';',
@@ -254,7 +254,7 @@ $table->delete($row);
 
 return $this->redirect()->toUrl(\'/visio-crud-modeler/customer/list\');',
     'controller.getTable.description' => 'returns table instance',
-    'controller.getTable.body' => '$table = new %table%($this->getDbAdapter());
+    'controller.getTable.body' => '$table = new %table%($this->getAdapter());
 $table->setEventManager($this->getEventManager());
 return $table;',
     'controller.createAction.description' => 'handles adding new entry',
@@ -278,7 +278,7 @@ if ($request->isPost()) {
 }
 return array(\'form\' => $form);',
     'controller.ajaxListAction.description'=>'handles sending results to ajax table',
-    'controller.ajaxListAction.body'=>'$table = new CustomerGrid;
+    'controller.ajaxListAction.body'=>'$table = new %grid%;
 $table->setAdapter($this->getAdapter())
         ->setSource($this->getTable()->getBaseQuery())
         ->setParamAdapter($this->getRequest()->getPost())

@@ -27,7 +27,7 @@ return array(
                 'options' => array(
                     'route' => '/visio-crud-modeler',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'VisioCrudModeler\Controller',
+                        '__NAMESPACE__' => 'VisioCrudModeler\\Controller',
                         'controller' => 'Index',
                         'action' => 'index'
                     )
@@ -73,10 +73,10 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'VisioCrudModeler\Controller\Index' => 'VisioCrudModeler\Controller\IndexController',
+            'VisioCrudModeler\\Controller\\Index' => 'VisioCrudModeler\\Controller\\IndexController',
             'VisioCrudModeler\Controller\Customer' => 'VisioCrudModeler\Controller\CustomerController',
             'VisioCrudModeler\Controller\Console' => 'VisioCrudModeler\Controller\ConsoleController',
-            'VisioCrudModeler\Controller\Web' => 'VisioCrudModeler\Controller\WebController'
+            'VisioCrudModeler\\Controller\\Web' => 'VisioCrudModeler\\Controller\\WebController'
         )
     ),
     'view_manager' => array(

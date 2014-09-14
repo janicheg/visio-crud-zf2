@@ -37,6 +37,9 @@ class IndexController extends AbstractActionController
     
     public function modelerAction()
     {
+        
+        //dbs($this->getServiceLocator()->get('config'));
+        
         $adapter = $this->getDbAdapter();
         
         $dataSourceDescriptor=new DbDataSourceDescriptor($adapter);

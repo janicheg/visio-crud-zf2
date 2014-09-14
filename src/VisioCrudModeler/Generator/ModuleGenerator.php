@@ -112,6 +112,7 @@ class ModuleGenerator implements GeneratorInterface
         $generatorConfig->setBody($this->codeLibrary()
             ->get('standard.returnArray'));
         $this->console('writing generated config');
+        
         file_put_contents($this->moduleRoot() . '/config/config.generated.php', $generatorConfig->generate());
         if (! file_exists($this->moduleRoot() . '/config/module.config.php')) {
             $moduleConfig = new FileGenerator();
@@ -154,7 +155,7 @@ class ModuleGenerator implements GeneratorInterface
             $onBootstrapMethod->setParameter($eventParam);
             $moduleClass->addMethodFromGenerator($onBootstrapMethod);
             // config
-            $configMethod = new MethodGenerator('config', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.config.body'), new DocBlockGenerator($this->codeLibrary()->get('module.config.shortdescription'), $this->codeLibrary()->get('module.config.longdescription'), array()));
+            $configMethod = new MethodGenerator('getConfig', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.config.body'), new DocBlockGenerator($this->codeLibrary()->get('module.config.shortdescription'), $this->codeLibrary()->get('module.config.longdescription'), array()));
             $moduleClass->addMethodFromGenerator($configMethod);
             // getAutoloaderConfig
             $getAutoloaderConfigMethod = new MethodGenerator('getAutoloaderConfig', array(), MethodGenerator::FLAG_PUBLIC, $this->codeLibrary()->get('module.getAutoloaderConfig.body'), new DocBlockGenerator($this->codeLibrary()->get('module.getAutoloaderConfig.shortdescription'), $this->codeLibrary()->get('module.getAutoloaderConfig.longdescription'), array()));

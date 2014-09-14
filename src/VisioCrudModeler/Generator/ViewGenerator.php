@@ -78,7 +78,7 @@ class ViewGenerator implements GeneratorInterface
     	file_put_contents($updateViewPath, $this->genertateUpdateView($moduleName));
     	
     	
-    	$readViewPath = $viewFilePath.'/read.phtml';
+    	$readViewPath = $viewFilePath.'/list.phtml';
     	file_put_contents($readViewPath, $this->genertateReadView($moduleName, $viewName));
     
     }
@@ -114,7 +114,7 @@ class ViewGenerator implements GeneratorInterface
     * @see \VisioCrudModeler\Generator\GeneratorInterface::generate()
     */
     protected function genertateReadView($moduleName,$controllerName){
-    	$html = sprintf($this->codeLibrary()->getFile('read.phtml'), $moduleName,$controllerName);
+    	$html = sprintf($this->codeLibrary()->getFile('list.phtml'), $moduleName,$controllerName);
     	
     	return $html;
     }
