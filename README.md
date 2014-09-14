@@ -21,7 +21,8 @@ Features
   * Grid classed (https://github.com/dudapiotr/ZfTable)
   * Controllers and views
   * Forms
-- Visual modeller which allow to configure and modify (add/remove) your form (field list, validators, form itp...)
+- Visual modeller which allow to configure and modify (add/remove) your form (field list, validators, form itp...).
+The default configuration is set based on the description of the database. 
 
 ![alt tag](https://cloud.githubusercontent.com/assets/2759181/4263942/1f63bee0-3c0c-11e4-8e38-d6b9941da8a0.png )
 
