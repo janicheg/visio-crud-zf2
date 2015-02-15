@@ -25,7 +25,10 @@ class ValidatorFactory
         'Zend\Validator\Digits' => 'VisioCrudModeler\JQueryValidator\Validator\Digits',
         'Zend\Validator\GreaterThan' => 'VisioCrudModeler\JQueryValidator\Validator\Min',
         'Zend\Validator\LessThan' => 'VisioCrudModeler\JQueryValidator\Validator\Max',
-        'Zend\Validator\Between' => 'VisioCrudModeler\JQueryValidator\Validator\Range'
+        'Zend\Validator\Between' => 'VisioCrudModeler\JQueryValidator\Validator\Range',
+        'Zend\Validator\Explode' => 'VisioCrudModeler\JQueryValidator\Validator\Explode',
+        'Zend\Validator\File\MimeType' => 'VisioCrudModeler\JQueryValidator\Validator\MimeType',
+        'Zend\Validator\NotEmpty' => 'VisioCrudModeler\JQueryValidator\Validator\Required',
     );
 
     /**
@@ -47,3 +50,4 @@ class ValidatorFactory
         }
     }
 }
+
