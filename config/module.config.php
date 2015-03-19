@@ -22,7 +22,7 @@ return array(
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
             // using the path /application/:controller/:action
-            'visio-crud-modeler' => array(
+            /*'visio-crud-modeler' => array(
                 'type' => 'Literal',
                 'options' => array(
                     'route' => '/visio-crud-modeler',
@@ -46,7 +46,7 @@ return array(
                         )
                     )
                 )
-            )
+            )*/
         )
     ),
     'service_manager' => array(
