@@ -38,14 +38,3 @@ echo $this->form()->openTag($form);
 <?php endforeach; ?>
 
 <?php echo $this->form()->closeTag($form); ?>
-
-
-
-
-<script type="text/javascript">
-<?
-    if($this->form->getInputFilter()){
-        echo $this->form->getJqueryValidateScript();
-    }
-?>
-</script>
